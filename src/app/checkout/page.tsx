@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import {
   Elements,
@@ -319,6 +319,7 @@ function TestimonialSidebar() {
 
 function CheckoutContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [showMobilePayment, setShowMobilePayment] = useState(false);
@@ -329,27 +330,15 @@ function CheckoutContent() {
     setSelectedPackage(pkg);
   }, [searchParams]);
 
+  const handlePaymentSuccess = () => {
+    // Redirect to onboarding instead of showing success message
+    router.push('/onboarding');
+  };
+
   if (!selectedPackage) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
-      </div>
-    );
-  }
-
-  if (paymentSuccess) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <Card className="max-w-md mx-auto text-center p-8">
-          <CheckCircle className="w-16 h-16 text-emerald-600 mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-foreground mb-2">Payment Successful!</h1>
-          <p className="text-muted-foreground mb-6">
-            Thank you for your purchase. You'll receive an email with instructions to upload your photos.
-          </p>
-          <Button asChild className="w-full bg-emerald-600 hover:bg-emerald-700">
-            <Link href="/">Get Started</Link>
-          </Button>
-        </Card>
       </div>
     );
   }
@@ -452,7 +441,7 @@ function CheckoutContent() {
                 <CardContent>
                   <PaymentForm
                     selectedPackage={selectedPackage}
-                    onPaymentSuccess={() => setPaymentSuccess(true)}
+                    onPaymentSuccess={handlePaymentSuccess}
                   />
                 </CardContent>
               </Card>
@@ -492,7 +481,7 @@ function CheckoutContent() {
               </div>
               <PaymentForm
                 selectedPackage={selectedPackage}
-                onPaymentSuccess={() => setPaymentSuccess(true)}
+                onPaymentSuccess={handlePaymentSuccess}
               />
             </div>
           </div>
