@@ -407,6 +407,150 @@ export default function OnboardingPage() {
               </CardContent>
             </Card>
           </div>
+        ) : currentStep === 2 ? (
+          <Card className="w-full max-w-2xl">
+            <CardHeader className="text-center space-y-2">
+              <CardTitle className="text-3xl font-bold text-gray-900">
+                What vibe do you want?
+              </CardTitle>
+              <CardDescription className="text-lg text-gray-600">
+                Help us understand your style preferences and interests
+              </CardDescription>
+            </CardHeader>
+            
+            <CardContent className="space-y-8">
+              {/* Body Type Selection */}
+              <div className="space-y-3">
+                <label className="text-sm font-medium text-gray-700">
+                  Body Type
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  {bodyTypes.map(type => {
+                    const IconComponent = type.icon;
+                    return (
+                      <Button
+                        key={type.value}
+                        variant={formData.bodyType === type.value ? "default" : "outline"}
+                        className={`h-16 flex items-center gap-3 ${
+                          formData.bodyType === type.value 
+                            ? "bg-emerald-600 hover:bg-emerald-700 text-white" 
+                            : "hover:bg-emerald-50 hover:border-emerald-300"
+                        }`}
+                        onClick={() => handleBodyTypeSelect(type.value)}
+                      >
+                        <IconComponent className="h-5 w-5" />
+                        {type.label}
+                      </Button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Style Preferences */}
+              <div className="space-y-3">
+                <label className="text-sm font-medium text-gray-700">
+                  Style Preference
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {stylePreferences.map(style => (
+                    <Card
+                      key={style.value}
+                      className={`cursor-pointer transition-all duration-200 ${
+                        formData.stylePreference === style.value
+                          ? "border-emerald-500 bg-emerald-50 ring-2 ring-emerald-200"
+                          : "hover:border-emerald-300 hover:bg-emerald-50"
+                      }`}
+                      onClick={() => handleStylePreferenceSelect(style.value)}
+                    >
+                      <CardContent className="p-4">
+                        <h3 className="font-semibold text-gray-900 mb-1">
+                          {style.label}
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                          {style.description}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+
+              {/* Ethnicity (Optional) */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Ethnicity <span className="text-gray-400">(Optional)</span>
+                </label>
+                <Select value={formData.ethnicity} onValueChange={(value) => setFormData(prev => ({ ...prev, ethnicity: value }))}>
+                  <SelectTrigger className="h-12">
+                    <SelectValue placeholder="Select your ethnicity" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ethnicityOptions.map(option => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Interests Selection */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium text-gray-700">
+                    Select Your Interests
+                  </label>
+                  <span className="text-sm text-gray-500">
+                    {formData.interests.length}/3 selected
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                  {interestOptions.map(interest => {
+                    const IconComponent = interest.icon;
+                    const isSelected = formData.interests.includes(interest.value);
+                    const isDisabled = !isSelected && formData.interests.length >= 3;
+                    
+                    return (
+                      <Button
+                        key={interest.value}
+                        variant={isSelected ? "default" : "outline"}
+                        className={`h-20 flex flex-col items-center gap-2 p-3 ${
+                          isSelected
+                            ? "bg-emerald-600 hover:bg-emerald-700 text-white" 
+                            : isDisabled
+                              ? "opacity-50 cursor-not-allowed"
+                              : "hover:bg-emerald-50 hover:border-emerald-300"
+                        }`}
+                        onClick={() => !isDisabled && handleInterestToggle(interest.value)}
+                        disabled={isDisabled}
+                      >
+                        <IconComponent className="h-5 w-5 flex-shrink-0" />
+                        <span className="text-xs text-center leading-tight">
+                          {interest.label}
+                        </span>
+                      </Button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Helper Text */}
+              <div className="text-center text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
+                This helps our AI create authentic photos that match your personality and style
+              </div>
+
+              {/* Continue Button */}
+              <div className="pt-6">
+                <Button
+                  onClick={handleContinue}
+                  disabled={!isStep2Valid}
+                  className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-200 disabled:text-gray-400 text-lg font-medium transition-all duration-200"
+                >
+                  Continue to Photo Upload
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         ) : (
           <Card className="w-full max-w-2xl">
             <CardHeader className="text-center space-y-2">
