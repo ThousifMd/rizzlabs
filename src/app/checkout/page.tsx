@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import {
@@ -317,7 +317,7 @@ function TestimonialSidebar() {
   );
 }
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const searchParams = useSearchParams();
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
@@ -502,5 +502,17 @@ export default function CheckoutPage() {
         <div className="xl:hidden h-20" />
       </div>
     </Elements>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
+      </div>
+    }>
+      <CheckoutContent />
+    </Suspense>
   );
 }
