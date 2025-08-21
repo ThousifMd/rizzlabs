@@ -7,7 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { CheckCircle2, User, Users, Dumbbell, Plane, UtensilsCrossed, Camera, Music, BookOpen, Gamepad2, Heart, Coffee, Mountain, Upload, X, Check, Smartphone, FileText, TrendingUp } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { CheckCircle2, User, Users, Dumbbell, Plane, UtensilsCrossed, Camera, Music, BookOpen, Gamepad2, Heart, Coffee, Mountain, Upload, X, Check, Smartphone, FileText, TrendingUp, Mail, Phone, Clock } from "lucide-react";
 
 interface OnboardingData {
   name: string;
@@ -21,6 +22,9 @@ interface OnboardingData {
   photos: File[];
   screenshots: File[];
   currentBio: string;
+  email: string;
+  phone: string;
+  weeklyTips: boolean;
 }
 
 const datingGoals = [
@@ -125,7 +129,10 @@ export default function OnboardingPage() {
     interests: [],
     photos: [],
     screenshots: [],
-    currentBio: ""
+    currentBio: "",
+    email: "",
+    phone: "",
+    weeklyTips: true
   });
 
   const totalSteps = 5;
@@ -142,6 +149,8 @@ export default function OnboardingPage() {
 
   const isStep3Valid = formData.photos.length >= 10;
 
+  const isStep5Valid = formData.email.trim() !== "" && formData.email.includes("@");
+
   const handleContinue = () => {
     if (currentStep === 1 && isStep1Valid) {
       setCurrentStep(2);
@@ -150,13 +159,14 @@ export default function OnboardingPage() {
     } else if (currentStep === 3 && isStep3Valid) {
       setCurrentStep(4);
     } else if (currentStep === 4) {
+      setCurrentStep(5);
+    } else if (currentStep === 5 && isStep5Valid) {
       setIsCompleted(true);
     }
   };
 
   const handleSkipStep4 = () => {
-    setCurrentStep(4);
-    setIsCompleted(true);
+    setCurrentStep(5);
   };
 
   const handleFileSelect = useCallback((files: FileList | null) => {
@@ -262,6 +272,16 @@ export default function OnboardingPage() {
     }));
   };
 
+  const getDeliveryTime = () => {
+    const now = new Date();
+    const deliveryTime = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    return deliveryTime.toLocaleTimeString('en-US', { 
+      hour: 'numeric', 
+      minute: '2-digit',
+      hour12: true 
+    });
+  };
+
   if (isCompleted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-white flex items-center justify-center p-4">
@@ -269,13 +289,16 @@ export default function OnboardingPage() {
           <CardContent className="pt-6">
             <div className="text-center space-y-4">
               <CheckCircle2 className="h-16 w-16 text-emerald-500 mx-auto" />
-              <h2 className="text-2xl font-bold text-gray-900">Step 4 Complete!</h2>
+              <h2 className="text-2xl font-bold text-gray-900">All Set!</h2>
               <p className="text-gray-600">
-                Perfect! Your profile information has been collected successfully.
+                Perfect! We'll get started on your optimized photos right away.
               </p>
               <div className="bg-emerald-50 p-4 rounded-lg">
-                <p className="text-sm text-emerald-700">
-                  Step 5 is coming soon. We'll notify you when it's ready!
+                <p className="text-sm text-emerald-700 font-medium">
+                  📧 Check your email at {formData.email}
+                </p>
+                <p className="text-sm text-emerald-600 mt-1">
+                  We'll notify you as soon as your photos are ready!
                 </p>
               </div>
             </div>
@@ -316,7 +339,122 @@ export default function OnboardingPage() {
 
       {/* Main Content */}
       <div className="flex items-center justify-center min-h-[calc(100vh-100px)] p-4">
-        {currentStep === 4 ? (
+        {currentStep === 5 ? (
+          <Card className="w-full max-w-2xl">
+            <CardHeader className="text-center space-y-2 pb-6">
+              <CardTitle className="text-3xl font-bold text-gray-900">
+                Where Should We Send Your New Photos?
+              </CardTitle>
+              <CardDescription className="text-lg text-gray-600">
+                We'll deliver your optimized profile photos directly to you
+              </CardDescription>
+            </CardHeader>
+            
+            <CardContent className="space-y-8">
+              {/* Delivery Time Visual */}
+              <div className="bg-gradient-to-r from-emerald-50 to-blue-50 p-6 rounded-lg border border-emerald-200">
+                <div className="flex items-center justify-center gap-3 text-emerald-700">
+                  <Clock className="h-6 w-6" />
+                  <div className="text-center">
+                    <div className="text-lg font-semibold">
+                      Delivered by {getDeliveryTime()}
+                    </div>
+                    <div className="text-sm text-emerald-600">
+                      Tomorrow - We'll email you as soon as they're ready!
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Email Input */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                  <Mail className="h-4 w-4" />
+                  Email Address
+                </label>
+                <Input
+                  type="email"
+                  placeholder="your.email@example.com"
+                  value={formData.email}
+                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                  className="h-12"
+                />
+                <p className="text-sm text-gray-500">
+                  Pre-filled from your payment information if available
+                </p>
+              </div>
+
+              {/* Phone Input */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                  <Phone className="h-4 w-4" />
+                  Phone Number
+                  <span className="text-gray-400">(Optional)</span>
+                </label>
+                <Input
+                  type="tel"
+                  placeholder="+1 (555) 123-4567"
+                  value={formData.phone}
+                  onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                  className="h-12"
+                />
+                <p className="text-sm text-gray-500">
+                  For SMS updates about your photo generation progress
+                </p>
+              </div>
+
+              {/* Weekly Tips Checkbox */}
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
+                  <Checkbox
+                    id="weekly-tips"
+                    checked={formData.weeklyTips}
+                    onCheckedChange={(checked) => 
+                      setFormData(prev => ({ ...prev, weeklyTips: !!checked }))
+                    }
+                  />
+                  <div className="flex-1">
+                    <label htmlFor="weekly-tips" className="text-sm font-medium text-gray-900 cursor-pointer">
+                      Send me weekly profile tips
+                    </label>
+                    <p className="text-sm text-gray-600">
+                      Get expert dating advice and photo optimization tips delivered to your inbox
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Email Notification Banner */}
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <div className="flex items-center gap-2 text-blue-700">
+                  <Mail className="h-5 w-5" />
+                  <div>
+                    <div className="font-semibold">We'll email you as soon as they're ready!</div>
+                    <div className="text-sm text-blue-600">
+                      You'll receive a link to download your optimized photos and bio suggestions
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Continue Button */}
+              <div className="pt-6">
+                <Button
+                  onClick={handleContinue}
+                  disabled={!isStep5Valid}
+                  className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-200 disabled:text-gray-400 text-lg font-medium transition-all duration-200"
+                >
+                  {isStep5Valid ? "Complete Setup" : "Please enter a valid email address"}
+                </Button>
+              </div>
+
+              {/* Privacy Note */}
+              <div className="text-center text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">
+                🔒 Your information is secure and will only be used to deliver your photos and send updates you've requested
+              </div>
+            </CardContent>
+          </Card>
+        ) : currentStep === 4 ? (
           <Card className="w-full max-w-4xl">
             <CardHeader className="text-center space-y-2 pb-6">
               <CardTitle className="text-3xl font-bold text-gray-900">
