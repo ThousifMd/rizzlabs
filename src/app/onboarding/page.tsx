@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -114,6 +115,7 @@ const badExamples = [
 ];
 
 export default function OnboardingPage() {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [isCompleted, setIsCompleted] = useState(false);
   const [dragActive, setDragActive] = useState(false);
@@ -161,7 +163,8 @@ export default function OnboardingPage() {
     } else if (currentStep === 4) {
       setCurrentStep(5);
     } else if (currentStep === 5 && isStep5Valid) {
-      setIsCompleted(true);
+      // Redirect to success page instead of setting completed state
+      router.push('/onboarding/success');
     }
   };
 
