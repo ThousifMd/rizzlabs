@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { CheckCircle2, User, Users, Dumbbell, Plane, UtensilsCrossed, Camera, Music, BookOpen, Gamepad2, Heart, Coffee, Mountain } from "lucide-react";
+import { CheckCircle2, User, Users, Dumbbell, Plane, UtensilsCrossed, Camera, Music, BookOpen, Gamepad2, Heart, Coffee, Mountain, Upload, X, Check } from "lucide-react";
 
 interface OnboardingData {
   name: string;
@@ -17,6 +17,7 @@ interface OnboardingData {
   stylePreference: string;
   ethnicity: string;
   interests: string[];
+  photos: File[];
 }
 
 const datingGoals = [
@@ -75,9 +76,40 @@ const interestOptions = [
   { value: "art", label: "Art", icon: BookOpen }
 ];
 
+const goodExamples = [
+  {
+    src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/project-uploads/49e44d8b-77c8-42bb-baaa-b51976a9a14a/generated_images/close-up-selfie-of-a-young-woman-with-bl-709fdc88-20250821192757.jpg",
+    alt: "Clear face selfie"
+  },
+  {
+    src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/project-uploads/49e44d8b-77c8-42bb-baaa-b51976a9a14a/generated_images/close-up-selfie-of-a-young-man-with-dark-243cb629-20250821192820.jpg",
+    alt: "Different angle selfie"
+  },
+  {
+    src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/project-uploads/49e44d8b-77c8-42bb-baaa-b51976a9a14a/generated_images/close-up-selfie-of-a-young-woman-with-br-15f0206a-20250821192842.jpg",
+    alt: "Variety of angles"
+  }
+];
+
+const badExamples = [
+  {
+    src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/project-uploads/49e44d8b-77c8-42bb-baaa-b51976a9a14a/generated_images/group-photo-of-three-young-women-at-a-pa-a57a9f74-20250821192906.jpg",
+    alt: "Group photos"
+  },
+  {
+    src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/project-uploads/49e44d8b-77c8-42bb-baaa-b51976a9a14a/generated_images/blurry-selfie-photo%2c-out-of-focus%2c-m-78d89336-20250821192926.jpg",
+    alt: "Blurry photos"
+  },
+  {
+    src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/project-uploads/49e44d8b-77c8-42bb-baaa-b51976a9a14a/generated_images/person-wearing-dark-sunglasses-covering--b612c2e3-20250821192948.jpg",
+    alt: "Covered faces"
+  }
+];
+
 export default function OnboardingPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
   const [formData, setFormData] = useState<OnboardingData>({
     name: "",
     age: "",
@@ -86,7 +118,8 @@ export default function OnboardingPage() {
     bodyType: "",
     stylePreference: "",
     ethnicity: "",
-    interests: []
+    interests: [],
+    photos: []
   });
 
   const totalSteps = 5;
@@ -101,12 +134,54 @@ export default function OnboardingPage() {
                        formData.stylePreference !== "" && 
                        formData.interests.length === 3;
 
+  const isStep3Valid = formData.photos.length >= 10;
+
   const handleContinue = () => {
     if (currentStep === 1 && isStep1Valid) {
       setCurrentStep(2);
     } else if (currentStep === 2 && isStep2Valid) {
+      setCurrentStep(3);
+    } else if (currentStep === 3 && isStep3Valid) {
       setIsCompleted(true);
     }
+  };
+
+  const handleFileSelect = useCallback((files: FileList | null) => {
+    if (!files) return;
+    
+    const newFiles = Array.from(files).filter(file => {
+      // Only allow image files
+      return file.type.startsWith('image/');
+    });
+    
+    setFormData(prev => ({
+      ...prev,
+      photos: [...prev.photos, ...newFiles].slice(0, 20) // Max 20 photos
+    }));
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    handleFileSelect(e.dataTransfer.files);
+  }, [handleFileSelect]);
+
+  const handleDrag = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  }, []);
+
+  const removePhoto = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      photos: prev.photos.filter((_, i) => i !== index)
+    }));
   };
 
   const handleDatingGoalSelect = (value: string) => {
@@ -144,13 +219,13 @@ export default function OnboardingPage() {
           <CardContent className="pt-6">
             <div className="text-center space-y-4">
               <CheckCircle2 className="h-16 w-16 text-emerald-500 mx-auto" />
-              <h2 className="text-2xl font-bold text-gray-900">Step 2 Complete!</h2>
+              <h2 className="text-2xl font-bold text-gray-900">Step 3 Complete!</h2>
               <p className="text-gray-600">
-                Excellent! Your style preferences have been saved.
+                Perfect! Your photos have been uploaded successfully.
               </p>
               <div className="bg-emerald-50 p-4 rounded-lg">
                 <p className="text-sm text-emerald-700">
-                  Steps 3-5 are coming soon. We'll notify you when they're ready!
+                  Steps 4-5 are coming soon. We'll notify you when they're ready!
                 </p>
               </div>
             </div>
@@ -179,256 +254,263 @@ export default function OnboardingPage() {
 
       {/* Main Content */}
       <div className="flex items-center justify-center min-h-[calc(100vh-100px)] p-4">
-        <Card className="w-full max-w-2xl">
-          {currentStep === 1 && (
-            <>
-              <CardHeader className="text-center space-y-2">
-                <CardTitle className="text-3xl font-bold text-gray-900">
-                  Let's get to know you better
-                </CardTitle>
-                <CardDescription className="text-lg text-gray-600">
-                  Help us personalize your experience with some basic information
-                </CardDescription>
-              </CardHeader>
-              
-              <CardContent className="space-y-8">
-                {/* Name Field */}
-                <div className="space-y-2">
-                  <label htmlFor="name" className="text-sm font-medium text-gray-700">
-                    Full Name
-                  </label>
-                  <Input
-                    id="name"
-                    placeholder="John Doe"
-                    value={formData.name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                    className="h-12"
-                  />
-                </div>
+        {currentStep === 3 ? (
+          <div className="w-full max-w-6xl">
+            <div className="text-center space-y-2 mb-8">
+              <h1 className="text-3xl font-bold text-gray-900">
+                Upload Your Best Selfies
+              </h1>
+              <p className="text-lg text-gray-600">
+                We need 10-20 clear photos of your face
+              </p>
+            </div>
 
-                {/* Age Dropdown */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">
-                    Age
-                  </label>
-                  <Select value={formData.age} onValueChange={(value) => setFormData(prev => ({ ...prev, age: value }))}>
-                    <SelectTrigger className="h-12">
-                      <SelectValue placeholder="Select your age" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Array.from({ length: 48 }, (_, i) => i + 18).map(age => (
-                        <SelectItem key={age} value={age.toString()}>
-                          {age} years old
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Dating Goals */}
-                <div className="space-y-3">
-                  <label className="text-sm font-medium text-gray-700">
-                    What are your dating goals?
-                  </label>
-                  <div className="grid grid-cols-2 gap-3">
-                    {datingGoals.map(goal => (
-                      <Button
-                        key={goal.value}
-                        variant={formData.datingGoal === goal.value ? "default" : "outline"}
-                        className={`h-12 ${
-                          formData.datingGoal === goal.value 
-                            ? "bg-emerald-600 hover:bg-emerald-700 text-white" 
-                            : "hover:bg-emerald-50 hover:border-emerald-300"
-                        }`}
-                        onClick={() => handleDatingGoalSelect(goal.value)}
-                      >
-                        {goal.label}
-                      </Button>
+            {/* Desktop: Two columns, Mobile: Stacked */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+              {/* Good Examples */}
+              <Card className="border-2 border-emerald-200">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center gap-2">
+                    <Check className="h-5 w-5 text-emerald-600" />
+                    <CardTitle className="text-xl text-emerald-700">Good Examples</CardTitle>
+                  </div>
+                  <CardDescription>
+                    Close up selfies, same person, adults, variety of backgrounds, facial expressions, head tilts and angles
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-3 gap-3">
+                    {goodExamples.map((example, index) => (
+                      <div key={index} className="aspect-square rounded-lg overflow-hidden border-2 border-emerald-300">
+                        <img
+                          src={example.src}
+                          alt={example.alt}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
                     ))}
                   </div>
-                </div>
+                </CardContent>
+              </Card>
 
-                {/* Current Matches */}
-                <div className="space-y-3">
-                  <label className="text-sm font-medium text-gray-700">
-                    How many matches do you typically get per week?
-                  </label>
-                  <div className="grid grid-cols-2 gap-3">
-                    {matchOptions.map(option => (
-                      <Button
-                        key={option.value}
-                        variant={formData.currentMatches === option.value ? "default" : "outline"}
-                        className={`h-12 ${
-                          formData.currentMatches === option.value 
-                            ? "bg-emerald-600 hover:bg-emerald-700 text-white" 
-                            : "hover:bg-emerald-50 hover:border-emerald-300"
-                        }`}
-                        onClick={() => handleMatchOptionSelect(option.value)}
-                      >
-                        {option.label}
-                      </Button>
+              {/* Bad Examples */}
+              <Card className="border-2 border-red-200">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center gap-2">
+                    <X className="h-5 w-5 text-red-600" />
+                    <CardTitle className="text-xl text-red-700">Bad Examples</CardTitle>
+                  </div>
+                  <CardDescription>
+                    Group shots, blurry, full-length, covered faces, animals
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-3 gap-3">
+                    {badExamples.map((example, index) => (
+                      <div key={index} className="aspect-square rounded-lg overflow-hidden border-2 border-red-300">
+                        <img
+                          src={example.src}
+                          alt={example.alt}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
                     ))}
                   </div>
-                </div>
+                </CardContent>
+              </Card>
+            </div>
 
-                {/* Continue Button */}
-                <div className="pt-6">
-                  <Button
-                    onClick={handleContinue}
-                    disabled={!isStep1Valid}
-                    className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-200 disabled:text-gray-400 text-lg font-medium transition-all duration-200"
-                  >
-                    Continue to Next Step
-                  </Button>
-                </div>
-              </CardContent>
-            </>
-          )}
-
-          {currentStep === 2 && (
-            <>
-              <CardHeader className="text-center space-y-2">
-                <CardTitle className="text-3xl font-bold text-gray-900">
-                  What vibe do you want?
-                </CardTitle>
-                <CardDescription className="text-lg text-gray-600">
-                  Help us understand your style and preferences
-                </CardDescription>
-              </CardHeader>
-              
-              <CardContent className="space-y-8">
-                {/* Body Type */}
-                <div className="space-y-3">
-                  <label className="text-sm font-medium text-gray-700">
-                    Body Type
-                  </label>
-                  <div className="grid grid-cols-2 gap-3">
-                    {bodyTypes.map(type => {
-                      const IconComponent = type.icon;
-                      return (
-                        <Button
-                          key={type.value}
-                          variant={formData.bodyType === type.value ? "default" : "outline"}
-                          className={`h-16 flex flex-col items-center gap-2 ${
-                            formData.bodyType === type.value 
-                              ? "bg-emerald-600 hover:bg-emerald-700 text-white" 
-                              : "hover:bg-emerald-50 hover:border-emerald-300"
-                          }`}
-                          onClick={() => handleBodyTypeSelect(type.value)}
-                        >
-                          <IconComponent className="h-5 w-5" />
-                          <span className="text-sm">{type.label}</span>
-                        </Button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Style Preference */}
-                <div className="space-y-3">
-                  <label className="text-sm font-medium text-gray-700">
-                    Style Preference
-                  </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {stylePreferences.map(style => (
-                      <Card
-                        key={style.value}
-                        className={`cursor-pointer transition-all duration-200 ${
-                          formData.stylePreference === style.value
-                            ? "ring-2 ring-emerald-500 bg-emerald-50"
-                            : "hover:shadow-md hover:border-emerald-300"
-                        }`}
-                        onClick={() => handleStylePreferenceSelect(style.value)}
-                      >
-                        <CardContent className="p-4">
-                          <div className="space-y-2">
-                            <h3 className="font-medium text-gray-900">{style.label}</h3>
-                            <p className="text-sm text-gray-600">{style.description}</p>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Ethnicity */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">
-                    Ethnicity <span className="text-gray-400">(Optional)</span>
-                  </label>
-                  <Select value={formData.ethnicity} onValueChange={(value) => setFormData(prev => ({ ...prev, ethnicity: value }))}>
-                    <SelectTrigger className="h-12">
-                      <SelectValue placeholder="Select your ethnicity (optional)" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {ethnicityOptions.map(option => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Interests */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <label className="text-sm font-medium text-gray-700">
-                      Interests
-                    </label>
-                    <span className="text-sm text-gray-500">
-                      Select 3 ({formData.interests.length}/3)
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-                    {interestOptions.map(interest => {
-                      const IconComponent = interest.icon;
-                      const isSelected = formData.interests.includes(interest.value);
-                      const isDisabled = !isSelected && formData.interests.length >= 3;
-                      
-                      return (
-                        <Button
-                          key={interest.value}
-                          variant={isSelected ? "default" : "outline"}
-                          disabled={isDisabled}
-                          className={`h-20 flex flex-col items-center gap-2 transition-all duration-200 ${
-                            isSelected
-                              ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                              : isDisabled
-                                ? "opacity-50 cursor-not-allowed"
-                                : "hover:bg-emerald-50 hover:border-emerald-300"
-                          }`}
-                          onClick={() => handleInterestToggle(interest.value)}
-                        >
-                          <IconComponent className="h-5 w-5" />
-                          <span className="text-xs text-center">{interest.label}</span>
-                        </Button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Helper Text */}
-                <div className="text-center py-4">
-                  <p className="text-sm text-gray-600">
-                    This helps our AI create authentic photos
+            {/* Upload Zone */}
+            <Card className="w-full">
+              <CardContent className="p-6">
+                {/* Upload Area */}
+                <div
+                  className={`border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 ${
+                    dragActive
+                      ? "border-emerald-400 bg-emerald-50"
+                      : "border-gray-300 hover:border-emerald-400 hover:bg-emerald-50"
+                  }`}
+                  onDragEnter={handleDrag}
+                  onDragLeave={handleDrag}
+                  onDragOver={handleDrag}
+                  onDrop={handleDrop}
+                >
+                  <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    Drag & drop your photos here
+                  </h3>
+                  <p className="text-gray-600 mb-4">
+                    or click to browse from your device
                   </p>
-                </div>
-
-                {/* Continue Button */}
-                <div className="pt-4">
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={(e) => handleFileSelect(e.target.files)}
+                    className="hidden"
+                    id="photo-upload"
+                  />
                   <Button
-                    onClick={handleContinue}
-                    disabled={!isStep2Valid}
-                    className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-200 disabled:text-gray-400 text-lg font-medium transition-all duration-200"
+                    asChild
+                    variant="outline"
+                    className="hover:bg-emerald-50 hover:border-emerald-400"
                   >
-                    Continue
+                    <label htmlFor="photo-upload" className="cursor-pointer">
+                      <Camera className="h-4 w-4 mr-2" />
+                      Choose Photos
+                    </label>
                   </Button>
                 </div>
+
+                {/* Photo Counter */}
+                <div className="flex items-center justify-between mt-6 mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900">Uploaded Photos</h3>
+                  <div className="text-sm">
+                    <span className={`font-semibold ${formData.photos.length >= 10 ? 'text-emerald-600' : 'text-gray-600'}`}>
+                      {formData.photos.length}/10
+                    </span>
+                    <span className="text-gray-500 ml-1">minimum photos uploaded</span>
+                  </div>
+                </div>
+
+                {/* Photo Thumbnails */}
+                {formData.photos.length > 0 && (
+                  <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-3 mb-6">
+                    {formData.photos.map((photo, index) => (
+                      <div key={index} className="relative group">
+                        <div className="aspect-square rounded-lg overflow-hidden border-2 border-gray-200">
+                          <img
+                            src={URL.createObjectURL(photo)}
+                            alt={`Upload ${index + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <button
+                          onClick={() => removePhoto(index)}
+                          className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-600"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Continue Button */}
+                <Button
+                  onClick={handleContinue}
+                  disabled={!isStep3Valid}
+                  className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-200 disabled:text-gray-400 text-lg font-medium transition-all duration-200"
+                >
+                  {isStep3Valid ? "Continue" : `Upload ${10 - formData.photos.length} more photos to continue`}
+                </Button>
               </CardContent>
-            </>
-          )}
-        </Card>
+            </Card>
+          </div>
+        ) : (
+          <Card className="w-full max-w-2xl">
+            <CardHeader className="text-center space-y-2">
+              <CardTitle className="text-3xl font-bold text-gray-900">
+                Let's get to know you better
+              </CardTitle>
+              <CardDescription className="text-lg text-gray-600">
+                Help us personalize your experience with some basic information
+              </CardDescription>
+            </CardHeader>
+            
+            <CardContent className="space-y-8">
+              {/* Name Field */}
+              <div className="space-y-2">
+                <label htmlFor="name" className="text-sm font-medium text-gray-700">
+                  Full Name
+                </label>
+                <Input
+                  id="name"
+                  placeholder="John Doe"
+                  value={formData.name}
+                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                  className="h-12"
+                />
+              </div>
+
+              {/* Age Dropdown */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Age
+                </label>
+                <Select value={formData.age} onValueChange={(value) => setFormData(prev => ({ ...prev, age: value }))}>
+                  <SelectTrigger className="h-12">
+                    <SelectValue placeholder="Select your age" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: 48 }, (_, i) => i + 18).map(age => (
+                      <SelectItem key={age} value={age.toString()}>
+                        {age} years old
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Dating Goals */}
+              <div className="space-y-3">
+                <label className="text-sm font-medium text-gray-700">
+                  What are your dating goals?
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  {datingGoals.map(goal => (
+                    <Button
+                      key={goal.value}
+                      variant={formData.datingGoal === goal.value ? "default" : "outline"}
+                      className={`h-12 ${
+                        formData.datingGoal === goal.value 
+                          ? "bg-emerald-600 hover:bg-emerald-700 text-white" 
+                          : "hover:bg-emerald-50 hover:border-emerald-300"
+                      }`}
+                      onClick={() => handleDatingGoalSelect(goal.value)}
+                    >
+                      {goal.label}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Current Matches */}
+              <div className="space-y-3">
+                <label className="text-sm font-medium text-gray-700">
+                  How many matches do you typically get per week?
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  {matchOptions.map(option => (
+                    <Button
+                      key={option.value}
+                      variant={formData.currentMatches === option.value ? "default" : "outline"}
+                      className={`h-12 ${
+                        formData.currentMatches === option.value 
+                          ? "bg-emerald-600 hover:bg-emerald-700 text-white" 
+                          : "hover:bg-emerald-50 hover:border-emerald-300"
+                      }`}
+                      onClick={() => handleMatchOptionSelect(option.value)}
+                    >
+                      {option.label}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Continue Button */}
+              <div className="pt-6">
+                <Button
+                  onClick={handleContinue}
+                  disabled={!isStep1Valid}
+                  className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-200 disabled:text-gray-400 text-lg font-medium transition-all duration-200"
+                >
+                  Continue to Next Step
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
