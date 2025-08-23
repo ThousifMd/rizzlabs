@@ -1,72 +1,146 @@
-# RizzLab Backend API
+# RizzLab - Full Stack Application
 
-A Node.js/Express backend API for handling RizzLab onboarding submissions.
+A complete dating profile optimization platform with separate frontend and backend applications.
+
+## 📁 Project Structure
+
+```
+rizzlab-hero-section/
+├── frontend/          # Next.js 15 Frontend Application
+│   ├── src/          # React components and pages
+│   ├── public/       # Static assets
+│   ├── package.json  # Frontend dependencies
+│   └── ...
+├── backend/          # Node.js/Express Backend API
+│   ├── src/          # Server code and routes
+│   ├── prisma/       # Database schema and migrations
+│   ├── package.json  # Backend dependencies
+│   └── ...
+└── README.md         # This file
+```
 
 ## 🚀 Quick Start
 
-### Prerequisites
-- Node.js 18+
-- PostgreSQL database (DigitalOcean recommended)
+### Frontend (Next.js)
 
-### Installation
-
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-2. **Set up environment variables:**
-   ```bash
-   cp .env.example .env
-   # Edit .env with your database URL
-   ```
-
-3. **Set up database:**
-   ```bash
-   # Run the schema.sql file in your PostgreSQL database
-   psql -d your_database -f src/config/schema.sql
-   ```
-
-4. **Start the server:**
-   ```bash
-   # Development
-   npm run dev
-   
-   # Production
-   npm start
-   ```
-
-## 📊 API Endpoints
-
-### Health Check
-```
-GET /health
+```bash
+cd frontend
+npm install
+npm run dev
 ```
 
-### Onboarding Submissions
+The frontend will be available at `http://localhost:3000`
 
-#### Submit New Onboarding
+### Backend (Node.js/Express)
+
+```bash
+cd backend
+npm install
+npm run dev
 ```
-POST /api/onboarding/submit
+
+The backend API will be available at `http://localhost:5001`
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **Framework**: Next.js 15.3.5
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4
+- **UI Components**: shadcn/ui
+- **Payments**: Stripe
+- **Image Storage**: Cloudinary
+
+### Backend
+- **Runtime**: Node.js
+- **Framework**: Express.js
+- **Database**: PostgreSQL with Prisma ORM
+- **File Upload**: Cloudinary
+- **Validation**: Custom middleware
+
+## 📱 Features
+
+### Frontend Features
+- **Modern Design**: Beautiful, responsive UI
+- **Onboarding Flow**: Complete user onboarding with photo uploads
+- **Payment Integration**: Stripe checkout for premium packages
+- **Image Upload**: Cloudinary integration for photo storage
+- **Responsive Design**: Mobile-first approach
+
+### Backend Features
+- **RESTful API**: Clean API endpoints
+- **Database Integration**: PostgreSQL with Prisma
+- **File Processing**: Image upload and storage
+- **Data Validation**: Input validation middleware
+- **CORS Support**: Cross-origin resource sharing
+
+## 🔧 Environment Setup
+
+### Frontend Environment Variables
+Create `frontend/.env.local`:
+```env
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=your_upload_preset
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+NEXT_PUBLIC_BACKEND_URL=http://localhost:5001
 ```
+
+### Backend Environment Variables
+Create `backend/.env`:
+```env
+PORT=5001
+DATABASE_URL=your_postgresql_connection_string
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+```
+
+## 🚀 Deployment
+
+### Frontend Deployment (Vercel)
+1. Navigate to the `frontend` directory
+2. Connect to Vercel
+3. Set environment variables in Vercel dashboard
+4. Deploy
+
+### Backend Deployment
+The backend can be deployed to:
+- **Railway**: Easy deployment with PostgreSQL
+- **Render**: Free tier with PostgreSQL
+- **Heroku**: Traditional deployment
+- **DigitalOcean**: App Platform
+
+## 📝 Available Scripts
+
+### Frontend
+```bash
+cd frontend
+npm run dev      # Start development server
+npm run build    # Build for production
+npm run start    # Start production server
+npm run lint     # Run ESLint
+```
+
+### Backend
+```bash
+cd backend
+npm run dev      # Start development server with nodemon
+npm start        # Start production server
+node setup-db.js # Initialize database
+```
+
+## 🔗 API Endpoints
+
+### POST `/api/onboarding/submit`
+Submit onboarding data with photos.
 
 **Request Body:**
 ```json
 {
-  "name": "John Doe",
-  "age": "25",
-  "datingGoal": "relationship",
-  "currentMatches": "3-5",
-  "bodyType": "athletic",
-  "stylePreference": "casual",
-  "ethnicity": "white",
-  "interests": ["gym", "travel", "food"],
-  "currentBio": "I love traveling and working out",
-  "email": "john@example.com",
-  "phone": "+1234567890",
-  "weeklyTips": true,
-  "originalPhotos": [],
-  "screenshotPhotos": []
+  "name": "string",
+  "email": "string",
+  "originalPhotos": ["base64_encoded_image_1"],
+  "screenshotPhotos": ["base64_encoded_image_1"]
 }
 ```
 
@@ -78,101 +152,36 @@ POST /api/onboarding/submit
   "message": "Onboarding submitted successfully",
   "data": {
     "id": 1,
-    "name": "John Doe",
-    "email": "john@example.com",
-    "createdAt": "2024-01-01T00:00:00.000Z"
+    "name": "string",
+    "email": "string",
+    "createdAt": "2025-08-23T04:49:21.267Z"
   }
 }
 ```
 
-#### Get Submission by ID
-```
-GET /api/onboarding/:id
-```
-
-#### Get All Submissions
-```
-GET /api/onboarding
-```
-
-#### Get Submissions by Email
-```
-GET /api/onboarding/email/:email
-```
-
 ## 🗄️ Database Schema
 
-The `onboarding_submissions` table stores:
+### OnboardingSubmission
+- `id` (Primary Key)
+- `name` (String)
+- `email` (String)
+- `originalPhotos` (JSON Array)
+- `screenshotPhotos` (JSON Array)
+- `createdAt` (Timestamp)
+- `updatedAt` (Timestamp)
 
-- **Personal Info**: name, age, email, phone
-- **Dating Preferences**: datingGoal, currentMatches, bodyType, stylePreference
-- **Interests**: JSON array of selected interests
-- **Photos**: JSON arrays for original and screenshot photos
-- **Metadata**: timestamps, weekly tips preference
+## 🤝 Contributing
 
-## 🔧 Configuration
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test both frontend and backend
+5. Submit a pull request
 
-### Environment Variables
+## 📄 License
 
-```env
-DATABASE_URL=postgresql://username:password@host:port/database
-PORT=5000
-FRONTEND_URL=http://localhost:3000
-```
+This project is part of the RizzLab application suite.
 
-## 🧪 Testing
+## 🆘 Support
 
-Test the API endpoints using curl or Postman:
-
-```bash
-# Health check
-curl http://localhost:5000/health
-
-# Submit onboarding
-curl -X POST http://localhost:5000/api/onboarding/submit \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Test User",
-    "age": "25",
-    "datingGoal": "relationship",
-    "currentMatches": "3-5",
-    "bodyType": "athletic",
-    "stylePreference": "casual",
-    "interests": ["gym", "travel", "food"],
-    "email": "test@example.com"
-  }'
-```
-
-## 📁 Project Structure
-
-```
-rizzlab-backend/
-├── src/
-│   ├── config/
-│   │   ├── database.js      # Database connection
-│   │   └── schema.sql       # Database schema
-│   ├── models/
-│   │   └── OnboardingSubmission.js  # Data model
-│   ├── middleware/
-│   │   └── validation.js    # Input validation
-│   ├── routes/
-│   │   └── onboarding.js    # API routes
-│   └── app.js               # Main application
-├── package.json
-├── .env
-└── README.md
-```
-
-## 🚀 Deployment
-
-1. **Set up PostgreSQL database** (DigitalOcean, AWS RDS, etc.)
-2. **Update environment variables** with production database URL
-3. **Deploy to your preferred platform** (Railway, Render, Heroku, etc.)
-4. **Update frontend** to use production API URL
-
-## 🔒 Security
-
-- Input validation on all endpoints
-- CORS configuration for frontend
-- SQL injection prevention with parameterized queries
-- Error handling without exposing sensitive information
+For support, email support@rizzlab.com or create an issue in this repository.
