@@ -3,7 +3,7 @@ require("dotenv").config();
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+  ssl: false
 });
 
 async function checkPhotos() {
@@ -11,19 +11,19 @@ async function checkPhotos() {
     console.log("Connecting to database...");
     const client = await pool.connect();
     console.log("Connected successfully!");
-    
+
     // Get detailed data including photos
     const result = await client.query("SELECT id, name, email, original_photos, screenshot_photos, created_at FROM onboarding_submissions ORDER BY created_at DESC");
-    
+
     if (result.rows.length === 0) {
       console.log("No submissions found.");
     } else {
       console.log(`Found ${result.rows.length} submission(s):
 `);
-      
+
       result.rows.forEach((row, index) => {
         console.log(`Submission #${index + 1} (ID: ${row.id})`);
-        console.log("=" .repeat(40));
+        console.log("=".repeat(40));
         console.log(`Name: ${row.name}`);
         console.log(`Email: ${row.email}`);
         console.log(`Original Photos Type: ${typeof row.original_photos}`);
@@ -34,10 +34,10 @@ async function checkPhotos() {
         console.log("");
       });
     }
-    
+
     client.release();
     await pool.end();
-    
+
   } catch (error) {
     console.error("Error:", error.message);
   }

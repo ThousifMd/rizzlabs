@@ -1,39 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { v2 as cloudinary } from 'cloudinary';
 
-// Configure Cloudinary
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
-// Helper function to upload image to Cloudinary
-async function uploadToCloudinary(file: File): Promise<string> {
+// Helper function to convert File to base64
+async function fileToBase64(file: File): Promise<string> {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-
-    return new Promise((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-            {
-                folder: 'rizzlab-onboarding',
-                resource_type: 'auto',
-                transformation: [
-                    { width: 800, height: 800, crop: 'limit' }, // Resize large images
-                    { quality: 'auto:good' } // Optimize quality
-                ]
-            },
-            (error, result) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(result!.secure_url);
-                }
-            }
-        );
-
-        uploadStream.end(buffer);
-    });
+    return buffer.toString('base64');
 }
 
 export async function POST(request: NextRequest) {
@@ -62,32 +33,32 @@ export async function POST(request: NextRequest) {
         const screenshotPhotos = formData.getAll('screenshotPhotos') as File[];
         const screenshotPhotoUrls: string[] = [];
 
-        // Upload original photos to Cloudinary
-        console.log(`Uploading ${originalPhotos.length} original photos...`);
+        // Convert original photos to base64
+        console.log(`Converting ${originalPhotos.length} original photos to base64...`);
         for (const photo of originalPhotos) {
             if (photo instanceof File) {
                 try {
-                    const cloudinaryUrl = await uploadToCloudinary(photo);
-                    originalPhotoUrls.push(cloudinaryUrl);
-                    console.log(`Uploaded original photo: ${cloudinaryUrl}`);
+                    const base64Data = await fileToBase64(photo);
+                    originalPhotoUrls.push(base64Data);
+                    console.log(`Converted original photo: ${photo.name}`);
                 } catch (error) {
-                    console.error('Error uploading original photo:', error);
-                    throw new Error(`Failed to upload original photo: ${photo.name}`);
+                    console.error('Error converting original photo:', error);
+                    throw new Error(`Failed to convert original photo: ${photo.name}`);
                 }
             }
         }
 
-        // Upload screenshot photos to Cloudinary
-        console.log(`Uploading ${screenshotPhotos.length} screenshot photos...`);
+        // Convert screenshot photos to base64
+        console.log(`Converting ${screenshotPhotos.length} screenshot photos to base64...`);
         for (const screenshot of screenshotPhotos) {
             if (screenshot instanceof File) {
                 try {
-                    const cloudinaryUrl = await uploadToCloudinary(screenshot);
-                    screenshotPhotoUrls.push(cloudinaryUrl);
-                    console.log(`Uploaded screenshot: ${cloudinaryUrl}`);
+                    const base64Data = await fileToBase64(screenshot);
+                    screenshotPhotoUrls.push(base64Data);
+                    console.log(`Converted screenshot: ${screenshot.name}`);
                 } catch (error) {
-                    console.error('Error uploading screenshot:', error);
-                    throw new Error(`Failed to upload screenshot: ${screenshot.name}`);
+                    console.error('Error converting screenshot:', error);
+                    throw new Error(`Failed to convert screenshot: ${screenshot.name}`);
                 }
             }
         }
@@ -138,10 +109,6 @@ export async function POST(request: NextRequest) {
             photoCount: {
                 original: originalPhotoUrls.length,
                 screenshots: screenshotPhotoUrls.length
-            },
-            cloudinaryUrls: {
-                original: originalPhotoUrls,
-                screenshots: screenshotPhotoUrls
             }
         });
 
