@@ -20,15 +20,18 @@ import {
 
 export default function SuccessPage() {
   const router = useRouter();
-  const [orderNumber, setOrderNumber] = useState<string>('');
+  const [submissionId, setSubmissionId] = useState<string>('');
   const [timeLeft, setTimeLeft] = useState<number>(43200); // 12 hours in seconds
   const [redirectCountdown, setRedirectCountdown] = useState<number>(10);
   const [showRedirectCountdown, setShowRedirectCountdown] = useState<boolean>(true);
 
-  // Generate random order number on mount
+  // Get submission ID from URL params
   useEffect(() => {
-    const randomNumber = Math.floor(Math.random() * 900000) + 100000;
-    setOrderNumber(`#${randomNumber}`);
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('submissionId');
+    if (id) {
+      setSubmissionId(id);
+    }
   }, []);
 
   // Photo countdown timer
@@ -132,7 +135,7 @@ export default function SuccessPage() {
               className="mb-8"
             >
               <Badge variant="secondary" className="text-lg px-4 py-2 bg-emerald-100 text-emerald-800">
-                Order {orderNumber}
+                Submission ID: {submissionId}
               </Badge>
             </motion.div>
 

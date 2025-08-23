@@ -140,20 +140,20 @@ export default function OnboardingPage() {
   const totalSteps = 5;
   const progress = (currentStep / totalSteps) * 100;
 
-  const isStep1Valid = formData.name.trim() !== "" && 
-                       formData.age !== "" && 
-                       formData.datingGoal !== "" && 
-                       formData.currentMatches !== "";
+  const isStep1Valid = formData.name.trim() !== "" &&
+    formData.age !== "" &&
+    formData.datingGoal !== "" &&
+    formData.currentMatches !== "";
 
-  const isStep2Valid = formData.bodyType !== "" && 
-                       formData.stylePreference !== "" && 
-                       formData.interests.length === 3;
+  const isStep2Valid = formData.bodyType !== "" &&
+    formData.stylePreference !== "" &&
+    formData.interests.length === 3;
 
   const isStep3Valid = formData.photos.length >= 10;
 
   const isStep5Valid = formData.email.trim() !== "" && formData.email.includes("@");
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (currentStep === 1 && isStep1Valid) {
       setCurrentStep(2);
     } else if (currentStep === 2 && isStep2Valid) {
@@ -163,8 +163,53 @@ export default function OnboardingPage() {
     } else if (currentStep === 4) {
       setCurrentStep(5);
     } else if (currentStep === 5 && isStep5Valid) {
-      // Redirect to success page instead of setting completed state
-      router.push('/onboarding/success');
+      // Submit data to API
+      try {
+        // Create FormData to handle file uploads
+        const formDataToSend = new FormData();
+
+        // Add text fields
+        formDataToSend.append('name', formData.name);
+        formDataToSend.append('age', formData.age);
+        formDataToSend.append('datingGoal', formData.datingGoal);
+        formDataToSend.append('currentMatches', formData.currentMatches);
+        formDataToSend.append('bodyType', formData.bodyType);
+        formDataToSend.append('stylePreference', formData.stylePreference);
+        formDataToSend.append('ethnicity', formData.ethnicity);
+        formDataToSend.append('interests', JSON.stringify(formData.interests));
+        formDataToSend.append('currentBio', formData.currentBio);
+        formDataToSend.append('email', formData.email);
+        formDataToSend.append('phone', formData.phone);
+        formDataToSend.append('weeklyTips', formData.weeklyTips.toString());
+
+        // Add original photos
+        formData.photos.forEach((photo, index) => {
+          formDataToSend.append('originalPhotos', photo);
+        });
+
+        // Add screenshot photos
+        formData.screenshots.forEach((screenshot, index) => {
+          formDataToSend.append('screenshotPhotos', screenshot);
+        });
+
+        const response = await fetch('/api/onboarding/submit', {
+          method: 'POST',
+          body: formDataToSend
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          // Redirect to success page with submission ID
+          router.push(`/onboarding/success?submissionId=${result.submissionId}`);
+        } else {
+          console.error('Submission failed:', result.error);
+          alert('Failed to submit. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        alert('Failed to submit. Please try again.');
+      }
     }
   };
 
@@ -174,12 +219,12 @@ export default function OnboardingPage() {
 
   const handleFileSelect = useCallback((files: FileList | null) => {
     if (!files) return;
-    
+
     const newFiles = Array.from(files).filter(file => {
       // Only allow image files
       return file.type.startsWith('image/');
     });
-    
+
     setFormData(prev => ({
       ...prev,
       photos: [...prev.photos, ...newFiles].slice(0, 20) // Max 20 photos
@@ -233,18 +278,18 @@ export default function OnboardingPage() {
         : prev.interests.length < 3
           ? [...prev.interests, value]
           : prev.interests;
-      
+
       return { ...prev, interests };
     });
   };
 
   const handleScreenshotSelect = useCallback((files: FileList | null) => {
     if (!files) return;
-    
+
     const newFiles = Array.from(files).filter(file => {
       return file.type.startsWith('image/');
     });
-    
+
     setFormData(prev => ({
       ...prev,
       screenshots: [...prev.screenshots, ...newFiles].slice(0, 10)
@@ -278,10 +323,10 @@ export default function OnboardingPage() {
   const getDeliveryTime = () => {
     const now = new Date();
     const deliveryTime = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-    return deliveryTime.toLocaleTimeString('en-US', { 
-      hour: 'numeric', 
+    return deliveryTime.toLocaleTimeString('en-US', {
+      hour: 'numeric',
       minute: '2-digit',
-      hour12: true 
+      hour12: true
     });
   };
 
@@ -321,9 +366,9 @@ export default function OnboardingPage() {
               Step {currentStep} of {totalSteps}
             </span>
             {currentStep === 4 && (
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={handleSkipStep4}
                 className="text-gray-600 hover:text-gray-800"
               >
@@ -352,7 +397,7 @@ export default function OnboardingPage() {
                 We'll deliver your optimized profile photos directly to you
               </CardDescription>
             </CardHeader>
-            
+
             <CardContent className="space-y-8">
               {/* Delivery Time Visual */}
               <div className="bg-gradient-to-r from-emerald-50 to-blue-50 p-6 rounded-lg border border-emerald-200">
@@ -412,7 +457,7 @@ export default function OnboardingPage() {
                   <Checkbox
                     id="weekly-tips"
                     checked={formData.weeklyTips}
-                    onCheckedChange={(checked) => 
+                    onCheckedChange={(checked) =>
                       setFormData(prev => ({ ...prev, weeklyTips: !!checked }))
                     }
                   />
@@ -466,7 +511,7 @@ export default function OnboardingPage() {
               <CardDescription className="text-lg text-gray-600">
                 This helps us improve what's not working
               </CardDescription>
-              
+
               {/* Value Proposition */}
               <div className="bg-gradient-to-r from-emerald-50 to-blue-50 p-4 rounded-lg border border-emerald-200 mt-6">
                 <div className="flex items-center justify-center gap-2 text-emerald-700 font-semibold">
@@ -475,7 +520,7 @@ export default function OnboardingPage() {
                 </div>
               </div>
             </CardHeader>
-            
+
             <CardContent className="space-y-8">
               {/* Tinder Screenshots Upload */}
               <div className="space-y-4">
@@ -486,13 +531,12 @@ export default function OnboardingPage() {
                   </h3>
                   <span className="text-sm text-gray-500">(Optional)</span>
                 </div>
-                
+
                 <div
-                  className={`border-2 border-dashed rounded-lg p-6 text-center transition-all duration-200 ${
-                    screenshotDragActive
+                  className={`border-2 border-dashed rounded-lg p-6 text-center transition-all duration-200 ${screenshotDragActive
                       ? "border-emerald-400 bg-emerald-50"
                       : "border-gray-300 hover:border-emerald-400 hover:bg-emerald-50"
-                  }`}
+                    }`}
                   onDragEnter={handleScreenshotDrag}
                   onDragLeave={handleScreenshotDrag}
                   onDragOver={handleScreenshotDrag}
@@ -569,14 +613,14 @@ export default function OnboardingPage() {
                   </h3>
                   <span className="text-sm text-gray-500">(Optional)</span>
                 </div>
-                
+
                 <Textarea
                   placeholder="Paste your current Tinder bio here... This helps us understand what's working and what needs improvement."
                   value={formData.currentBio}
                   onChange={(e) => setFormData(prev => ({ ...prev, currentBio: e.target.value }))}
                   className="min-h-[120px] resize-none"
                 />
-                
+
                 {formData.currentBio && (
                   <div className="text-sm text-gray-500">
                     {formData.currentBio.length} characters
@@ -593,7 +637,7 @@ export default function OnboardingPage() {
                 >
                   Continue to Final Step
                 </Button>
-                
+
                 {/* Skip Button - More Prominent */}
                 <Button
                   onClick={handleSkipStep4}
@@ -605,7 +649,7 @@ export default function OnboardingPage() {
                   </div>
                 </Button>
               </div>
-              
+
               {/* Helper Text */}
               <div className="text-center text-sm text-gray-500 bg-gray-50 p-3 rounded-lg">
                 💡 Sharing your current profile helps our AI identify specific areas for improvement and create more targeted optimizations
@@ -683,11 +727,10 @@ export default function OnboardingPage() {
               <CardContent className="p-6">
                 {/* Upload Area */}
                 <div
-                  className={`border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 ${
-                    dragActive
+                  className={`border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 ${dragActive
                       ? "border-emerald-400 bg-emerald-50"
                       : "border-gray-300 hover:border-emerald-400 hover:bg-emerald-50"
-                  }`}
+                    }`}
                   onDragEnter={handleDrag}
                   onDragLeave={handleDrag}
                   onDragOver={handleDrag}
@@ -775,7 +818,7 @@ export default function OnboardingPage() {
                 Help us understand your style preferences and interests
               </CardDescription>
             </CardHeader>
-            
+
             <CardContent className="space-y-8">
               {/* Body Type Selection */}
               <div className="space-y-3">
@@ -789,11 +832,10 @@ export default function OnboardingPage() {
                       <Button
                         key={type.value}
                         variant={formData.bodyType === type.value ? "default" : "outline"}
-                        className={`h-16 flex items-center gap-3 ${
-                          formData.bodyType === type.value 
-                            ? "bg-emerald-600 hover:bg-emerald-700 text-white" 
+                        className={`h-16 flex items-center gap-3 ${formData.bodyType === type.value
+                            ? "bg-emerald-600 hover:bg-emerald-700 text-white"
                             : "hover:bg-emerald-50 hover:border-emerald-300"
-                        }`}
+                          }`}
                         onClick={() => handleBodyTypeSelect(type.value)}
                       >
                         <IconComponent className="h-5 w-5" />
@@ -813,11 +855,10 @@ export default function OnboardingPage() {
                   {stylePreferences.map(style => (
                     <Card
                       key={style.value}
-                      className={`cursor-pointer transition-all duration-200 ${
-                        formData.stylePreference === style.value
+                      className={`cursor-pointer transition-all duration-200 ${formData.stylePreference === style.value
                           ? "border-emerald-500 bg-emerald-50 ring-2 ring-emerald-200"
                           : "hover:border-emerald-300 hover:bg-emerald-50"
-                      }`}
+                        }`}
                       onClick={() => handleStylePreferenceSelect(style.value)}
                     >
                       <CardContent className="p-4">
@@ -867,18 +908,17 @@ export default function OnboardingPage() {
                     const IconComponent = interest.icon;
                     const isSelected = formData.interests.includes(interest.value);
                     const isDisabled = !isSelected && formData.interests.length >= 3;
-                    
+
                     return (
                       <Button
                         key={interest.value}
                         variant={isSelected ? "default" : "outline"}
-                        className={`h-20 flex flex-col items-center gap-2 p-3 ${
-                          isSelected
-                            ? "bg-emerald-600 hover:bg-emerald-700 text-white" 
+                        className={`h-20 flex flex-col items-center gap-2 p-3 ${isSelected
+                            ? "bg-emerald-600 hover:bg-emerald-700 text-white"
                             : isDisabled
                               ? "opacity-50 cursor-not-allowed"
                               : "hover:bg-emerald-50 hover:border-emerald-300"
-                        }`}
+                          }`}
                         onClick={() => !isDisabled && handleInterestToggle(interest.value)}
                         disabled={isDisabled}
                       >
@@ -919,7 +959,7 @@ export default function OnboardingPage() {
                 Help us personalize your experience with some basic information
               </CardDescription>
             </CardHeader>
-            
+
             <CardContent className="space-y-8">
               {/* Name Field */}
               <div className="space-y-2">
@@ -964,11 +1004,10 @@ export default function OnboardingPage() {
                     <Button
                       key={goal.value}
                       variant={formData.datingGoal === goal.value ? "default" : "outline"}
-                      className={`h-12 ${
-                        formData.datingGoal === goal.value 
-                          ? "bg-emerald-600 hover:bg-emerald-700 text-white" 
+                      className={`h-12 ${formData.datingGoal === goal.value
+                          ? "bg-emerald-600 hover:bg-emerald-700 text-white"
                           : "hover:bg-emerald-50 hover:border-emerald-300"
-                      }`}
+                        }`}
                       onClick={() => handleDatingGoalSelect(goal.value)}
                     >
                       {goal.label}
@@ -987,11 +1026,10 @@ export default function OnboardingPage() {
                     <Button
                       key={option.value}
                       variant={formData.currentMatches === option.value ? "default" : "outline"}
-                      className={`h-12 ${
-                        formData.currentMatches === option.value 
-                          ? "bg-emerald-600 hover:bg-emerald-700 text-white" 
+                      className={`h-12 ${formData.currentMatches === option.value
+                          ? "bg-emerald-600 hover:bg-emerald-700 text-white"
                           : "hover:bg-emerald-50 hover:border-emerald-300"
-                      }`}
+                        }`}
                       onClick={() => handleMatchOptionSelect(option.value)}
                     >
                       {option.label}

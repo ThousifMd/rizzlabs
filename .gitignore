@@ -39,3 +39,20 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/src/generated/prisma
+
+# Environment files
+.env.local
+.env.production
+.env.development
+
+# Backend files
+rizzlab-backend/
+setup-db.js
+show-data.js
+src/app.js
+src/config/
+src/middleware/
+src/models/
+src/routes/
