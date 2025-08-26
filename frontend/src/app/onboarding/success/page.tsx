@@ -6,24 +6,21 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Check, 
-  Brain, 
-  Wand2, 
-  Mail, 
-  Twitter, 
-  Facebook, 
-  Linkedin, 
-  MessageSquare,
-  X
+import {
+  Check,
+  Brain,
+  Wand2,
+  Mail,
+  Twitter,
+  Facebook,
+  Linkedin,
+  MessageSquare
 } from 'lucide-react';
 
 export default function SuccessPage() {
   const router = useRouter();
   const [submissionId, setSubmissionId] = useState<string>('');
   const [timeLeft, setTimeLeft] = useState<number>(43200); // 12 hours in seconds
-  const [redirectCountdown, setRedirectCountdown] = useState<number>(10);
-  const [showRedirectCountdown, setShowRedirectCountdown] = useState<boolean>(true);
 
   // Get submission ID from URL params
   useEffect(() => {
@@ -43,22 +40,7 @@ export default function SuccessPage() {
     return () => clearInterval(timer);
   }, []);
 
-  // Redirect countdown timer
-  useEffect(() => {
-    if (!showRedirectCountdown) return;
 
-    const timer = setInterval(() => {
-      setRedirectCountdown((prev) => {
-        if (prev <= 1) {
-          router.push('/dashboard');
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [router, showRedirectCountdown]);
 
   const formatTime = (seconds: number): string => {
     const hours = Math.floor(seconds / 3600);
@@ -198,7 +180,7 @@ export default function SuccessPage() {
               <p className="text-emerald-100 mb-4">
                 Tell your friends about your AI photo upgrade!
               </p>
-              
+
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <Button
                   variant="secondary"
@@ -239,44 +221,23 @@ export default function SuccessPage() {
               </div>
             </motion.div>
 
-            {/* Go to Dashboard Button */}
+            {/* Go to Homepage Button */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 2.1 }}
             >
               <Button
-                onClick={() => router.push('/dashboard')}
+                onClick={() => router.push('/')}
                 className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 text-lg"
               >
-                Go to Dashboard
+                Go to Homepage
               </Button>
             </motion.div>
           </CardContent>
         </Card>
 
-        {/* Auto-redirect countdown */}
-        {showRedirectCountdown && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 2.5 }}
-            className="fixed bottom-4 right-4 bg-white rounded-lg shadow-lg p-4 border border-gray-200"
-          >
-            <div className="flex items-center justify-between gap-3">
-              <p className="text-sm text-gray-600">
-                Redirecting to dashboard in {redirectCountdown} seconds...
-              </p>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowRedirectCountdown(false)}
-              >
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
-          </motion.div>
-        )}
+
       </div>
     </div>
   );

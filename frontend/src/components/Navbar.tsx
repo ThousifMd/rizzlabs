@@ -38,7 +38,8 @@ export default function Navbar({ ctaHref, className }: NavbarProps) {
   }
 
   const handleGetPhotos = () => {
-    window.location.href = "/checkout?package=professional";
+    localStorage.setItem('selectedPackage', 'professional');
+    window.location.href = "/onboarding";
   }
 
   React.useEffect(() => {
@@ -71,9 +72,9 @@ export default function Navbar({ ctaHref, className }: NavbarProps) {
           </nav>
 
           <div className="hidden items-center gap-2 md:flex">
-            <Button 
+            <Button
               onClick={handleGetPhotos}
-              variant="secondary" 
+              variant="secondary"
               className="h-9 rounded-full px-4"
             >
               Get Photos
@@ -132,7 +133,8 @@ function MobileMenu({
   onSignIn: () => void
 }) {
   const handleMobileGetPhotos = () => {
-    window.location.href = "/checkout?package=professional";
+    localStorage.setItem('selectedPackage', 'professional');
+    window.location.href = "/onboarding";
     setOpen(false);
   };
 
@@ -190,7 +192,7 @@ function MobileMenu({
         <div className="mt-2 h-px bg-border/70" />
 
         <div className="flex items-center gap-2 px-3 py-3">
-          <Button 
+          <Button
             onClick={handleMobileGetPhotos}
             className="h-10 flex-1 rounded-lg"
           >

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, GripVertical } from "lucide-react";
 import { toast } from "sonner";
+import { usePackage } from "@/contexts/PackageContext";
 
 type Milliseconds = number;
 
@@ -40,6 +41,7 @@ function formatHMS(ms: Milliseconds) {
 
 export default function HeroSection({ expiry, ctaHref, className }: HeroSectionProps) {
   const expiryMs = useMemo(() => toMs(expiry), [expiry]);
+  const { selectedPackage } = usePackage();
 
   // Countdown state
   const [now, setNow] = useState<number>(() => Date.now());
@@ -188,7 +190,8 @@ export default function HeroSection({ expiry, ctaHref, className }: HeroSectionP
 
   const handleCTA = () => {
     if (expired) return;
-    window.location.href = "/checkout?package=professional";
+    localStorage.setItem('selectedPackage', 'professional');
+    window.location.href = "/onboarding";
   };
 
   // Placeholder and high-res image URLs (WebP)
@@ -253,9 +256,14 @@ export default function HeroSection({ expiry, ctaHref, className }: HeroSectionP
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#10B981] focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                   "w-full sm:w-auto",
                 ].join(" ")}
-                aria-label={expired ? "Sale ended" : "Get your photos now"}
+                aria-label={expired ? "Sale ended" : selectedPackage ? `Get ${selectedPackage.name} package` : "Get your photos now"}
               >
-                {expired ? "Join Waitlist" : "Get Your Photos Now →"}
+                {expired
+                  ? "Join Waitlist"
+                  : selectedPackage
+                    ? `Get ${selectedPackage.name} Package →`
+                    : "Get Your Photos Now →"
+                }
               </Button>
 
               <div className="flex items-center gap-2">
@@ -295,6 +303,30 @@ export default function HeroSection({ expiry, ctaHref, className }: HeroSectionP
                 Results may vary. Guarantee applies to eligible orders.
               </p>
             </div>
+
+            {/* Dynamic Pricing Display */}
+            {selectedPackage && (
+              <div className="mt-4 p-4 rounded-lg border border-emerald-200 bg-emerald-50/50">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-emerald-800">
+                      Selected: {selectedPackage.name}
+                    </p>
+                    <p className="text-xs text-emerald-600">
+                      {selectedPackage.features[0]} • {selectedPackage.features[1]}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-lg font-bold text-emerald-800">
+                      ${selectedPackage.price}
+                    </p>
+                    <p className="text-xs text-emerald-600 line-through">
+                      ${selectedPackage.originalPrice}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Right column: Before/After placeholder slider */}

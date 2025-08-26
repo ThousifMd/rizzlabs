@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const multer = require("multer");
 require("dotenv").config();
 
 const onboardingRoutes = require("./routes/onboarding");
@@ -14,7 +15,19 @@ app.use(cors({
 }));
 
 app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
+// Configure multer for handling FormData
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+    files: 20 // Max 20 files
+  }
+});
+
+// Make multer available to routes
+app.locals.upload = upload;
 
 // Health check endpoint
 app.get("/health", (req, res) => {

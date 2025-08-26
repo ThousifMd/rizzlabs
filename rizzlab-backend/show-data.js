@@ -2,10 +2,8 @@ const { Pool } = require("pg");
 require("dotenv").config();
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL.replace('?sslmode=require', ''),
-  ssl: {
-    rejectUnauthorized: false
-  }
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
 });
 
 async function showLatestData() {
@@ -13,18 +11,18 @@ async function showLatestData() {
     console.log("Connecting to database...");
     const client = await pool.connect();
     console.log("Connected successfully!");
-
+    
     const result = await client.query("SELECT * FROM onboarding_submissions ORDER BY created_at DESC");
-
+    
     if (result.rows.length === 0) {
       console.log("No submissions found.");
     } else {
       console.log(`Found ${result.rows.length} submission(s):
 `);
-
+      
       result.rows.forEach((row, index) => {
         console.log(`Submission #${index + 1} (ID: ${row.id})`);
-        console.log("=".repeat(40));
+        console.log("=" .repeat(40));
         console.log(`Name: ${row.name}`);
         console.log(`Age: ${row.age}`);
         console.log(`Email: ${row.email}`);
@@ -36,10 +34,10 @@ async function showLatestData() {
         console.log("");
       });
     }
-
+    
     client.release();
     await pool.end();
-
+    
   } catch (error) {
     console.error("Error:", error.message);
   }

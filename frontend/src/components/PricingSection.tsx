@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, Shield } from "lucide-react";
+import { usePackage, Package } from "@/contexts/PackageContext";
 
 const pricingTiers = [
   {
@@ -14,7 +15,7 @@ const pricingTiers = [
     description: "Perfect for getting started",
     features: [
       "20 enhanced photos",
-      "3 style variations", 
+      "3 style variations",
       "Basic bio tips",
       "24-hour delivery"
     ],
@@ -35,8 +36,8 @@ const pricingTiers = [
       "Profile strategy guide",
       "12-hour delivery"
     ],
-    buttonText: "Choose Professional",
-    popular: true,
+    buttonText: "Get Started",
+    popular: false,
     mobileOrder: 1
   },
   {
@@ -76,8 +77,20 @@ const pricingTiers = [
 ];
 
 export const PricingSection = () => {
+  const { selectedPackage, setSelectedPackage } = usePackage();
+
   const handleSelectPackage = (packageId: string) => {
-    window.location.href = `/checkout?package=${packageId}`;
+    const packageData = pricingTiers.find(tier => tier.id === packageId);
+    if (packageData) {
+      setSelectedPackage(packageData);
+      // Store selected package in localStorage for payment page
+      localStorage.setItem('selectedPackage', packageId);
+      window.location.href = `/onboarding`;
+    }
+  };
+
+  const handlePackageClick = (packageData: Package) => {
+    setSelectedPackage(packageData);
   };
 
   return (
@@ -85,7 +98,7 @@ export const PricingSection = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         {/* Header */}
         <div className="text-center mb-12 lg:mb-16">
-          <h2 
+          <h2
             id="pricing-title"
             className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-foreground mb-4"
           >
@@ -97,7 +110,7 @@ export const PricingSection = () => {
         </div>
 
         {/* Pricing Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-8 mb-12 items-stretch">
           {pricingTiers
             .sort((a, b) => {
               // Sort by mobile order on small screens
@@ -107,77 +120,84 @@ export const PricingSection = () => {
               return 0;
             })
             .map((tier) => (
-            <Card
-              key={tier.name}
-              className={`relative group transition-all duration-300 hover:scale-105 hover:shadow-xl ${
-                tier.popular
-                  ? "border-2 border-emerald-500 shadow-lg"
-                  : "border border-border shadow-sm"
-              }`}
-              role="article"
-              aria-label={`${tier.name} pricing plan`}
-            >
-              {tier.popular && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <Badge className="bg-emerald-500 text-white hover:bg-emerald-600 px-4 py-1.5 font-medium">
-                    Most Popular
-                  </Badge>
-                </div>
-              )}
-
-              <CardHeader className="text-center pb-4">
-                <CardTitle className="text-xl font-heading font-bold text-foreground mb-2">
-                  {tier.name}
-                </CardTitle>
-                <CardDescription className="text-muted-foreground mb-4">
-                  {tier.description}
-                </CardDescription>
-                <div className="flex items-center justify-center space-x-2">
-                  <span className="text-4xl lg:text-5xl font-heading font-bold text-foreground">
-                    ${tier.price}
-                  </span>
-                  <div className="text-sm text-muted-foreground">
-                    <div className="line-through">${tier.originalPrice}</div>
+              <Card
+                key={tier.name}
+                className={`relative group transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer flex flex-col h-full ${selectedPackage?.id === tier.id
+                  ? "border-2 border-emerald-500 shadow-lg bg-emerald-50/50"
+                  : tier.popular
+                    ? "border-2 border-emerald-500 shadow-lg"
+                    : "border border-border shadow-sm"
+                  }`}
+                role="article"
+                aria-label={`${tier.name} pricing plan`}
+                onClick={() => handlePackageClick(tier)}
+              >
+                {tier.popular && (
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                    <Badge className="bg-emerald-500 text-white hover:bg-emerald-600 px-4 py-1.5 font-medium">
+                      Most Popular
+                    </Badge>
                   </div>
-                </div>
-              </CardHeader>
+                )}
+                {selectedPackage?.id === tier.id && (
+                  <div className="absolute -top-3 right-3">
+                    <Badge className="bg-blue-500 text-white hover:bg-blue-600 px-4 py-1.5 font-medium">
+                      Selected
+                    </Badge>
+                  </div>
+                )}
 
-              <CardContent className="pt-4">
-                <ul className="space-y-4 mb-8" role="list">
-                  {tier.features.map((feature, index) => (
-                    <li
-                      key={index}
-                      className="flex items-start gap-3"
-                      role="listitem"
-                    >
-                      <Check
-                        className={`w-5 h-5 mt-0.5 flex-shrink-0 ${
-                          tier.popular ? "text-emerald-500" : "text-primary"
-                        }`}
-                        aria-hidden="true"
-                      />
-                      <span className="text-foreground text-sm leading-relaxed">
-                        {feature}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
+                <CardHeader className="text-center pb-4">
+                  <CardTitle className="text-xl font-heading font-bold text-foreground mb-2">
+                    {tier.name}
+                  </CardTitle>
+                  <CardDescription className="text-muted-foreground mb-4">
+                    {tier.description}
+                  </CardDescription>
+                  <div className="flex items-center justify-center space-x-2">
+                    <span className="text-4xl lg:text-5xl font-heading font-bold text-foreground">
+                      ${tier.price}
+                    </span>
+                    <div className="text-sm text-muted-foreground">
+                      <div className="line-through">${tier.originalPrice}</div>
+                    </div>
+                  </div>
+                </CardHeader>
 
-                <Button
-                  onClick={() => handleSelectPackage(tier.id)}
-                  className={`w-full transition-all duration-300 ${
-                    tier.popular
+                <CardContent className="pt-4 flex flex-col flex-grow">
+                  <ul className="space-y-4 mb-8 flex-grow" role="list">
+                    {tier.features.map((feature, index) => (
+                      <li
+                        key={index}
+                        className="flex items-start gap-3"
+                        role="listitem"
+                      >
+                        <Check
+                          className={`w-5 h-5 mt-0.5 flex-shrink-0 ${tier.popular ? "text-emerald-500" : "text-primary"
+                            }`}
+                          aria-hidden="true"
+                        />
+                        <span className="text-foreground text-sm leading-relaxed">
+                          {feature}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Button
+                    onClick={() => handleSelectPackage(tier.id)}
+                    className={`w-full transition-all duration-300 mt-auto ${tier.popular
                       ? "bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg"
                       : "bg-primary hover:bg-primary/90 text-primary-foreground"
-                  }`}
-                  size="lg"
-                  aria-label={`Select ${tier.name} plan for $${tier.price}`}
-                >
-                  {tier.buttonText}
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+                      }`}
+                    size="lg"
+                    aria-label={`Select ${tier.name} plan for $${tier.price}`}
+                  >
+                    {tier.buttonText}
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
         </div>
 
         {/* Money Back Guarantee */}

@@ -30,8 +30,8 @@ const transformationsData: TransformationData[] = [
   {
     id: 'casual',
     category: 'Casual',
-    beforeImage: 'https://images.unsplash.com/photo-1552058544-f2b08422138a?w=400&h=500&fit=crop&crop=face',
-    afterImage: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop&crop=face',
+    beforeImage: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop&crop=face',
+    afterImage: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=500&fit=crop&crop=face',
     alt: 'Casual style transformation'
   },
   {
@@ -45,14 +45,14 @@ const transformationsData: TransformationData[] = [
     id: 'social',
     category: 'Social',
     beforeImage: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=500&fit=crop&crop=face',
-    afterImage: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=500&fit=crop&crop=face',
+    afterImage: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=500&fit=crop&crop=face',
     alt: 'Social setting transformation'
   },
   {
     id: 'travel',
     category: 'Travel',
     beforeImage: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=500&fit=crop&crop=face',
-    afterImage: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=500&fit=crop&crop=face',
+    afterImage: 'https://images.unsplash.com/photo-1556474835-b0f3ac40d4d1?w=400&h=500&fit=crop&crop=face',
     alt: 'Travel photo transformation'
   },
   {
@@ -72,7 +72,7 @@ const TransformationCard: React.FC<TransformationCardProps> = ({ data, isVisible
 
   const handleSliderMove = useCallback((clientX: number) => {
     if (!cardRef.current) return;
-    
+
     const rect = cardRef.current.getBoundingClientRect();
     const x = clientX - rect.left;
     const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
@@ -127,18 +127,17 @@ const TransformationCard: React.FC<TransformationCardProps> = ({ data, isVisible
   return (
     <Card
       ref={cardRef}
-      className={`relative overflow-hidden group cursor-grab active:cursor-grabbing transition-all duration-700 ease-out transform ${
-        isVisible 
-          ? 'opacity-100 translate-y-0' 
-          : 'opacity-0 translate-y-8'
-      } hover:shadow-2xl hover:scale-[1.02] shadow-lg`}
+      className={`relative overflow-hidden group cursor-grab active:cursor-grabbing transition-all duration-700 ease-out transform ${isVisible
+        ? 'opacity-100 translate-y-0'
+        : 'opacity-0 translate-y-8'
+        } hover:shadow-2xl hover:scale-[1.02] shadow-lg`}
       style={{
         transitionDelay: isVisible ? `${index * 100}ms` : '0ms'
       }}
     >
       <div className="relative h-80 sm:h-96 overflow-hidden">
         {/* Before Image */}
-        <div 
+        <div
           className="absolute inset-0 transition-transform duration-300 ease-out"
           style={{
             clipPath: `inset(0 ${100 - sliderPosition}% 0 0)`
@@ -154,7 +153,7 @@ const TransformationCard: React.FC<TransformationCardProps> = ({ data, isVisible
         </div>
 
         {/* After Image */}
-        <div 
+        <div
           className="absolute inset-0 transition-transform duration-300 ease-out"
           style={{
             clipPath: `inset(0 0 0 ${sliderPosition}%)`
@@ -169,8 +168,8 @@ const TransformationCard: React.FC<TransformationCardProps> = ({ data, isVisible
         </div>
 
         {/* Category Badge */}
-        <Badge 
-          variant="secondary" 
+        <Badge
+          variant="secondary"
           className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-foreground shadow-lg z-20"
         >
           {data.category}
@@ -294,9 +293,12 @@ export const TransformationGallery: React.FC = () => {
 
       {/* CTA Button */}
       <div className="text-center">
-        <Button 
-          onClick={() => window.location.href = '/checkout?package=professional'}
-          size="lg" 
+        <Button
+          onClick={() => {
+            localStorage.setItem('selectedPackage', 'professional');
+            window.location.href = '/onboarding';
+          }}
+          size="lg"
           className="px-12 py-6 text-lg font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
         >
           See Your Potential

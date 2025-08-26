@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Checkbox } from "@/components/ui/checkbox";
-import { CheckCircle2, User, Users, Dumbbell, Plane, UtensilsCrossed, Camera, Music, BookOpen, Gamepad2, Heart, Coffee, Mountain, Upload, X, Check, Smartphone, FileText, TrendingUp, Mail, Phone, Clock } from "lucide-react";
+import { CheckCircle2, User, Users, Dumbbell, Plane, UtensilsCrossed, Camera, Music, BookOpen, Gamepad2, Heart, Coffee, Mountain, Upload, X, Check, Smartphone, FileText, TrendingUp, Mail, Phone, Clock, ArrowLeft } from "lucide-react";
 
 interface OnboardingData {
   name: string;
@@ -43,10 +43,16 @@ const matchOptions = [
 ];
 
 const bodyTypes = [
-  { value: "slim", label: "Slim", icon: User },
-  { value: "athletic", label: "Athletic", icon: Dumbbell },
-  { value: "average", label: "Average", icon: Users },
-  { value: "plus", label: "Plus", icon: User }
+  { value: "slim", label: "Slim" },
+  { value: "average-fit", label: "Average / Fit" },
+  { value: "lean-toned", label: "Lean & Toned" },
+  { value: "muscular-athletic", label: "Muscular / Athletic" },
+  { value: "bulky-bodybuilder", label: "Bulky / Bodybuilder" },
+  { value: "chubby-soft", label: "Chubby / Soft" },
+  { value: "plus-size", label: "Plus-size" },
+  { value: "petite", label: "Petite" },
+  { value: "tall-slim", label: "Tall and Slim" },
+  { value: "short-stocky", label: "Short and Stocky" }
 ];
 
 const stylePreferences = [
@@ -120,6 +126,8 @@ export default function OnboardingPage() {
   const [isCompleted, setIsCompleted] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [screenshotDragActive, setScreenshotDragActive] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
   const [formData, setFormData] = useState<OnboardingData>({
     name: "",
     age: "",
@@ -151,7 +159,48 @@ export default function OnboardingPage() {
 
   const isStep3Valid = formData.photos.length >= 10;
 
-  const isStep5Valid = formData.email.trim() !== "" && formData.email.includes("@");
+  // Email validation function
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Phone validation function
+  const isValidPhone = (phone: string) => {
+    const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+    return phoneRegex.test(phone.replace(/[\s\-\(\)]/g, ''));
+  };
+
+  // Validation functions that update error states
+  const validateEmail = (email: string) => {
+    if (email.trim() === "") {
+      setEmailError("Email is required");
+      return false;
+    }
+    if (!isValidEmail(email)) {
+      setEmailError("Please enter a valid email address");
+      return false;
+    }
+    setEmailError("");
+    return true;
+  };
+
+  const validatePhone = (phone: string) => {
+    if (phone.trim() === "") {
+      setPhoneError("");
+      return true; // Phone is optional
+    }
+    if (!isValidPhone(phone)) {
+      setPhoneError("Please enter a valid phone number");
+      return false;
+    }
+    setPhoneError("");
+    return true;
+  };
+
+  const isStep5Valid = formData.email.trim() !== "" &&
+    isValidEmail(formData.email) &&
+    (formData.phone.trim() === "" || isValidPhone(formData.phone));
 
   const handleContinue = async () => {
     if (currentStep === 1 && isStep1Valid) {
@@ -163,52 +212,63 @@ export default function OnboardingPage() {
     } else if (currentStep === 4) {
       setCurrentStep(5);
     } else if (currentStep === 5 && isStep5Valid) {
-      // Submit data to API
+      // Store form data in localStorage and redirect to payment
       try {
-        // Create FormData to handle file uploads
-        const formDataToSend = new FormData();
+        // Store form data locally
+        const formDataToStore = {
+          ...formData,
+          interests: formData.interests,
+          photos: formData.photos,
+          screenshots: formData.screenshots
+        };
 
-        // Add text fields
-        formDataToSend.append('name', formData.name);
-        formDataToSend.append('age', formData.age);
-        formDataToSend.append('datingGoal', formData.datingGoal);
-        formDataToSend.append('currentMatches', formData.currentMatches);
-        formDataToSend.append('bodyType', formData.bodyType);
-        formDataToSend.append('stylePreference', formData.stylePreference);
-        formDataToSend.append('ethnicity', formData.ethnicity);
-        formDataToSend.append('interests', JSON.stringify(formData.interests));
-        formDataToSend.append('currentBio', formData.currentBio);
-        formDataToSend.append('email', formData.email);
-        formDataToSend.append('phone', formData.phone);
-        formDataToSend.append('weeklyTips', formData.weeklyTips.toString());
+        // Store in localStorage (we'll handle file conversion in payment page)
+        localStorage.setItem('onboardingFormData', JSON.stringify({
+          name: formData.name,
+          age: formData.age,
+          datingGoal: formData.datingGoal,
+          currentMatches: formData.currentMatches,
+          bodyType: formData.bodyType,
+          stylePreference: formData.stylePreference,
+          ethnicity: formData.ethnicity,
+          interests: formData.interests,
+          currentBio: formData.currentBio,
+          email: formData.email,
+          phone: formData.phone,
+          weeklyTips: formData.weeklyTips,
+          photoCount: formData.photos.length,
+          screenshotCount: formData.screenshots.length
+        }));
 
-        // Add original photos
-        formData.photos.forEach((photo, index) => {
-          formDataToSend.append('originalPhotos', photo);
+        // Store files in sessionStorage (we'll handle this in payment page)
+        // Convert files to base64 for storage
+        const photoPromises = formData.photos.map(file => {
+          return new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.readAsDataURL(file);
+          });
         });
 
-        // Add screenshot photos
-        formData.screenshots.forEach((screenshot, index) => {
-          formDataToSend.append('screenshotPhotos', screenshot);
+        const screenshotPromises = formData.screenshots.map(file => {
+          return new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.readAsDataURL(file);
+          });
         });
 
-        const response = await fetch('/api/onboarding/submit', {
-          method: 'POST',
-          body: formDataToSend
-        });
+        const photoDataUrls = await Promise.all(photoPromises);
+        const screenshotDataUrls = await Promise.all(screenshotPromises);
 
-        const result = await response.json();
+        sessionStorage.setItem('onboardingPhotos', JSON.stringify(photoDataUrls));
+        sessionStorage.setItem('onboardingScreenshots', JSON.stringify(screenshotDataUrls));
 
-        if (result.success) {
-          // Redirect to success page with submission ID
-          router.push(`/onboarding/success?submissionId=${result.submissionId}`);
-        } else {
-          console.error('Submission failed:', result.error);
-          alert('Failed to submit. Please try again.');
-        }
+        // Redirect to payment page
+        router.push('/checkout');
       } catch (error) {
-        console.error('Error submitting form:', error);
-        alert('Failed to submit. Please try again.');
+        console.error('Error preparing form data:', error);
+        alert('Failed to prepare form data. Please try again.');
       }
     }
   };
@@ -263,9 +323,7 @@ export default function OnboardingPage() {
     setFormData(prev => ({ ...prev, currentMatches: value }));
   };
 
-  const handleBodyTypeSelect = (value: string) => {
-    setFormData(prev => ({ ...prev, bodyType: value }));
-  };
+
 
   const handleStylePreferenceSelect = (value: string) => {
     setFormData(prev => ({ ...prev, stylePreference: value }));
@@ -362,9 +420,22 @@ export default function OnboardingPage() {
       <div className="w-full bg-white shadow-sm">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700">
-              Step {currentStep} of {totalSteps}
-            </span>
+            <div className="flex items-center gap-2">
+              {currentStep > 1 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setCurrentStep(currentStep - 1)}
+                  className="text-gray-600 hover:text-gray-800 flex items-center gap-1"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Back
+                </Button>
+              )}
+              <span className="text-sm font-medium text-gray-700">
+                Step {currentStep} of {totalSteps}
+              </span>
+            </div>
             {currentStep === 4 && (
               <Button
                 variant="ghost"
@@ -416,7 +487,7 @@ export default function OnboardingPage() {
 
               {/* Email Input */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                <label className="text-sm font-bold text-gray-900 flex items-center gap-2">
                   <Mail className="h-4 w-4" />
                   Email Address
                 </label>
@@ -424,17 +495,25 @@ export default function OnboardingPage() {
                   type="email"
                   placeholder="your.email@example.com"
                   value={formData.email}
-                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                  className="h-12"
+                  onChange={(e) => {
+                    setFormData(prev => ({ ...prev, email: e.target.value }));
+                    validateEmail(e.target.value);
+                  }}
+                  onBlur={(e) => validateEmail(e.target.value)}
+                  className={`h-12 ${emailError ? "border-red-500 focus:border-red-500" : ""}`}
                 />
-                <p className="text-sm text-gray-500">
-                  Pre-filled from your payment information if available
-                </p>
+                {emailError ? (
+                  <p className="text-sm text-red-600">{emailError}</p>
+                ) : (
+                  <p className="text-sm text-gray-500">
+                    Pre-filled from your payment information if available
+                  </p>
+                )}
               </div>
 
               {/* Phone Input */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                <label className="text-sm font-bold text-gray-900 flex items-center gap-2">
                   <Phone className="h-4 w-4" />
                   Phone Number
                   <span className="text-gray-400">(Optional)</span>
@@ -443,12 +522,20 @@ export default function OnboardingPage() {
                   type="tel"
                   placeholder="+1 (555) 123-4567"
                   value={formData.phone}
-                  onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                  className="h-12"
+                  onChange={(e) => {
+                    setFormData(prev => ({ ...prev, phone: e.target.value }));
+                    validatePhone(e.target.value);
+                  }}
+                  onBlur={(e) => validatePhone(e.target.value)}
+                  className={`h-12 ${phoneError ? "border-red-500 focus:border-red-500" : ""}`}
                 />
-                <p className="text-sm text-gray-500">
-                  For SMS updates about your photo generation progress
-                </p>
+                {phoneError ? (
+                  <p className="text-sm text-red-600">{phoneError}</p>
+                ) : (
+                  <p className="text-sm text-gray-500">
+                    For SMS updates about your photo generation progress
+                  </p>
+                )}
               </div>
 
               {/* Weekly Tips Checkbox */}
@@ -492,7 +579,11 @@ export default function OnboardingPage() {
                   disabled={!isStep5Valid}
                   className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-200 disabled:text-gray-400 text-lg font-medium transition-all duration-200"
                 >
-                  {isStep5Valid ? "Complete Setup" : "Please enter a valid email address"}
+                  {isStep5Valid ? "Complete Setup" :
+                    emailError ? "Please fix email errors" :
+                      phoneError ? "Please fix phone number errors" :
+                        "Please enter a valid email address"
+                  }
                 </Button>
               </div>
 
@@ -534,8 +625,8 @@ export default function OnboardingPage() {
 
                 <div
                   className={`border-2 border-dashed rounded-lg p-6 text-center transition-all duration-200 ${screenshotDragActive
-                      ? "border-emerald-400 bg-emerald-50"
-                      : "border-gray-300 hover:border-emerald-400 hover:bg-emerald-50"
+                    ? "border-emerald-400 bg-emerald-50"
+                    : "border-gray-300 hover:border-emerald-400 hover:bg-emerald-50"
                     }`}
                   onDragEnter={handleScreenshotDrag}
                   onDragLeave={handleScreenshotDrag}
@@ -728,8 +819,8 @@ export default function OnboardingPage() {
                 {/* Upload Area */}
                 <div
                   className={`border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 ${dragActive
-                      ? "border-emerald-400 bg-emerald-50"
-                      : "border-gray-300 hover:border-emerald-400 hover:bg-emerald-50"
+                    ? "border-emerald-400 bg-emerald-50"
+                    : "border-gray-300 hover:border-emerald-400 hover:bg-emerald-50"
                     }`}
                   onDragEnter={handleDrag}
                   onDragLeave={handleDrag}
@@ -821,34 +912,27 @@ export default function OnboardingPage() {
 
             <CardContent className="space-y-8">
               {/* Body Type Selection */}
-              <div className="space-y-3">
-                <label className="text-sm font-medium text-gray-700">
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-gray-900">
                   Body Type
                 </label>
-                <div className="grid grid-cols-2 gap-3">
-                  {bodyTypes.map(type => {
-                    const IconComponent = type.icon;
-                    return (
-                      <Button
-                        key={type.value}
-                        variant={formData.bodyType === type.value ? "default" : "outline"}
-                        className={`h-16 flex items-center gap-3 ${formData.bodyType === type.value
-                            ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                            : "hover:bg-emerald-50 hover:border-emerald-300"
-                          }`}
-                        onClick={() => handleBodyTypeSelect(type.value)}
-                      >
-                        <IconComponent className="h-5 w-5" />
+                <Select value={formData.bodyType} onValueChange={(value) => setFormData(prev => ({ ...prev, bodyType: value }))}>
+                  <SelectTrigger className="h-12">
+                    <SelectValue placeholder="Select your body type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {bodyTypes.map(type => (
+                      <SelectItem key={type.value} value={type.value}>
                         {type.label}
-                      </Button>
-                    );
-                  })}
-                </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* Style Preferences */}
               <div className="space-y-3">
-                <label className="text-sm font-medium text-gray-700">
+                <label className="text-sm font-bold text-gray-900">
                   Style Preference
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -856,8 +940,8 @@ export default function OnboardingPage() {
                     <Card
                       key={style.value}
                       className={`cursor-pointer transition-all duration-200 ${formData.stylePreference === style.value
-                          ? "border-emerald-500 bg-emerald-50 ring-2 ring-emerald-200"
-                          : "hover:border-emerald-300 hover:bg-emerald-50"
+                        ? "border-emerald-500 bg-emerald-50 ring-2 ring-emerald-200"
+                        : "hover:border-emerald-300 hover:bg-emerald-50"
                         }`}
                       onClick={() => handleStylePreferenceSelect(style.value)}
                     >
@@ -876,7 +960,7 @@ export default function OnboardingPage() {
 
               {/* Ethnicity (Optional) */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
+                <label className="text-sm font-bold text-gray-900">
                   Ethnicity <span className="text-gray-400">(Optional)</span>
                 </label>
                 <Select value={formData.ethnicity} onValueChange={(value) => setFormData(prev => ({ ...prev, ethnicity: value }))}>
@@ -896,7 +980,7 @@ export default function OnboardingPage() {
               {/* Interests Selection */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium text-gray-700">
+                  <label className="text-sm font-bold text-gray-900">
                     Select Your Interests
                   </label>
                   <span className="text-sm text-gray-500">
@@ -914,10 +998,10 @@ export default function OnboardingPage() {
                         key={interest.value}
                         variant={isSelected ? "default" : "outline"}
                         className={`h-20 flex flex-col items-center gap-2 p-3 ${isSelected
-                            ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                            : isDisabled
-                              ? "opacity-50 cursor-not-allowed"
-                              : "hover:bg-emerald-50 hover:border-emerald-300"
+                          ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                          : isDisabled
+                            ? "opacity-50 cursor-not-allowed"
+                            : "hover:bg-emerald-50 hover:border-emerald-300"
                           }`}
                         onClick={() => !isDisabled && handleInterestToggle(interest.value)}
                         disabled={isDisabled}
@@ -963,7 +1047,7 @@ export default function OnboardingPage() {
             <CardContent className="space-y-8">
               {/* Name Field */}
               <div className="space-y-2">
-                <label htmlFor="name" className="text-sm font-medium text-gray-700">
+                <label htmlFor="name" className="text-sm font-bold text-gray-900">
                   Full Name
                 </label>
                 <Input
@@ -975,28 +1059,58 @@ export default function OnboardingPage() {
                 />
               </div>
 
-              {/* Age Dropdown */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
-                  Age
+              {/* Age Selection */}
+              <div className="space-y-3">
+                <label className="text-sm font-bold text-gray-900">
+                  Select your age
                 </label>
-                <Select value={formData.age} onValueChange={(value) => setFormData(prev => ({ ...prev, age: value }))}>
-                  <SelectTrigger className="h-12">
-                    <SelectValue placeholder="Select your age" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Array.from({ length: 48 }, (_, i) => i + 18).map(age => (
-                      <SelectItem key={age} value={age.toString()}>
-                        {age} years old
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="grid grid-cols-1 gap-3">
+                  <Button
+                    variant={formData.age === "20-29" ? "default" : "outline"}
+                    className={`h-12 ${formData.age === "20-29"
+                      ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                      : "hover:bg-emerald-50 hover:border-emerald-300"
+                      }`}
+                    onClick={() => setFormData(prev => ({ ...prev, age: "20-29" }))}
+                  >
+                    Young Adult (20-29)
+                  </Button>
+                  <Button
+                    variant={formData.age === "30-45" ? "default" : "outline"}
+                    className={`h-12 ${formData.age === "30-45"
+                      ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                      : "hover:bg-emerald-50 hover:border-emerald-300"
+                      }`}
+                    onClick={() => setFormData(prev => ({ ...prev, age: "30-45" }))}
+                  >
+                    Adult (30-45)
+                  </Button>
+                  <Button
+                    variant={formData.age === "46-60" ? "default" : "outline"}
+                    className={`h-12 ${formData.age === "46-60"
+                      ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                      : "hover:bg-emerald-50 hover:border-emerald-300"
+                      }`}
+                    onClick={() => setFormData(prev => ({ ...prev, age: "46-60" }))}
+                  >
+                    Middle-aged (46-60)
+                  </Button>
+                  <Button
+                    variant={formData.age === "60+" ? "default" : "outline"}
+                    className={`h-12 ${formData.age === "60+"
+                      ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                      : "hover:bg-emerald-50 hover:border-emerald-300"
+                      }`}
+                    onClick={() => setFormData(prev => ({ ...prev, age: "60+" }))}
+                  >
+                    Senior (60+)
+                  </Button>
+                </div>
               </div>
 
               {/* Dating Goals */}
               <div className="space-y-3">
-                <label className="text-sm font-medium text-gray-700">
+                <label className="text-sm font-bold text-gray-900">
                   What are your dating goals?
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -1005,8 +1119,8 @@ export default function OnboardingPage() {
                       key={goal.value}
                       variant={formData.datingGoal === goal.value ? "default" : "outline"}
                       className={`h-12 ${formData.datingGoal === goal.value
-                          ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                          : "hover:bg-emerald-50 hover:border-emerald-300"
+                        ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                        : "hover:bg-emerald-50 hover:border-emerald-300"
                         }`}
                       onClick={() => handleDatingGoalSelect(goal.value)}
                     >
@@ -1018,7 +1132,7 @@ export default function OnboardingPage() {
 
               {/* Current Matches */}
               <div className="space-y-3">
-                <label className="text-sm font-medium text-gray-700">
+                <label className="text-sm font-bold text-gray-900">
                   How many matches do you typically get per week?
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -1027,8 +1141,8 @@ export default function OnboardingPage() {
                       key={option.value}
                       variant={formData.currentMatches === option.value ? "default" : "outline"}
                       className={`h-12 ${formData.currentMatches === option.value
-                          ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                          : "hover:bg-emerald-50 hover:border-emerald-300"
+                        ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                        : "hover:bg-emerald-50 hover:border-emerald-300"
                         }`}
                       onClick={() => handleMatchOptionSelect(option.value)}
                     >
