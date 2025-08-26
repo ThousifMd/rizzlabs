@@ -1,19 +1,18 @@
-# RizzLab - Full Stack Application
+# MatchboostAI - Full Stack Application
 
-A complete dating profile optimization platform with separate frontend and backend applications.
+A complete AI-powered dating profile optimization platform with separate frontend and backend applications.
 
 ## 📁 Project Structure
 
 ```
-rizzlab-hero-section/
+matchboost-ai/
 ├── frontend/          # Next.js 15 Frontend Application
 │   ├── src/          # React components and pages
 │   ├── public/       # Static assets
 │   ├── package.json  # Frontend dependencies
 │   └── ...
-├── backend/          # Node.js/Express Backend API
+├── rizzlab-backend/  # Node.js/Express Backend API
 │   ├── src/          # Server code and routes
-│   ├── prisma/       # Database schema and migrations
 │   ├── package.json  # Backend dependencies
 │   └── ...
 └── README.md         # This file
@@ -34,7 +33,7 @@ The frontend will be available at `http://localhost:3000`
 ### Backend (Node.js/Express)
 
 ```bash
-cd backend
+cd rizzlab-backend
 npm install
 npm run dev
 ```
@@ -48,7 +47,7 @@ The backend API will be available at `http://localhost:5001`
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS v4
 - **UI Components**: shadcn/ui
-- **Payments**: Stripe
+- **Payments**: Dodo Payment System
 - **Image Storage**: Cloudinary
 
 ### Backend
@@ -63,7 +62,7 @@ The backend API will be available at `http://localhost:5001`
 ### Frontend Features
 - **Modern Design**: Beautiful, responsive UI
 - **Onboarding Flow**: Complete user onboarding with photo uploads
-- **Payment Integration**: Stripe checkout for premium packages
+- **Payment Integration**: Dodo payment system for premium packages
 - **Image Upload**: Cloudinary integration for photo storage
 - **Responsive Design**: Mobile-first approach
 
@@ -81,7 +80,7 @@ Create `frontend/.env.local`:
 ```env
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
 NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=your_upload_preset
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+NEXT_PUBLIC_DODO_PAYMENT_URL=your_dodo_payment_url
 NEXT_PUBLIC_BACKEND_URL=http://localhost:5001
 ```
 
@@ -123,7 +122,7 @@ npm run lint     # Run ESLint
 
 ### Backend
 ```bash
-cd backend
+cd rizzlab-backend
 npm run dev      # Start development server with nodemon
 npm start        # Start production server
 node setup-db.js # Initialize database
@@ -180,8 +179,8 @@ Submit onboarding data with photos.
 
 ## 📄 License
 
-This project is part of the RizzLab application suite.
+This project is part of the MatchboostAI application suite.
 
 ## 🆘 Support
 
-For support, email support@rizzlab.com or create an issue in this repository.
+For support, email support@matchboostai.com or create an issue in this repository.
