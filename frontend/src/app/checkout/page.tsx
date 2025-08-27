@@ -20,6 +20,11 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePackage } from "@/contexts/PackageContext";
+import CardPaymentForm from "@/components/CardPaymentForm";
+import PayPalButton from "@/components/PayPalButton";
+import SimplePayPalButton from "@/components/SimplePayPalButton";
+import RealPayPalCheckout from "@/components/RealPayPalCheckout";
+import RealPayPalButton from "@/components/RealPayPalButton";
 
 // Dodo Payment Configuration
 const DODO_PAYMENT_URL = process.env.NEXT_PUBLIC_DODO_PAYMENT_URL || "https://api.dodo.com/payments";
@@ -206,134 +211,24 @@ function PaymentForm({ selectedPackage, onPaymentSuccess }: PaymentFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-4">
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
-            Email Address
-          </label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="your@email.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-
-        <div>
-          <label htmlFor="cardNumber" className="block text-sm font-medium text-foreground mb-2">
-            Card Number
-          </label>
-          <Input
-            id="cardNumber"
-            type="text"
-            placeholder="1234 5678 9012 3456"
-            value={cardNumber}
-            onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
-            maxLength={19}
-            required
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="expiryDate" className="block text-sm font-medium text-foreground mb-2">
-              Expiry Date
-            </label>
-            <Input
-              id="expiryDate"
-              type="text"
-              placeholder="MM/YY"
-              value={expiryDate}
-              onChange={(e) => setExpiryDate(formatExpiryDate(e.target.value))}
-              maxLength={5}
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="cvv" className="block text-sm font-medium text-foreground mb-2">
-              CVV
-            </label>
-            <Input
-              id="cvv"
-              type="text"
-              placeholder="123"
-              value={cvv}
-              onChange={(e) => setCvv(e.target.value.replace(/\D/g, ''))}
-              maxLength={4}
-              required
-            />
-          </div>
-        </div>
-
-        <div>
-          <label htmlFor="zipCode" className="block text-sm font-medium text-foreground mb-2">
-            ZIP Code
-          </label>
-          <Input
-            id="zipCode"
-            type="text"
-            placeholder="12345"
-            value={zipCode}
-            onChange={(e) => setZipCode(e.target.value.replace(/\D/g, ''))}
-            maxLength={10}
-            required
-          />
-        </div>
-      </div>
+    <div className="space-y-6">
+      <RealPayPalCheckout
+        selectedPackage={selectedPackage}
+        onPaymentSuccess={() => {
+          console.log("Payment successful");
+          onPaymentSuccess();
+        }}
+        onPaymentError={(error: string) => {
+          setError(error);
+        }}
+      />
 
       {error && (
-        <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-sm text-red-600">{error}</p>
+        <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+          <p className="text-red-600 text-sm">{error}</p>
         </div>
       )}
-
-      <Button
-        type="submit"
-        disabled={isLoading}
-        className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 text-lg"
-      >
-        {isLoading ? (
-          <>
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-            Processing...
-          </>
-        ) : (
-          <>
-            <Lock className="w-4 h-4 mr-2" />
-            Pay ${selectedPackage.price} Now
-          </>
-        )}
-      </Button>
-
-      <div className="space-y-3">
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full py-3 text-lg border-2 border-blue-600 text-blue-600 hover:bg-blue-50"
-          disabled={isLoading}
-        >
-          <div className="flex items-center justify-center">
-            <span className="font-bold text-blue-800 mr-2">Pay</span>
-            <span className="font-bold text-blue-600">Pal</span>
-          </div>
-        </Button>
-
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full py-3 text-lg border-2 border-black text-black hover:bg-gray-50"
-          disabled={isLoading}
-        >
-          <div className="flex items-center justify-center">
-            <span className="mr-2">🍎</span>
-            Pay with Apple Pay
-          </div>
-        </Button>
-      </div>
-    </form>
+    </div>
   );
 }
 

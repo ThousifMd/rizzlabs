@@ -108,14 +108,14 @@ function Brand() {
   return (
     <Link
       href="/"
-      aria-label="RizzLab home"
+      aria-label="Matchlens home"
       className="group inline-flex items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       <span className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-foreground/80 ring-1 ring-inset ring-border/60 transition-colors group-hover:text-foreground">
         <Sparkles className="h-4 w-4" aria-hidden="true" />
       </span>
       <span className="font-heading text-base tracking-tight text-foreground/90 transition-colors group-hover:text-foreground sm:text-lg">
-        RizzLab
+        Matchlens
       </span>
     </Link>
   )

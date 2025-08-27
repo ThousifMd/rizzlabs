@@ -43,10 +43,10 @@ export default function Footer({
               aria-hidden="true"
               className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-accent text-accent-foreground font-heading text-xs"
             >
-              R
+              M
             </span>
             <p className="m-0 text-sm text-foreground">
-              <span className="font-medium">RizzLab</span>
+              <span className="font-medium">Matchlens</span>
               <span className="mx-1.5 text-muted-foreground">—</span>
               <span className="text-muted-foreground">AI + human dating photo concierge</span>
             </p>
@@ -85,7 +85,7 @@ export default function Footer({
         {/* Row 2 */}
         <div className="flex flex-col items-center gap-3 pb-6 text-center sm:flex-row sm:justify-between sm:text-left">
           <p className="m-0 text-xs sm:text-sm">
-            <span className="text-muted-foreground">© {currentYear} RizzLab.</span>{" "}
+            <span className="text-muted-foreground">© {currentYear} Matchlens.</span>{" "}
             <span className="text-muted-foreground">{trustCopy}</span>
           </p>
 

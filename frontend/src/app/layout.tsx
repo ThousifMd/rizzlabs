@@ -4,9 +4,10 @@ import VisualEditsMessenger from "../visual-edits/VisualEditsMessenger";
 import ErrorReporter from "@/components/ErrorReporter";
 import Script from "next/script";
 import { PackageProvider } from "@/contexts/PackageContext";
+import PayPalProvider from "@/components/PayPalProvider";
 
 export const metadata: Metadata = {
-  title: "RizzLab - Hero Section",
+  title: "Matchlens - Hero Section",
   description: "Modern hero section with stunning animations and components",
   icons: {
     icon: [
@@ -37,9 +38,11 @@ export default function RootLayout({
           data-debug="true"
           data-custom-data='{"appName": "YourApp", "version": "1.0.0", "greeting": "hi"}'
         />
-        <PackageProvider>
-          {children}
-        </PackageProvider>
+        <PayPalProvider>
+          <PackageProvider>
+            {children}
+          </PackageProvider>
+        </PayPalProvider>
         <VisualEditsMessenger />
       </body>
     </html>

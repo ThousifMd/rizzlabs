@@ -1,14 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-    async rewrites() {
-        return [
-            {
-                source: '/api/onboarding/:path*',
-                destination: 'http://localhost:5001/api/onboarding/:path*',
-            },
-        ];
-    },
+    // Removed localhost API rewrites for production deployment
+    // These will be configured in Vercel environment variables
 };
 
 export default nextConfig;

@@ -215,7 +215,7 @@ export default function HeroSection({ expiry, ctaHref, className }: HeroSectionP
         "py-10 md:py-16",
         className || "",
       ].join(" ")}
-      aria-label="RizzLab hero section"
+      aria-label="Matchlens hero section"
     >
       <div className="relative rounded-2xl bg-card shadow-sm ring-1 ring-border">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 p-6 sm:p-8 md:p-12">
@@ -341,7 +341,7 @@ export default function HeroSection({ expiry, ctaHref, className }: HeroSectionP
                   "aspect-[4/5] md:aspect-[4/3]",
                 ].join(" ")}
                 style={{ ["--pos" as any]: "50%" }}
-                aria-label="Before and after image comparison of a RizzLab photo edit"
+                aria-label="Before and after image comparison of a Matchlens photo edit"
               >
                 {/* Base (Before) */}
                 <img
@@ -417,7 +417,7 @@ export default function HeroSection({ expiry, ctaHref, className }: HeroSectionP
                   }}
                   onTouchStart={(e) => {
                     setShouldLoadHiRes(true);
-                    if (e.touches && e.touches[0]) startTouch(e.touches[0]);
+                    if (e.touches && e.touches[0]) startTouch(e.touches[0] as Touch);
                   }}
                 >
                   <GripVertical className="size-5" aria-hidden="true" />
@@ -440,12 +440,12 @@ export default function HeroSection({ expiry, ctaHref, className }: HeroSectionP
                   }}
                   onTouchStart={(e) => {
                     setShouldLoadHiRes(true);
-                    if (e.touches && e.touches[0]) startTouch(e.touches[0]);
+                    if (e.touches && e.touches[0]) startTouch(e.touches[0] as Touch);
                   }}
                 />
               </div>
               <p className="mt-3 text-center text-xs italic text-muted-foreground">
-                Real RizzLab edit — sample result
+                Real Matchlens edit — sample result
               </p>
             </div>
           </div>
