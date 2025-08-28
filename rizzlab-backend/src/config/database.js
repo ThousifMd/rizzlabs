@@ -2,17 +2,18 @@ const { Pool } = require("pg");
 require("dotenv").config();
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  host: "db-postgresql-nyc3-89394-do-user-22973333-0.j.db.ondigitalocean.com",
+  port: 25060,
+  database: "defaultdb",
+  user: "doadmin",
+  password: "AVNS_8KyYVsHaIcFCsoAoLI5",
   ssl: {
-    rejectUnauthorized: false,
-    ca: undefined,
-    key: undefined,
-    cert: undefined
+    rejectUnauthorized: false
   }
 });
 
 pool.on("connect", () => {
-  console.log("Connected to PostgreSQL database");
+  console.log("Connected to Digital Ocean PostgreSQL database");
 });
 
 pool.on("error", (err) => {

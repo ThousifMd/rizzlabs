@@ -4,7 +4,7 @@ import VisualEditsMessenger from "../visual-edits/VisualEditsMessenger";
 import ErrorReporter from "@/components/ErrorReporter";
 import Script from "next/script";
 import { PackageProvider } from "@/contexts/PackageContext";
-import PayPalProvider from "@/components/PayPalProvider";
+
 
 export const metadata: Metadata = {
   title: "Matchlens - Hero Section",
@@ -38,11 +38,9 @@ export default function RootLayout({
           data-debug="true"
           data-custom-data='{"appName": "YourApp", "version": "1.0.0", "greeting": "hi"}'
         />
-        <PayPalProvider>
-          <PackageProvider>
-            {children}
-          </PackageProvider>
-        </PayPalProvider>
+        <PackageProvider>
+          {children}
+        </PackageProvider>
         <VisualEditsMessenger />
       </body>
     </html>

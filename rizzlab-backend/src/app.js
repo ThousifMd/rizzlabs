@@ -4,6 +4,7 @@ const multer = require("multer");
 require("dotenv").config();
 
 const onboardingRoutes = require("./routes/onboarding");
+const paymentRoutes = require("./routes/payments");
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -40,6 +41,7 @@ app.get("/health", (req, res) => {
 
 // API Routes
 app.use("/api/onboarding", onboardingRoutes);
+app.use("/api/payments", paymentRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -20,11 +20,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePackage } from "@/contexts/PackageContext";
-import CardPaymentForm from "@/components/CardPaymentForm";
-import PayPalButton from "@/components/PayPalButton";
-import SimplePayPalButton from "@/components/SimplePayPalButton";
-import RealPayPalCheckout from "@/components/RealPayPalCheckout";
-import RealPayPalButton from "@/components/RealPayPalButton";
+import SimplePayPalCheckout from "@/components/SimplePayPalCheckout";
 
 // Dodo Payment Configuration
 const DODO_PAYMENT_URL = process.env.NEXT_PUBLIC_DODO_PAYMENT_URL || "https://api.dodo.com/payments";
@@ -212,15 +208,8 @@ function PaymentForm({ selectedPackage, onPaymentSuccess }: PaymentFormProps) {
 
   return (
     <div className="space-y-6">
-      <RealPayPalCheckout
+      <SimplePayPalCheckout
         selectedPackage={selectedPackage}
-        onPaymentSuccess={() => {
-          console.log("Payment successful");
-          onPaymentSuccess();
-        }}
-        onPaymentError={(error: string) => {
-          setError(error);
-        }}
       />
 
       {error && (
