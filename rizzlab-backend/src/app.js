@@ -9,11 +9,31 @@ const paymentRoutes = require("./routes/payments");
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-// Middleware
-app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:3000",
-  credentials: true
-}));
+// Enhanced CORS configuration
+const corsOptions = {
+  origin: [
+    process.env.FRONTEND_URL || "http://localhost:3000",
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:3001"
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type', 
+    'Authorization', 
+    'X-Requested-With',
+    'Accept',
+    'Origin'
+  ],
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
+
+// Handle preflight requests explicitly
+app.options('*', cors(corsOptions));
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
@@ -35,7 +55,11 @@ app.get("/health", (req, res) => {
   res.json({
     status: "OK",
     message: "RizzLab Backend is running",
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    cors: {
+      origin: req.headers.origin,
+      allowed: corsOptions.origin
+    }
   });
 });
 
@@ -65,6 +89,7 @@ app.listen(PORT, () => {
   console.log(`🚀 RizzLab Backend server running on port ${PORT}`);
   console.log(`📊 Health check: http://localhost:${PORT}/health`);
   console.log(`📝 API docs: http://localhost:${PORT}/api/onboarding`);
+  console.log(`🌐 CORS origins: ${corsOptions.origin.join(', ')}`);
 });
 
 module.exports = app;

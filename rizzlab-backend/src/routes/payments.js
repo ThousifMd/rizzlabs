@@ -2,6 +2,17 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/database');
 
+// CORS test endpoint
+router.get('/test-cors', (req, res) => {
+  res.json({
+    success: true,
+    message: 'CORS is working!',
+    timestamp: new Date().toISOString(),
+    origin: req.headers.origin,
+    method: req.method
+  });
+});
+
 // Store payment and onboarding data
 router.post('/store', async (req, res) => {
   try {

@@ -1,11 +1,10 @@
-// PayPal API configuration
-// Use live PayPal API for live credentials
-const PAYPAL_API_BASE = 'https://api-m.paypal.com';
+// PayPal Configuration for Backend
+// Force sandbox environment for consistency with frontend
 
-export { PAYPAL_API_BASE };
+const PAYPAL_API_BASE = 'https://api-m.sandbox.paypal.com';
 
 // Get PayPal access token
-export async function getAccessToken(): Promise<string> {
+async function getAccessToken() {
     const clientId = process.env.PAYPAL_CLIENT_ID;
     const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
 
@@ -32,3 +31,8 @@ export async function getAccessToken(): Promise<string> {
     const data = await response.json();
     return data.access_token;
 }
+
+module.exports = {
+    PAYPAL_API_BASE,
+    getAccessToken
+};

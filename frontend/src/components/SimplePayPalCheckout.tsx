@@ -29,10 +29,10 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
             const paymentData = {
                 orderId: paymentDetails.id,
                 paymentId: paymentDetails.id,
-                amount: 1.00, // Hardcoded to $1 for testing
+                amount: selectedPackage?.price || 1.00,
                 currency: 'USD',
                 packageId: selectedPackage?.id,
-                packageName: selectedPackage?.name || 'Test Payment',
+                packageName: selectedPackage?.name || 'Payment',
                 customerEmail: formData.email,
                 customerName: `${formData.firstName} ${formData.lastName}`,
                 status: 'completed',
@@ -42,7 +42,7 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
                     paymentDetails: {
                         orderId: paymentDetails.id,
                         paymentId: paymentDetails.id,
-                        amount: 1.00, // Hardcoded to $1 for testing
+                        amount: selectedPackage?.price || 1.00,
                         currency: 'USD'
                     }
                 }
@@ -50,7 +50,7 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
 
             console.log("Sending payment data to backend:", paymentData);
 
-            const response = await fetch('http://localhost:5001/api/payments/store', {
+            const response = await fetch('/api/payments/store', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -70,6 +70,8 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
             alert("Payment successful but failed to save data. Please contact support.");
         }
     };
+
+
 
     const handleStartPayment = () => {
         setShowForm(true);
@@ -168,104 +170,109 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
                 />
             </form>
 
-            <PayPalScriptProvider
-                options={{
-                    clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
-                    currency: "USD",
-                    intent: "capture"
-                }}
-            >
-                <PayPalButtons
-                    createOrder={async (data, actions) => {
-                        try {
-                            console.log('🔄 Creating PayPal order via server...');
-                            console.log('📦 Package data:', { selectedPackage, amount: "1.00" });
-
-                            const orderData = {
-                                amount: "1.00", // Hardcoded to $1 for testing
-                                description: selectedPackage?.name || "Test Payment",
-                                packageId: selectedPackage?.id,
-                                packageName: selectedPackage?.name
-                            };
-
-                            console.log('📡 Sending request to server:', orderData);
-
-                            const response = await fetch('/api/paypal/create-order', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify(orderData)
-                            });
-
-                            console.log('📊 Response status:', response.status);
-                            console.log('📊 Response headers:', Object.fromEntries(response.headers.entries()));
-
-                            const responseText = await response.text();
-                            console.log('📄 Raw response body:', responseText);
-
-                            if (!response.ok) {
-                                throw new Error(`HTTP error! status: ${response.status}, body: ${responseText}`);
-                            }
-
-                            let result;
+            {/* PayPal Integration */}
+            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <h3 className="text-lg font-semibold text-blue-800 mb-2">💳 PayPal Payment</h3>
+                <p className="text-blue-700 mb-3">Complete payment with PayPal:</p>
+                <PayPalScriptProvider
+                    options={{
+                        clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
+                        currency: "USD",
+                        intent: "capture"
+                    }}
+                >
+                    <PayPalButtons
+                        createOrder={async (data, actions) => {
                             try {
-                                result = JSON.parse(responseText);
-                            } catch (parseError) {
-                                console.error('❌ JSON parse error:', parseError);
-                                throw new Error(`Invalid JSON response: ${responseText}`);
+                                console.log('🔄 Creating PayPal order via server...');
+                                console.log('📦 Package data:', { selectedPackage, amount: "1.00" });
+
+                                const orderData = {
+                                    amount: "1.00", // Hardcoded to $1 for testing
+                                    description: selectedPackage?.name || "Test Payment",
+                                    packageId: selectedPackage?.id,
+                                    packageName: selectedPackage?.name
+                                };
+
+                                console.log('📡 Sending request to server:', orderData);
+
+                                const response = await fetch('/api/paypal/create-order', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify(orderData)
+                                });
+
+                                console.log('📊 Response status:', response.status);
+                                console.log('📊 Response headers:', Object.fromEntries(response.headers.entries()));
+
+                                const responseText = await response.text();
+                                console.log('📄 Raw response body:', responseText);
+
+                                if (!response.ok) {
+                                    throw new Error(`HTTP error! status: ${response.status}, body: ${responseText}`);
+                                }
+
+                                let result;
+                                try {
+                                    result = JSON.parse(responseText);
+                                } catch (parseError) {
+                                    console.error('❌ JSON parse error:', parseError);
+                                    throw new Error(`Invalid JSON response: ${responseText}`);
+                                }
+
+                                console.log('📋 Parsed response:', result);
+
+                                if (!result.success) {
+                                    throw new Error(result.message || 'Failed to create order');
+                                }
+
+                                if (!result.orderId) {
+                                    console.error('❌ No orderId in response:', result);
+                                    throw new Error('No order ID in response');
+                                }
+
+                                console.log('✅ Server-side order created:', result.orderId);
+                                return result.orderId;
+                            } catch (error) {
+                                console.error('❌ Error creating order:', error);
+                                throw error;
                             }
+                        }}
+                        onApprove={async (data, actions) => {
+                            console.log("✅ Order approved:", data.orderID);
+                            console.log("🔄 Starting payment capture...");
 
-                            console.log('📋 Parsed response:', result);
+                            try {
+                                // Use PayPal's recommended approach
+                                if (actions.order) {
+                                    const details = await actions.order.capture();
+                                    console.log("✅ Payment captured successfully:", details);
 
-                            if (!result.success) {
-                                throw new Error(result.message || 'Failed to create order');
+                                    // Store payment details AND onboarding data in database
+                                    await storePaymentAndOnboarding(details);
+
+                                    alert("Payment successful! Order ID: " + details.id);
+                                } else {
+                                    throw new Error("PayPal order actions not available");
+                                }
+                            } catch (error) {
+                                console.error("❌ Payment capture failed:", error);
+                                alert("Payment capture failed: " + (error instanceof Error ? error.message : "Unknown error"));
                             }
-
-                            if (!result.orderId) {
-                                console.error('❌ No orderId in response:', result);
-                                throw new Error('No order ID in response');
-                            }
-
-                            console.log('✅ Server-side order created:', result.orderId);
-                            return result.orderId;
-                        } catch (error) {
-                            console.error('❌ Error creating order:', error);
-                            throw error;
-                        }
-                    }}
-                    onApprove={async (data, actions) => {
-                        console.log("✅ Order approved:", data.orderID);
-                        console.log("🔄 Starting payment capture...");
-
-                        try {
-                            // Use PayPal's recommended approach
-                            if (actions.order) {
-                                const details = await actions.order.capture();
-                                console.log("✅ Payment captured successfully:", details);
-
-                                // Store payment details AND onboarding data in database
-                                await storePaymentAndOnboarding(details);
-
-                                alert("Payment successful! Order ID: " + details.id);
-                            } else {
-                                throw new Error("PayPal order actions not available");
-                            }
-                        } catch (error) {
-                            console.error("❌ Payment capture failed:", error);
-                            alert("Payment capture failed: " + (error instanceof Error ? error.message : "Unknown error"));
-                        }
-                    }}
-                    onError={(err) => {
-                        console.error("PayPal error:", err);
-                        alert("PayPal error: " + JSON.stringify(err));
-                    }}
-                    onCancel={(data) => {
-                        console.log("Payment cancelled:", data);
-                        alert("Payment was cancelled");
-                    }}
-                />
-            </PayPalScriptProvider>
+                        }}
+                        onError={(err) => {
+                            console.error("PayPal error:", err);
+                            alert("PayPal error: " + JSON.stringify(err));
+                        }}
+                        onCancel={(data) => {
+                            console.log("Payment cancelled:", data);
+                            alert("Payment was cancelled");
+                        }}
+                    />
+                </PayPalScriptProvider>
+            </div>
         </div>
     );
 }

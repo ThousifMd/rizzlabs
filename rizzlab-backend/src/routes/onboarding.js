@@ -175,29 +175,6 @@ router.post("/submit", async (req, res) => {
   }
 });
 
-// Get submission by ID (must come after specific routes)
-router.get("/:id", async (req, res) => {
-  try {
-    const submission = await OnboardingSubmission.findById(req.params.id);
 
-    if (!submission) {
-      return res.status(404).json({
-        success: false,
-        error: "Submission not found"
-      });
-    }
-
-    res.json({
-      success: true,
-      data: submission
-    });
-  } catch (error) {
-    console.error("Error fetching submission:", error);
-    res.status(500).json({
-      success: false,
-      error: "Failed to fetch submission"
-    });
-  }
-});
 
 module.exports = router;
