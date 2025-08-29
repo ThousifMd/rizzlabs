@@ -345,23 +345,27 @@ function CheckoutContent() {
         weeklyTips: formData.weeklyTips.toString()
       };
 
-      // Get stored photos from sessionStorage
-      const storedPhotos = sessionStorage.getItem('onboardingPhotos');
-      const storedScreenshots = sessionStorage.getItem('onboardingScreenshots');
+      // Get stored photos from global variable (to avoid storage quota issues)
+      const photos = (window as any).onboardingPhotos || [];
+      const screenshots = (window as any).onboardingScreenshots || [];
 
-      if (storedPhotos) {
-        const photoDataUrls = JSON.parse(storedPhotos);
-        dataToSend.originalPhotos = JSON.stringify(photoDataUrls);
-      } else {
-        dataToSend.originalPhotos = JSON.stringify([]);
-      }
+      // Convert files to base64 for sending to backend
+      const convertFilesToBase64 = async (files: File[]) => {
+        const promises = files.map(file => {
+          return new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.readAsDataURL(file);
+          });
+        });
+        return Promise.all(promises);
+      };
 
-      if (storedScreenshots) {
-        const screenshotDataUrls = JSON.parse(storedScreenshots);
-        dataToSend.screenshotPhotos = JSON.stringify(screenshotDataUrls);
-      } else {
-        dataToSend.screenshotPhotos = JSON.stringify([]);
-      }
+      const photoDataUrls = await convertFilesToBase64(photos);
+      const screenshotDataUrls = await convertFilesToBase64(screenshots);
+
+      dataToSend.originalPhotos = JSON.stringify(photoDataUrls);
+      dataToSend.screenshotPhotos = JSON.stringify(screenshotDataUrls);
 
       // Submit to backend
       const response = await fetch('http://localhost:5001/api/onboarding/submit', {
@@ -377,8 +381,10 @@ function CheckoutContent() {
       if (result.success) {
         // Clear stored data
         localStorage.removeItem('onboardingFormData');
-        sessionStorage.removeItem('onboardingPhotos');
-        sessionStorage.removeItem('onboardingScreenshots');
+        if (typeof window !== 'undefined') {
+          delete (window as any).onboardingPhotos;
+          delete (window as any).onboardingScreenshots;
+        }
 
         // Redirect to success page
         router.push(`/onboarding/success?submissionId=${result.submissionId}`);

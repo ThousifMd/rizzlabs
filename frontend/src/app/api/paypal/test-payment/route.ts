@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
                 {
                     reference_id: "TEST_ORDER_" + Date.now(),
                     description: "Test Payment",
-                    amount: { currency_code: "USD", value: "10.00" },
+                    amount: { currency_code: "USD", value: "1.00" }, // Hardcoded to $1 for testing
                 },
             ],
             application_context: {

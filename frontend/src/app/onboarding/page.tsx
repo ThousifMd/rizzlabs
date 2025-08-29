@@ -214,15 +214,7 @@ export default function OnboardingPage() {
     } else if (currentStep === 5 && isStep5Valid) {
       // Store form data in localStorage and redirect to payment
       try {
-        // Store form data locally
-        const formDataToStore = {
-          ...formData,
-          interests: formData.interests,
-          photos: formData.photos,
-          screenshots: formData.screenshots
-        };
-
-        // Store in localStorage (we'll handle file conversion in payment page)
+        // Store form data locally (without photos to avoid storage quota issues)
         localStorage.setItem('onboardingFormData', JSON.stringify({
           name: formData.name,
           age: formData.age,
@@ -240,29 +232,12 @@ export default function OnboardingPage() {
           screenshotCount: formData.screenshots.length
         }));
 
-        // Store files in sessionStorage (we'll handle this in payment page)
-        // Convert files to base64 for storage
-        const photoPromises = formData.photos.map(file => {
-          return new Promise<string>((resolve) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result as string);
-            reader.readAsDataURL(file);
-          });
-        });
-
-        const screenshotPromises = formData.screenshots.map(file => {
-          return new Promise<string>((resolve) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result as string);
-            reader.readAsDataURL(file);
-          });
-        });
-
-        const photoDataUrls = await Promise.all(photoPromises);
-        const screenshotDataUrls = await Promise.all(screenshotPromises);
-
-        sessionStorage.setItem('onboardingPhotos', JSON.stringify(photoDataUrls));
-        sessionStorage.setItem('onboardingScreenshots', JSON.stringify(screenshotDataUrls));
+        // Store photos in memory using a global variable instead of sessionStorage
+        // This avoids storage quota issues
+        if (typeof window !== 'undefined') {
+          (window as any).onboardingPhotos = formData.photos;
+          (window as any).onboardingScreenshots = formData.screenshots;
+        }
 
         // Redirect to payment page
         router.push('/checkout');

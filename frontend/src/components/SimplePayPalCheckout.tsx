@@ -29,7 +29,7 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
             const paymentData = {
                 orderId: paymentDetails.id,
                 paymentId: paymentDetails.id,
-                amount: selectedPackage?.price || 1.00,
+                amount: 1.00, // Hardcoded to $1 for testing
                 currency: 'USD',
                 packageId: selectedPackage?.id,
                 packageName: selectedPackage?.name || 'Test Payment',
@@ -42,7 +42,7 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
                     paymentDetails: {
                         orderId: paymentDetails.id,
                         paymentId: paymentDetails.id,
-                        amount: selectedPackage?.price || 1.00,
+                        amount: 1.00, // Hardcoded to $1 for testing
                         currency: 'USD'
                     }
                 }
@@ -85,7 +85,7 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
             <div className="w-full max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
                 <h2 className="text-xl font-bold mb-4 text-center">Ready to Start?</h2>
                 <p className="text-gray-600 mb-6 text-center">
-                    {selectedPackage ? `${selectedPackage.name}: $${selectedPackage.price}` : 'Test payment: $1.00'}
+                    {selectedPackage ? `${selectedPackage.name}: $1.00 (Testing)` : 'Test payment: $1.00'}
                 </p>
                 <button
                     onClick={handleStartPayment}
@@ -101,7 +101,7 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
         <div className="w-full max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
             <h2 className="text-xl font-bold mb-4 text-center">Complete Your Order</h2>
             <p className="text-gray-600 mb-6 text-center">
-                {selectedPackage ? `${selectedPackage.name}: $${selectedPackage.price}` : 'Test payment: $1.00'}
+                {selectedPackage ? `${selectedPackage.name}: $1.00 (Testing)` : 'Test payment: $1.00'}
             </p>
 
             <form onSubmit={handleFormSubmit} className="space-y-4 mb-6">
@@ -176,35 +176,85 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
                 }}
             >
                 <PayPalButtons
-                    createOrder={(data, actions) => {
-                        return actions.order.create({
-                            intent: "CAPTURE",
-                            purchase_units: [
-                                {
-                                    description: selectedPackage?.name || "Test Payment",
-                                    amount: {
-                                        currency_code: "USD",
-                                        value: (selectedPackage?.price || 1.00).toString(),
-                                    },
-                                },
-                            ],
-                        });
-                    }}
-                    onApprove={(data, actions) => {
-                        console.log("Order approved:", data.orderID);
+                    createOrder={async (data, actions) => {
+                        try {
+                            console.log('🔄 Creating PayPal order via server...');
+                            console.log('📦 Package data:', { selectedPackage, amount: "1.00" });
 
-                        // Use PayPal's recommended approach
-                        if (actions.order) {
-                            return actions.order.capture().then(async (details) => {
-                                console.log("Payment captured:", details);
+                            const orderData = {
+                                amount: "1.00", // Hardcoded to $1 for testing
+                                description: selectedPackage?.name || "Test Payment",
+                                packageId: selectedPackage?.id,
+                                packageName: selectedPackage?.name
+                            };
+
+                            console.log('📡 Sending request to server:', orderData);
+
+                            const response = await fetch('/api/paypal/create-order', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify(orderData)
+                            });
+
+                            console.log('📊 Response status:', response.status);
+                            console.log('📊 Response headers:', Object.fromEntries(response.headers.entries()));
+
+                            const responseText = await response.text();
+                            console.log('📄 Raw response body:', responseText);
+
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}, body: ${responseText}`);
+                            }
+
+                            let result;
+                            try {
+                                result = JSON.parse(responseText);
+                            } catch (parseError) {
+                                console.error('❌ JSON parse error:', parseError);
+                                throw new Error(`Invalid JSON response: ${responseText}`);
+                            }
+
+                            console.log('📋 Parsed response:', result);
+
+                            if (!result.success) {
+                                throw new Error(result.message || 'Failed to create order');
+                            }
+
+                            if (!result.orderId) {
+                                console.error('❌ No orderId in response:', result);
+                                throw new Error('No order ID in response');
+                            }
+
+                            console.log('✅ Server-side order created:', result.orderId);
+                            return result.orderId;
+                        } catch (error) {
+                            console.error('❌ Error creating order:', error);
+                            throw error;
+                        }
+                    }}
+                    onApprove={async (data, actions) => {
+                        console.log("✅ Order approved:", data.orderID);
+                        console.log("🔄 Starting payment capture...");
+
+                        try {
+                            // Use PayPal's recommended approach
+                            if (actions.order) {
+                                const details = await actions.order.capture();
+                                console.log("✅ Payment captured successfully:", details);
 
                                 // Store payment details AND onboarding data in database
                                 await storePaymentAndOnboarding(details);
 
                                 alert("Payment successful! Order ID: " + details.id);
-                            });
+                            } else {
+                                throw new Error("PayPal order actions not available");
+                            }
+                        } catch (error) {
+                            console.error("❌ Payment capture failed:", error);
+                            alert("Payment capture failed: " + (error instanceof Error ? error.message : "Unknown error"));
                         }
-                        return Promise.resolve();
                     }}
                     onError={(err) => {
                         console.error("PayPal error:", err);

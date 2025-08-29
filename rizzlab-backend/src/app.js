@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
-require("dotenv").config();
+require("dotenv").config({ path: "../.env" });
 
 const onboardingRoutes = require("./routes/onboarding");
 const paymentRoutes = require("./routes/payments");

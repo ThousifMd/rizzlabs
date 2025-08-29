@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
                     description: "Simple Test Payment",
                     amount: {
                         currency_code: "USD",
-                        value: "1.00"
+                        value: "1.00" // Hardcoded to $1 for testing
                     },
                 },
             ],
