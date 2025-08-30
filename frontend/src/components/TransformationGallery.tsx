@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+
 import { Badge } from "@/components/ui/badge";
 
 interface TransformationData {
@@ -291,19 +291,7 @@ export const TransformationGallery: React.FC = () => {
         </p>
       </div>
 
-      {/* CTA Button */}
-      <div className="text-center">
-        <Button
-          onClick={() => {
-            localStorage.setItem('selectedPackage', 'professional');
-            window.location.href = '/onboarding';
-          }}
-          size="lg"
-          className="px-12 py-6 text-lg font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
-        >
-          See Your Potential
-        </Button>
-      </div>
+
     </section>
   );
 };
