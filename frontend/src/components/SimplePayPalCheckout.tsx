@@ -26,10 +26,13 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
 
     const storePaymentAndOnboarding = async (paymentDetails: any) => {
         try {
+            // Always use $1.00 for testing regardless of package
+            const actualAmountPaid = "1.00";
+
             const paymentData = {
                 orderId: paymentDetails.id,
                 paymentId: paymentDetails.id,
-                amount: selectedPackage?.price || 1.00,
+                amount: parseFloat(actualAmountPaid), // Use the actual amount paid
                 currency: 'USD',
                 packageId: selectedPackage?.id,
                 packageName: selectedPackage?.name || 'Payment',
@@ -42,7 +45,7 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
                     paymentDetails: {
                         orderId: paymentDetails.id,
                         paymentId: paymentDetails.id,
-                        amount: selectedPackage?.price || 1.00,
+                        amount: parseFloat(actualAmountPaid), // Use the actual amount paid
                         currency: 'USD'
                     }
                 }
