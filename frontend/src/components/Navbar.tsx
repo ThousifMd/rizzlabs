@@ -4,7 +4,7 @@ import * as React from "react"
 import Link from "next/link"
 import { Menu, Sparkles, User2, X } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Button } from "@/components/ui/button"
+
 
 type NavbarProps = {
   ctaHref: string
@@ -37,10 +37,7 @@ export default function Navbar({ ctaHref, className }: NavbarProps) {
     console.log("Sign in clicked")
   }
 
-  const handleGetPhotos = () => {
-    localStorage.setItem('selectedPackage', 'professional');
-    window.location.href = "/onboarding";
-  }
+
 
   React.useEffect(() => {
     const onScroll = () => {
@@ -72,13 +69,7 @@ export default function Navbar({ ctaHref, className }: NavbarProps) {
           </nav>
 
           <div className="hidden items-center gap-2 md:flex">
-            <Button
-              onClick={handleGetPhotos}
-              variant="secondary"
-              className="h-9 rounded-full px-4"
-            >
-              Get Photos
-            </Button>
+
 
             <button
               type="button"
@@ -132,11 +123,7 @@ function MobileMenu({
   ctaHref: string
   onSignIn: () => void
 }) {
-  const handleMobileGetPhotos = () => {
-    localStorage.setItem('selectedPackage', 'professional');
-    window.location.href = "/onboarding";
-    setOpen(false);
-  };
+
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -192,12 +179,6 @@ function MobileMenu({
         <div className="mt-2 h-px bg-border/70" />
 
         <div className="flex items-center gap-2 px-3 py-3">
-          <Button
-            onClick={handleMobileGetPhotos}
-            className="h-10 flex-1 rounded-lg"
-          >
-            Get Photos
-          </Button>
           <button
             type="button"
             onClick={() => {
