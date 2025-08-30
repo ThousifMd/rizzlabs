@@ -1,26 +1,18 @@
 "use client";
 
 import * as React from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, GripVertical } from "lucide-react";
-import { toast } from "sonner";
+
 import { usePackage } from "@/contexts/PackageContext";
 
 type Milliseconds = number;
 
 interface HeroSectionProps {
-  expiry?: number | string | Date;
   ctaHref: string;
   className?: string;
-}
-
-function toMs(expiry?: number | string | Date): Milliseconds {
-  if (!expiry) return Date.now() + 24 * 60 * 60 * 1000;
-  if (typeof expiry === "number") return expiry;
-  const d = new Date(expiry);
-  return d.getTime();
 }
 
 function clamp(n: number, min = 0, max = 100) {
@@ -31,63 +23,12 @@ function pad(n: number) {
   return n.toString().padStart(2, "0");
 }
 
-function formatHMS(ms: Milliseconds) {
-  const s = Math.max(0, Math.floor(ms / 1000));
-  const hrs = Math.floor(s / 3600);
-  const mins = Math.floor((s % 3600) / 60);
-  const secs = s % 60;
-  return `${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
-}
 
-export default function HeroSection({ expiry, ctaHref, className }: HeroSectionProps) {
-  const expiryMs = useMemo(() => toMs(expiry), [expiry]);
+
+export default function HeroSection({ ctaHref, className }: HeroSectionProps) {
   const { selectedPackage } = usePackage();
 
-  // Countdown state
-  const [now, setNow] = useState<number>(() => Date.now());
-  const [announced, setAnnounced] = useState<string>("");
-  const expired = now >= expiryMs;
-  const remaining = Math.max(0, expiryMs - now);
 
-  // Throttle ARIA announcements: minutes when >=60s; seconds when <60s
-  const lastAnnouncedRef = useRef<{ min?: number; sec?: number }>({});
-
-  useEffect(() => {
-    let raf: number | null = null;
-    const tick = () => {
-      setNow(Date.now());
-      raf = window.setTimeout(() => requestAnimationFrame(tick), 1000);
-    };
-    tick();
-    return () => {
-      if (raf) clearTimeout(raf);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (remaining <= 0) {
-      if (!lastAnnouncedRef.current.sec && !lastAnnouncedRef.current.min) {
-        toast.warning("Sale ended");
-      }
-      setAnnounced("Sale ended");
-      lastAnnouncedRef.current = {};
-      return;
-    }
-    const totalSecs = Math.floor(remaining / 1000);
-    if (totalSecs >= 60) {
-      const mins = Math.floor(totalSecs / 60);
-      if (mins !== lastAnnouncedRef.current.min) {
-        setAnnounced(`${mins} minute${mins === 1 ? "" : "s"} remaining`);
-        lastAnnouncedRef.current.min = mins;
-      }
-    } else {
-      const secs = totalSecs;
-      if (secs !== lastAnnouncedRef.current.sec) {
-        setAnnounced(`${secs} second${secs === 1 ? "" : "s"} remaining`);
-        lastAnnouncedRef.current.sec = secs;
-      }
-    }
-  }, [remaining]);
 
   // Slider progressive image loading
   const [shouldLoadHiRes, setShouldLoadHiRes] = useState(false);
@@ -189,7 +130,6 @@ export default function HeroSection({ expiry, ctaHref, className }: HeroSectionP
   };
 
   const handleCTA = () => {
-    if (expired) return;
     localStorage.setItem('selectedPackage', 'professional');
     window.location.href = "/onboarding";
   };
@@ -246,23 +186,20 @@ export default function HeroSection({ expiry, ctaHref, className }: HeroSectionP
               <Button
                 type="button"
                 onClick={handleCTA}
-                disabled={expired}
                 className={[
                   "h-auto min-h-[44px] px-6 md:px-7 py-4",
                   "rounded-full font-semibold text-white",
-                  expired ? "bg-muted text-muted-foreground cursor-not-allowed" : "bg-[#10B981] hover:bg-[#0FAE78]",
+                  "bg-[#10B981] hover:bg-[#0FAE78]",
                   "shadow-[0_6px_16px_rgba(16,185,129,0.25)] hover:shadow-[0_8px_20px_rgba(16,185,129,0.35)]",
                   "transition-all duration-200 ease-out hover:-translate-y-0.5",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#10B981] focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                   "w-full sm:w-auto",
                 ].join(" ")}
-                aria-label={expired ? "Sale ended" : selectedPackage ? `Get ${selectedPackage.name} package` : "Get your photos now"}
+                aria-label={selectedPackage ? `Get ${selectedPackage.name} package` : "Get your photos now"}
               >
-                {expired
-                  ? "Join Waitlist"
-                  : selectedPackage
-                    ? `Get ${selectedPackage.name} Package →`
-                    : "Get Your Photos Now →"
+                {selectedPackage
+                  ? `Get ${selectedPackage.name} Package →`
+                  : "Get Your Photos Now →"
                 }
               </Button>
 
@@ -279,30 +216,7 @@ export default function HeroSection({ expiry, ctaHref, className }: HeroSectionP
               </div>
             </div>
 
-            {/* Countdown */}
-            <div className="mt-6">
-              <div className="flex items-center gap-2 rounded-lg border border-border bg-secondary/60 px-3 py-2">
-                <span className="text-sm text-foreground">50% off ends in</span>
-                <span
-                  className={[
-                    "text-sm md:text-base font-semibold tracking-wide",
-                    expired ? "text-muted-foreground" : "text-[#10B981]",
-                  ].join(" ")}
-                >
-                  {expired ? "Sale ended" : formatHMS(remaining)}
-                </span>
-              </div>
-              <div
-                aria-live="polite"
-                role="status"
-                className="sr-only"
-              >
-                {announced}
-              </div>
-              <p className="mt-2 text-xs text-muted-foreground">
-                Results may vary. Guarantee applies to eligible orders.
-              </p>
-            </div>
+
 
             {/* Dynamic Pricing Display */}
             {selectedPackage && (

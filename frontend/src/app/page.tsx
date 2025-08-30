@@ -9,7 +9,6 @@ import Footer from "@/components/Footer";
 
 export default function HomePage() {
   const ctaHref = "/onboarding";
-  const saleExpiry = Date.now() + 24 * 60 * 60 * 1000; // 24 hours from now
 
   return (
     <div className="min-h-screen bg-neutral-50/50">
@@ -19,7 +18,6 @@ export default function HomePage() {
         {/* Hero section - above the fold */}
         <div className="pt-16">
           <HeroSection
-            expiry={saleExpiry}
             ctaHref={ctaHref}
             className="mx-auto"
           />
