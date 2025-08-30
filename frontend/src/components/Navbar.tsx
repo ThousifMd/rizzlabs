@@ -16,15 +16,10 @@ const HEADER_BASE =
 const HEADER_SCROLLED =
   "fixed inset-x-0 top-0 z-50 bg-background/70 backdrop-blur-md border-b border-border/60 transition-colors duration-300"
 
-const NAV_LINK_CLASS =
-  "rounded-md px-1.5 py-1 text-sm text-foreground/80 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 
-const MOBILE_MENU_ID = "mobile-primary-navigation"
 
 const navItems = [
-  { label: "How it Works", href: "#how-it-works" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "Reviews", href: "#reviews" },
+  // Navigation items removed - sections don't exist
 ]
 
 export default function Navbar({ ctaHref, className }: NavbarProps) {
@@ -56,17 +51,7 @@ export default function Navbar({ ctaHref, className }: NavbarProps) {
         <div className="flex h-16 items-center justify-between gap-3">
           <Brand />
 
-          <nav aria-label="Primary" className="hidden md:block">
-            <ul className="flex items-center gap-6">
-              {navItems.map((item) => (
-                <li key={item.href}>
-                  <Link href={item.href} className={NAV_LINK_CLASS}>
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+
 
           <div className="hidden items-center gap-2 md:flex">
 
@@ -131,7 +116,7 @@ function MobileMenu({
         <button
           type="button"
           aria-label="Open menu"
-          aria-controls={MOBILE_MENU_ID}
+
           aria-expanded={open ? "true" : "false"}
           className="inline-flex h-10 w-10 items-center justify-center rounded-full text-foreground/80 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
@@ -159,24 +144,7 @@ function MobileMenu({
 
         <div className="my-2 h-px bg-border/70" />
 
-        <nav id={MOBILE_MENU_ID} aria-label="Mobile Primary" className="px-3 py-2">
-          <ul className="flex flex-col">
-            {navItems.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className="block rounded-lg px-3 py-3 text-base text-foreground/90 transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
 
-        </nav>
-
-        <div className="mt-2 h-px bg-border/70" />
 
         <div className="flex items-center gap-2 px-3 py-3">
           <button
