@@ -29,6 +29,7 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
             // Always use $1.00 for testing regardless of package
             const actualAmountPaid = "1.00";
 
+            // STEP 1: Store payment data
             const paymentData = {
                 orderId: paymentDetails.id,
                 paymentId: paymentDetails.id,
@@ -53,7 +54,7 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
 
             console.log("Sending payment data to backend:", paymentData);
 
-            const response = await fetch('/api/payments/store', {
+            const paymentResponse = await fetch('/api/payments/store', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -61,13 +62,92 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
                 body: JSON.stringify(paymentData)
             });
 
-            if (response.ok) {
-                const result = await response.json();
-                console.log("Payment stored successfully:", result);
-                alert("Payment successful! Your data has been saved to the database.");
-            } else {
-                throw new Error(`Failed to store payment: ${response.statusText}`);
+            if (!paymentResponse.ok) {
+                throw new Error(`Failed to store payment: ${paymentResponse.statusText}`);
             }
+
+            const paymentResult = await paymentResponse.json();
+            console.log("Payment stored successfully:", paymentResult);
+
+            // STEP 2: Submit onboarding data to onboarding_submissions table
+            try {
+                // Get stored form data from localStorage
+                const storedFormData = localStorage.getItem('onboardingFormData');
+
+                if (storedFormData) {
+                    const onboardingFormData = JSON.parse(storedFormData);
+
+                    // Get stored photos from global variable
+                    const photos = (window as any).onboardingPhotos || [];
+                    const screenshots = (window as any).onboardingScreenshots || [];
+
+                    // Convert files to base64 for sending to backend
+                    const convertFilesToBase64 = async (files: File[]) => {
+                        const promises = files.map(file => {
+                            return new Promise<string>((resolve) => {
+                                const reader = new FileReader();
+                                reader.onload = () => resolve(reader.result as string);
+                                reader.readAsDataURL(file);
+                            });
+                        });
+                        return Promise.all(promises);
+                    };
+
+                    const photoDataUrls = await convertFilesToBase64(photos);
+                    const screenshotDataUrls = await convertFilesToBase64(screenshots);
+
+                    // Create onboarding submission data
+                    const onboardingData = {
+                        name: onboardingFormData.name,
+                        gender: onboardingFormData.gender || 'not_specified',
+                        age: onboardingFormData.age,
+                        datingGoal: onboardingFormData.datingGoal,
+                        currentMatches: onboardingFormData.currentMatches,
+                        bodyType: onboardingFormData.bodyType,
+                        stylePreference: onboardingFormData.stylePreference,
+                        ethnicity: onboardingFormData.ethnicity,
+                        interests: JSON.stringify(onboardingFormData.interests),
+                        currentBio: onboardingFormData.currentBio,
+                        email: onboardingFormData.email,
+                        phone: onboardingFormData.phone,
+                        weeklyTips: onboardingFormData.weeklyTips.toString(),
+                        originalPhotos: JSON.stringify(photoDataUrls),
+                        screenshotPhotos: JSON.stringify(screenshotDataUrls)
+                    };
+
+                    console.log("Submitting onboarding data:", onboardingData);
+
+                    const onboardingResponse = await fetch('http://localhost:5001/api/onboarding/submit', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(onboardingData)
+                    });
+
+                    const onboardingResult = await onboardingResponse.json();
+
+                    if (onboardingResult.success) {
+                        console.log("Onboarding data submitted successfully:", onboardingResult);
+
+                        // Clear stored data
+                        localStorage.removeItem('onboardingFormData');
+                        if (typeof window !== 'undefined') {
+                            delete (window as any).onboardingPhotos;
+                            delete (window as any).onboardingScreenshots;
+                        }
+                    } else {
+                        console.error('Onboarding submission failed:', onboardingResult.error);
+                    }
+                } else {
+                    console.warn('No onboarding form data found in localStorage');
+                }
+            } catch (onboardingError) {
+                console.error('Error submitting onboarding data:', onboardingError);
+                // Don't fail the entire process if onboarding submission fails
+            }
+
+            alert("Payment successful! Your data has been saved to the database.");
         } catch (error) {
             console.error("Error storing payment:", error);
             alert("Payment successful but failed to save data. Please contact support.");
