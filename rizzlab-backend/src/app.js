@@ -9,6 +9,9 @@ const paymentRoutes = require("./routes/payments");
 const app = express();
 const PORT = process.env.PORT || 5001;
 
+console.log('ENV PORT =', process.env.PORT);
+console.log('Using PORT =', PORT);
+
 // Enhanced CORS configuration
 const corsOptions = {
   origin: [
@@ -17,9 +20,7 @@ const corsOptions = {
     "http://localhost:3001",
     "http://127.0.0.1:3000",
     "http://127.0.0.1:3001",
-    // Add your Vercel domain here after deployment
-    "https://your-app-name.vercel.app",
-    "https://your-custom-domain.com"
+    "http://192.168.1.217:3001"
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],

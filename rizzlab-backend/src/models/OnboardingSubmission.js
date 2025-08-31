@@ -5,22 +5,22 @@ class OnboardingSubmission {
     const {
       name, gender, age, datingGoal, currentMatches, bodyType, stylePreference,
       ethnicity, interests, currentBio, email, phone, weeklyTips,
-      originalPhotos, screenshotPhotos
+      originalPhotos, screenshotPhotos, expectedDelivery
     } = submissionData;
 
     const query = `
       INSERT INTO onboarding_submissions (
         name, gender, age, dating_goal, current_matches, body_type, style_preference,
         ethnicity, interests, current_bio, email, phone, weekly_tips,
-        original_photos, screenshot_photos
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+        original_photos, screenshot_photos, expected_delivery
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
       RETURNING *
     `;
 
     const values = [
       name, gender, age, datingGoal, currentMatches, bodyType, stylePreference,
       ethnicity, JSON.stringify(interests), currentBio, email, phone,
-      weeklyTips, JSON.stringify(originalPhotos || []), JSON.stringify(screenshotPhotos || [])
+      weeklyTips, JSON.stringify(originalPhotos || []), JSON.stringify(screenshotPhotos || []), expectedDelivery
     ];
 
     try {

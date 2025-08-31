@@ -3,6 +3,26 @@
 import { useState } from "react";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 
+// Custom styles for PayPal buttons
+const paypalStyles = `
+  .paypal-button-container {
+    width: 100% !important;
+    max-width: 600px !important;
+    margin: 0 auto !important;
+  }
+  
+  .paypal-button-container > div {
+    width: 100% !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+  }
+  
+  .paypal-button-container button {
+    border-radius: 8px !important;
+    margin: 0 !important;
+  }
+`;
+
 interface SimplePayPalCheckoutProps {
     selectedPackage?: {
         id: string;
@@ -17,11 +37,7 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
         firstName: "",
         lastName: "",
         email: "",
-        phone: "",
-        datingGoal: "",
-        currentPhotos: "",
-        stylePreference: "",
-        additionalNotes: ""
+        phone: ""
     });
 
     const storePaymentAndOnboarding = async (paymentDetails: any) => {
@@ -41,12 +57,14 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
                 customerName: `${formData.firstName} ${formData.lastName}`,
                 status: 'completed',
                 onboardingData: {
-                    ...formData,
+                    name: `${formData.firstName} ${formData.lastName}`,
+                    email: formData.email,
+                    phone: formData.phone,
                     packageSelected: selectedPackage,
                     paymentDetails: {
                         orderId: paymentDetails.id,
                         paymentId: paymentDetails.id,
-                        amount: parseFloat(actualAmountPaid), // Use the actual amount paid
+                        amount: parseFloat(actualAmountPaid),
                         currency: 'USD'
                     }
                 }
@@ -183,8 +201,8 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
     }
 
     return (
-        <div className="w-full max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-            <h2 className="text-xl font-bold mb-4 text-center">Complete Your Order</h2>
+        <div className="w-full max-w-2xl mx-auto p-8 bg-white rounded-xl shadow-lg border border-gray-100">
+            <h2 className="text-2xl font-bold mb-2 text-center text-gray-800">Complete Your Order</h2>
             <p className="text-gray-600 mb-6 text-center">
                 {selectedPackage ? `${selectedPackage.name}: $1.00 (Testing)` : 'Test payment: $1.00'}
             </p>
@@ -196,7 +214,7 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
                         placeholder="First Name"
                         value={formData.firstName}
                         onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                        className="border rounded-lg px-3 py-2"
+                        className="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                         required
                     />
                     <input
@@ -204,7 +222,7 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
                         placeholder="Last Name"
                         value={formData.lastName}
                         onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                        className="border rounded-lg px-3 py-2"
+                        className="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                         required
                     />
                 </div>
@@ -214,7 +232,7 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
                     placeholder="Email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full border rounded-lg px-3 py-2"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     required
                 />
 
@@ -223,138 +241,119 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
                     placeholder="Phone"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full border rounded-lg px-3 py-2"
-                />
-
-                <select
-                    value={formData.datingGoal}
-                    onChange={(e) => setFormData({ ...formData, datingGoal: e.target.value })}
-                    className="w-full border rounded-lg px-3 py-2"
-                >
-                    <option value="">Select your dating goal</option>
-                    <option value="serious-relationship">Serious Relationship</option>
-                    <option value="casual-dating">Casual Dating</option>
-                    <option value="friendship">Friendship</option>
-                    <option value="marriage">Marriage</option>
-                </select>
-
-                <textarea
-                    placeholder="Tell us about your current photos and what you'd like to improve"
-                    value={formData.currentPhotos}
-                    onChange={(e) => setFormData({ ...formData, currentPhotos: e.target.value })}
-                    className="w-full border rounded-lg px-3 py-2 h-20"
-                />
-
-                <textarea
-                    placeholder="Any additional notes or preferences?"
-                    value={formData.additionalNotes}
-                    onChange={(e) => setFormData({ ...formData, additionalNotes: e.target.value })}
-                    className="w-full border rounded-lg px-3 py-2 h-20"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    required
                 />
             </form>
 
             {/* PayPal Integration */}
-            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <h3 className="text-lg font-semibold text-blue-800 mb-2">💳 PayPal Payment</h3>
-                <p className="text-blue-700 mb-3">Complete payment with PayPal:</p>
-                <PayPalScriptProvider
-                    options={{
-                        clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
-                        currency: "USD",
-                        intent: "capture"
-                    }}
-                >
-                    <PayPalButtons
-                        createOrder={async (data, actions) => {
-                            try {
-                                console.log('🔄 Creating PayPal order via server...');
-                                console.log('📦 Package data:', { selectedPackage, amount: "1.00" });
+            <div className="mt-6 p-8 bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-200 rounded-xl shadow-lg">
+                <h3 className="text-xl font-bold text-blue-900 mb-3 text-center">💳 Complete Payment</h3>
+                <p className="text-blue-700 mb-6 text-center text-sm">Secure payment powered by PayPal</p>
 
-                                const orderData = {
-                                    amount: "1.00", // Hardcoded to $1 for testing
-                                    description: selectedPackage?.name || "Test Payment",
-                                    packageId: selectedPackage?.id,
-                                    packageName: selectedPackage?.name
-                                };
+                <div className="bg-white rounded-lg p-6 border border-blue-100 shadow-sm">
+                    <style dangerouslySetInnerHTML={{ __html: paypalStyles }} />
+                    <div className="paypal-button-container">
+                        <PayPalScriptProvider
+                            options={{
+                                clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
+                                currency: "USD",
+                                intent: "capture"
+                            }}
+                        >
+                            <PayPalButtons
+                                createOrder={async (data, actions) => {
+                                    try {
+                                        console.log('🔄 Creating PayPal order via server...');
+                                        console.log('📦 Package data:', { selectedPackage, amount: "1.00" });
 
-                                console.log('📡 Sending request to server:', orderData);
+                                        const orderData = {
+                                            amount: "1.00", // Hardcoded to $1 for testing
+                                            description: selectedPackage?.name || "Test Payment",
+                                            packageId: selectedPackage?.id,
+                                            packageName: selectedPackage?.name
+                                        };
 
-                                const response = await fetch('/api/paypal/create-order', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                    body: JSON.stringify(orderData)
-                                });
+                                        console.log('📡 Sending request to server:', orderData);
 
-                                console.log('📊 Response status:', response.status);
-                                console.log('📊 Response headers:', Object.fromEntries(response.headers.entries()));
+                                        const response = await fetch('/api/paypal/create-order', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: JSON.stringify(orderData)
+                                        });
 
-                                const responseText = await response.text();
-                                console.log('📄 Raw response body:', responseText);
+                                        console.log('📊 Response status:', response.status);
+                                        console.log('📊 Response headers:', Object.fromEntries(response.headers.entries()));
 
-                                if (!response.ok) {
-                                    throw new Error(`HTTP error! status: ${response.status}, body: ${responseText}`);
-                                }
+                                        const responseText = await response.text();
+                                        console.log('📄 Raw response body:', responseText);
 
-                                let result;
-                                try {
-                                    result = JSON.parse(responseText);
-                                } catch (parseError) {
-                                    console.error('❌ JSON parse error:', parseError);
-                                    throw new Error(`Invalid JSON response: ${responseText}`);
-                                }
+                                        if (!response.ok) {
+                                            throw new Error(`HTTP error! status: ${response.status}, body: ${responseText}`);
+                                        }
 
-                                console.log('📋 Parsed response:', result);
+                                        let result;
+                                        try {
+                                            result = JSON.parse(responseText);
+                                        } catch (parseError) {
+                                            console.error('❌ JSON parse error:', parseError);
+                                            throw new Error(`Invalid JSON response: ${responseText}`);
+                                        }
 
-                                if (!result.success) {
-                                    throw new Error(result.message || 'Failed to create order');
-                                }
+                                        console.log('📋 Parsed response:', result);
 
-                                if (!result.orderId) {
-                                    console.error('❌ No orderId in response:', result);
-                                    throw new Error('No order ID in response');
-                                }
+                                        if (!result.success) {
+                                            throw new Error(result.message || 'Failed to create order');
+                                        }
 
-                                console.log('✅ Server-side order created:', result.orderId);
-                                return result.orderId;
-                            } catch (error) {
-                                console.error('❌ Error creating order:', error);
-                                throw error;
-                            }
-                        }}
-                        onApprove={async (data, actions) => {
-                            console.log("✅ Order approved:", data.orderID);
-                            console.log("🔄 Starting payment capture...");
+                                        if (!result.orderId) {
+                                            console.error('❌ No orderId in response:', result);
+                                            throw new Error('No order ID in response');
+                                        }
 
-                            try {
-                                // Use PayPal's recommended approach
-                                if (actions.order) {
-                                    const details = await actions.order.capture();
-                                    console.log("✅ Payment captured successfully:", details);
+                                        console.log('✅ Server-side order created:', result.orderId);
+                                        return result.orderId;
+                                    } catch (error) {
+                                        console.error('❌ Error creating order:', error);
+                                        throw error;
+                                    }
+                                }}
+                                onApprove={async (data, actions) => {
+                                    console.log("✅ Order approved:", data.orderID);
+                                    console.log("🔄 Starting payment capture...");
 
-                                    // Store payment details AND onboarding data in database
-                                    await storePaymentAndOnboarding(details);
+                                    try {
+                                        // Use PayPal's recommended approach
+                                        if (actions.order) {
+                                            const details = await actions.order.capture();
+                                            console.log("✅ Payment captured successfully:", details);
 
-                                    alert("Payment successful! Order ID: " + details.id);
-                                } else {
-                                    throw new Error("PayPal order actions not available");
-                                }
-                            } catch (error) {
-                                console.error("❌ Payment capture failed:", error);
-                                alert("Payment capture failed: " + (error instanceof Error ? error.message : "Unknown error"));
-                            }
-                        }}
-                        onError={(err) => {
-                            console.error("PayPal error:", err);
-                            alert("PayPal error: " + JSON.stringify(err));
-                        }}
-                        onCancel={(data) => {
-                            console.log("Payment cancelled:", data);
-                            alert("Payment was cancelled");
-                        }}
-                    />
-                </PayPalScriptProvider>
+                                            // Store payment details AND onboarding data in database
+                                            await storePaymentAndOnboarding(details);
+
+                                            alert("Payment successful! Order ID: " + details.id);
+                                        } else {
+                                            throw new Error("PayPal order actions not available");
+                                        }
+                                    } catch (error) {
+                                        console.error("❌ Payment capture failed:", error);
+                                        alert("Payment capture failed: " + (error instanceof Error ? error.message : "Unknown error"));
+                                    }
+                                }}
+                                onError={(err) => {
+                                    console.error("PayPal error:", err);
+                                    alert("PayPal error: " + JSON.stringify(err));
+                                }}
+                                onCancel={(data) => {
+                                    console.log("Payment cancelled:", data);
+                                    alert("Payment was cancelled");
+                                }}
+                            />
+                        </PayPalScriptProvider>
+                    </div>
+                </div>
             </div>
         </div>
     );

@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Checkbox } from "@/components/ui/checkbox";
+
 import { CheckCircle2, User, Users, Dumbbell, Plane, UtensilsCrossed, Camera, Music, BookOpen, Gamepad2, Heart, Coffee, Mountain, Upload, X, Check, Smartphone, FileText, TrendingUp, Mail, Phone, Clock, ArrowLeft } from "lucide-react";
 
 interface OnboardingData {
@@ -25,7 +26,6 @@ interface OnboardingData {
   currentBio: string;
   email: string;
   phone: string;
-  weeklyTips: boolean;
 }
 
 const datingGoals = [
@@ -141,9 +141,36 @@ export default function OnboardingPage() {
     screenshots: [],
     currentBio: "",
     email: "",
-    phone: "",
-    weeklyTips: true
+    phone: ""
   });
+
+  // Check for stored form data and jump to step 5 if it exists
+  useEffect(() => {
+    const storedData = localStorage.getItem('onboardingFormData');
+    if (storedData) {
+      try {
+        const parsedData = JSON.parse(storedData);
+        // If we have stored data, restore it and jump to step 5
+        setFormData(prev => ({
+          ...prev,
+          name: parsedData.name || "",
+          age: parsedData.age || "",
+          datingGoal: parsedData.datingGoal || "",
+          currentMatches: parsedData.currentMatches || "",
+          bodyType: parsedData.bodyType || "",
+          stylePreference: parsedData.stylePreference || "",
+          ethnicity: parsedData.ethnicity || "",
+          interests: parsedData.interests || [],
+          currentBio: parsedData.currentBio || "",
+          email: parsedData.email || "",
+          phone: parsedData.phone || ""
+        }));
+        setCurrentStep(5);
+      } catch (error) {
+        console.error('Error parsing stored form data:', error);
+      }
+    }
+  }, []);
 
   const totalSteps = 5;
   const progress = (currentStep / totalSteps) * 100;
@@ -161,14 +188,13 @@ export default function OnboardingPage() {
 
   // Email validation function
   const isValidEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    return email.includes('@') && email.includes('.');
   };
 
-  // Phone validation function
+  // Phone validation function - exactly 10 digits
   const isValidPhone = (phone: string) => {
-    const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
-    return phoneRegex.test(phone.replace(/[\s\-\(\)]/g, ''));
+    const digitsOnly = phone.replace(/\D/g, ''); // Remove all non-digits
+    return digitsOnly.length === 10;
   };
 
   // Validation functions that update error states
@@ -191,7 +217,7 @@ export default function OnboardingPage() {
       return true; // Phone is optional
     }
     if (!isValidPhone(phone)) {
-      setPhoneError("Please enter a valid phone number");
+      setPhoneError("Please enter a valid 10-digit phone number");
       return false;
     }
     setPhoneError("");
@@ -227,7 +253,6 @@ export default function OnboardingPage() {
           currentBio: formData.currentBio,
           email: formData.email,
           phone: formData.phone,
-          weeklyTips: formData.weeklyTips,
           photoCount: formData.photos.length,
           screenshotCount: formData.screenshots.length
         }));
@@ -513,26 +538,7 @@ export default function OnboardingPage() {
                 )}
               </div>
 
-              {/* Weekly Tips Checkbox */}
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
-                  <Checkbox
-                    id="weekly-tips"
-                    checked={formData.weeklyTips}
-                    onCheckedChange={(checked) =>
-                      setFormData(prev => ({ ...prev, weeklyTips: !!checked }))
-                    }
-                  />
-                  <div className="flex-1">
-                    <label htmlFor="weekly-tips" className="text-sm font-medium text-gray-900 cursor-pointer">
-                      Send me weekly profile tips
-                    </label>
-                    <p className="text-sm text-gray-600">
-                      Get expert dating advice and photo optimization tips delivered to your inbox
-                    </p>
-                  </div>
-                </div>
-              </div>
+
 
               {/* Email Notification Banner */}
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
@@ -1020,6 +1026,15 @@ export default function OnboardingPage() {
             </CardHeader>
 
             <CardContent className="space-y-8">
+              {/* Back to Homepage Button */}
+              <div className="flex justify-start">
+                <Button asChild variant="ghost" size="sm">
+                  <Link href="/">
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Back to Homepage
+                  </Link>
+                </Button>
+              </div>
               {/* Name Field */}
               <div className="space-y-2">
                 <label htmlFor="name" className="text-sm font-bold text-gray-900">

@@ -2,7 +2,7 @@ import * as React from "react";
 import { Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
-import { SocialProofSection } from "@/components/SocialProofSection";
+
 import { TransformationGallery } from "@/components/TransformationGallery";
 import { PricingSection } from "@/components/PricingSection";
 import Footer from "@/components/Footer";
@@ -23,8 +23,7 @@ export default function HomePage() {
           />
         </div>
 
-        {/* Social Proof section */}
-        <SocialProofSection />
+
 
         {/* Transformation Gallery */}
         <TransformationGallery />

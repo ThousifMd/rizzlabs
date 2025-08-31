@@ -91,20 +91,20 @@ const packages: Package[] = [
 
 const testimonials = [
   {
-    name: "Sarah M.",
-    image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=64&h=64&fit=crop&crop=face",
+    name: "Alex M.",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=face",
     quote: "Got 10x more matches in the first week! The AI enhancement made my photos look naturally perfect.",
     rating: 5,
   },
   {
     name: "Mike R.",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=face",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=64&h=64&fit=crop&crop=face",
     quote: "Amazing results! The professional package transformed my dating profile completely.",
     rating: 5,
   },
   {
-    name: "Jessica L.",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=64&h=64&fit=crop&crop=face",
+    name: "David L.",
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=64&h=64&fit=crop&crop=face",
     quote: "Worth every penny. The enhanced photos looked so natural, nobody could tell they were AI-optimized.",
     rating: 5,
   },
@@ -258,7 +258,7 @@ function TrustBadges() {
 
 function TestimonialSidebar() {
   return (
-    <div className="hidden xl:block w-80 space-y-6 sticky top-8">
+    <div className="hidden xl:block space-y-6 sticky top-8">
       <h3 className="font-heading text-lg font-semibold text-foreground">
         What Our Customers Say
       </h3>
@@ -415,9 +415,9 @@ function CheckoutContent() {
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center space-x-4">
             <Button asChild variant="ghost" size="sm">
-              <Link href="/">
+              <Link href="/onboarding">
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Homepage
+                Back
               </Link>
             </Button>
             <h1 className="text-xl font-semibold text-foreground">Secure Checkout</h1>
@@ -428,7 +428,7 @@ function CheckoutContent() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
           {/* Order Details - Left Column */}
-          <div className="xl:col-span-2 space-y-6">
+          <div className="xl:col-span-1 space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
@@ -492,7 +492,7 @@ function CheckoutContent() {
           </div>
 
           {/* Payment Form - Center Column */}
-          <div className="xl:col-span-1">
+          <div className="xl:col-span-2">
             <Card className="sticky top-8">
               <CardHeader>
                 <CardTitle className="flex items-center">
@@ -509,8 +509,8 @@ function CheckoutContent() {
             </Card>
           </div>
 
-          {/* Testimonials - Right Sidebar */}
-          <div className="xl:col-span-1">
+          {/* Testimonials - Right Column */}
+          <div className="xl:col-span-1 space-y-6">
             <TestimonialSidebar />
           </div>
         </div>
