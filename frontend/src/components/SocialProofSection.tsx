@@ -27,8 +27,8 @@ const testimonials: Testimonial[] = [
     id: '1',
     name: 'Jake',
     age: 28,
-    beforeImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
-    afterImage: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
+    beforeImage: '/images/1.1.png',
+    afterImage: '/images/1.2.png',
     quote: "I couldn't believe the difference! My matches went from barely getting any responses to having genuine conversations every day. The photo upgrade was a game-changer.",
     matchesFrom: 3,
     matchesTo: 47,
@@ -38,8 +38,8 @@ const testimonials: Testimonial[] = [
     id: '2',
     name: 'Marcus',
     age: 32,
-    beforeImage: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-    afterImage: 'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=150&h=150&fit=crop&crop=face',
+    beforeImage: '/images/2.1.png',
+    afterImage: '/images/2.2.png',
     quote: "The transformation was incredible. I went from swiping endlessly with no results to having quality matches who actually wanted to meet up. Worth every penny.",
     matchesFrom: 8,
     matchesTo: 73,
@@ -49,8 +49,8 @@ const testimonials: Testimonial[] = [
     id: '3',
     name: 'David',
     age: 26,
-    beforeImage: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop&crop=face',
-    afterImage: 'https://images.unsplash.com/photo-1556474835-b0f3ac40d4d1?w=150&h=150&fit=crop&crop=face',
+    beforeImage: '/images/4.1.png',
+    afterImage: '/images/4.2.png',
     quote: "My dating life completely changed. The professional photos made such a difference - I started getting matches with women I never thought would be interested.",
     matchesFrom: 5,
     matchesTo: 62,
@@ -78,7 +78,7 @@ export const SocialProofSection = () => {
     const interval = setInterval(() => {
       setShowNotification(true);
       setCurrentNotification(prev => (prev + 1) % floatingNotifications.length);
-      
+
       setTimeout(() => {
         setShowNotification(false);
       }, 4000);
@@ -90,7 +90,7 @@ export const SocialProofSection = () => {
   // Auto-scroll for mobile carousel
   useEffect(() => {
     if (!isAutoScrolling) return;
-    
+
     const interval = setInterval(() => {
       setCurrentSlide(prev => (prev + 1) % testimonials.length);
     }, 5000);
@@ -123,7 +123,7 @@ export const SocialProofSection = () => {
         {/* Main Title */}
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-foreground mb-4 leading-tight">
-            Join 2,847+ Men Who've 
+            Join 2,847+ Men Who've
             <br className="hidden sm:block" />
             <span className="text-primary"> Upgraded Their Dating Game</span>
           </h2>
@@ -139,7 +139,7 @@ export const SocialProofSection = () => {
         {/* Mobile Carousel */}
         <div className="lg:hidden mb-16">
           <div className="relative">
-            <div 
+            <div
               ref={scrollContainerRef}
               className="flex transition-transform duration-500 ease-in-out"
               style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -173,11 +173,10 @@ export const SocialProofSection = () => {
                 <button
                   key={index}
                   onClick={() => scrollToSlide(index)}
-                  className={`w-2 h-2 rounded-full transition-all duration-200 ${
-                    index === currentSlide 
-                      ? 'bg-primary w-8' 
-                      : 'bg-gray-300 hover:bg-gray-400'
-                  }`}
+                  className={`w-2 h-2 rounded-full transition-all duration-200 ${index === currentSlide
+                    ? 'bg-primary w-8'
+                    : 'bg-gray-300 hover:bg-gray-400'
+                    }`}
                   aria-label={`Go to testimonial ${index + 1}`}
                 />
               ))}
@@ -190,9 +189,8 @@ export const SocialProofSection = () => {
       </div>
 
       {/* Floating Notification */}
-      <div className={`fixed top-4 right-4 md:top-6 md:right-6 z-50 transition-all duration-500 ${
-        showNotification ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
-      }`}>
+      <div className={`fixed top-4 right-4 md:top-6 md:right-6 z-50 transition-all duration-500 ${showNotification ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
+        }`}>
         <div className="bg-white rounded-lg shadow-xl border border-gray-200 p-4 min-w-[280px] max-w-[320px]">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -219,10 +217,15 @@ export const SocialProofSection = () => {
 };
 
 const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
-  const [imageLoading, setImageLoading] = useState({ before: true, after: true });
+  const [imageLoading, setImageLoading] = useState({ before: false, after: false });
 
   const handleImageLoad = (type: 'before' | 'after') => {
     setImageLoading(prev => ({ ...prev, [type]: false }));
+  };
+
+  const handleImageError = (type: 'before' | 'after') => {
+    console.error(`Failed to load ${type} image:`, testimonial[`${type}Image` as keyof Testimonial]);
+    setImageLoading(prev => ({ ...prev, [type]: true }));
   };
 
   return (
@@ -237,19 +240,19 @@ const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
             <img
               src={testimonial.beforeImage}
               alt={`${testimonial.name} before`}
-              className={`w-full h-full object-cover rounded-full border-2 border-gray-300 transition-opacity duration-300 ${
-                imageLoading.before ? 'opacity-0' : 'opacity-100'
-              }`}
+              className={`w-full h-full object-cover rounded-full border-2 border-gray-300 transition-opacity duration-300 ${imageLoading.before ? 'opacity-0' : 'opacity-100'
+                }`}
               onLoad={() => handleImageLoad('before')}
+              onError={() => handleImageError('before')}
             />
           </div>
           <p className="text-xs text-gray-500 font-medium">Before</p>
         </div>
-        
+
         <div className="flex items-center">
           <div className="w-8 h-0.5 bg-gradient-to-r from-gray-300 to-primary"></div>
         </div>
-        
+
         <div className="text-center">
           <div className="relative w-20 h-20 md:w-24 md:h-24 mx-auto mb-2">
             {imageLoading.after && (
@@ -258,10 +261,13 @@ const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
             <img
               src={testimonial.afterImage}
               alt={`${testimonial.name} after`}
-              className={`w-full h-full object-cover rounded-full border-2 border-primary transition-opacity duration-300 ${
-                imageLoading.after ? 'opacity-0' : 'opacity-100'
-              }`}
+              className={`w-full h-full object-cover rounded-full border-2 border-primary transition-opacity duration-300 ${imageLoading.after ? 'opacity-0' : 'opacity-100'
+                }`}
+              style={{
+                objectPosition: testimonial.id === '2' ? 'center 30%' : 'center center'
+              }}
               onLoad={() => handleImageLoad('after')}
+              onError={() => handleImageError('after')}
             />
           </div>
           <p className="text-xs text-primary font-medium">After</p>
@@ -296,7 +302,7 @@ const TrustPilotWidget = () => {
       <div className="inline-flex items-center justify-center bg-white rounded-xl p-6 shadow-lg border border-gray-200">
         <div className="text-center">
           <div className="flex items-center justify-center mb-3">
-            <img 
+            <img
               src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 126 31'%3E%3Cpath fill='%2300B67A' d='M0 0h126v31H0z'/%3E%3Cpath fill='%23fff' d='M25.5 6.7l2.8 8.6h9.1l-7.4 5.4 2.8 8.5-7.3-5.3-7.3 5.3 2.8-8.5-7.4-5.4h9.1l2.8-8.6z'/%3E%3Cpath fill='%23fff' d='M45.9 6.7l2.8 8.6h9.1l-7.4 5.4 2.8 8.5-7.3-5.3-7.3 5.3 2.8-8.5-7.4-5.4h9.1l2.8-8.6z'/%3E%3Cpath fill='%23fff' d='M66.3 6.7l2.8 8.6h9.1l-7.4 5.4 2.8 8.5-7.3-5.3-7.3 5.3 2.8-8.5-7.4-5.4h9.1l2.8-8.6z'/%3E%3Cpath fill='%23fff' d='M86.7 6.7l2.8 8.6h9.1l-7.4 5.4 2.8 8.5-7.3-5.3-7.3 5.3 2.8-8.5-7.4-5.4h9.1l2.8-8.6z'/%3E%3Cpath fill='%23fff' d='M107.1 6.7l2.8 8.6h9.1l-7.4 5.4 2.8 8.5-7.3-5.3-7.3 5.3 2.8-8.5-7.4-5.4h9.1l2.8-8.6z'/%3E%3C/svg%3E"
               alt="Trustpilot logo"
               className="h-8 mb-2"
@@ -304,9 +310,9 @@ const TrustPilotWidget = () => {
           </div>
           <div className="flex items-center justify-center mb-2">
             {[...Array(5)].map((_, i) => (
-              <Star 
-                key={i} 
-                className={`w-5 h-5 ${i < 4 ? 'text-[#00B67A] fill-current' : 'text-[#00B67A] fill-current'}`} 
+              <Star
+                key={i}
+                className={`w-5 h-5 ${i < 4 ? 'text-[#00B67A] fill-current' : 'text-[#00B67A] fill-current'}`}
               />
             ))}
             <span className="ml-2 text-sm font-medium text-gray-700">4.8 out of 5</span>

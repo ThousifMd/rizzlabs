@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, GripVertical } from "lucide-react";
@@ -57,74 +57,22 @@ export default function HeroSection({ ctaHref, className }: HeroSectionProps) {
     };
   }, []);
 
-  // Slider behavior without continuous React re-renders
-  const posRef = useRef<number>(50);
-  const frameRef = useRef<number | null>(null);
 
-  useEffect(() => {
-    // initialize CSS var
-    if (sliderRef.current) {
-      sliderRef.current.style.setProperty("--pos", `${posRef.current}%`);
-    }
-  }, []);
 
-  const updatePosFromClientX = (clientX: number) => {
-    const el = sliderRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const pct = clamp(((clientX - rect.left) / rect.width) * 100);
-    posRef.current = pct;
-    el.style.setProperty("--pos", `${pct}%`);
-    if (frameRef.current) cancelAnimationFrame(frameRef.current);
-    frameRef.current = requestAnimationFrame(() => {
-      setAriaSliderPos(Math.round(pct));
-    });
-  };
 
-  const startDrag = (clientX: number) => {
-    updatePosFromClientX(clientX);
-    const onMove = (e: MouseEvent) => updatePosFromClientX(e.clientX);
-    const onUp = () => {
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
-    };
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
-  };
-
-  const startTouch = (touch: Touch) => {
-    updatePosFromClientX(touch.clientX);
-    const onMove = (e: TouchEvent) => {
-      if (e.touches && e.touches[0]) updatePosFromClientX(e.touches[0].clientX);
-    };
-    const onEnd = () => {
-      window.removeEventListener("touchmove", onMove);
-      window.removeEventListener("touchend", onEnd);
-      window.removeEventListener("touchcancel", onEnd);
-    };
-    window.addEventListener("touchmove", onMove, { passive: true });
-    window.addEventListener("touchend", onEnd);
-    window.addEventListener("touchcancel", onEnd);
-  };
 
   const onSliderKeyDown = (e: React.KeyboardEvent) => {
-    const step = e.shiftKey ? 10 : 2;
+    const step = e.shiftKey ? 10 : 1;
     if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
       e.preventDefault();
-      const next = clamp(posRef.current + (e.key === "ArrowRight" ? step : -step));
-      posRef.current = next;
-      sliderRef.current?.style.setProperty("--pos", `${next}%`);
-      setAriaSliderPos(Math.round(next));
+      const next = clamp(ariaSliderPos + (e.key === "ArrowRight" ? step : -step));
+      setAriaSliderPos(next);
       setShouldLoadHiRes(true);
     }
     if (e.key === "Home") {
-      posRef.current = 0;
-      sliderRef.current?.style.setProperty("--pos", `0%`);
       setAriaSliderPos(0);
     }
     if (e.key === "End") {
-      posRef.current = 100;
-      sliderRef.current?.style.setProperty("--pos", `100%`);
       setAriaSliderPos(100);
     }
   };
@@ -134,16 +82,84 @@ export default function HeroSection({ ctaHref, className }: HeroSectionProps) {
     window.location.href = "/onboarding";
   };
 
-  // Placeholder and high-res image URLs (WebP)
-  const beforeLow =
-    "https://images.unsplash.com/photo-1544006659-f0b21884ce1d?w=24&q=10&auto=format&fit=crop&fm=webp";
-  const afterLow =
-    "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=24&q=10&auto=format&fit=crop&fm=webp";
+  // Slider event handlers
+  const [isDragging, setIsDragging] = useState(false);
 
-  const beforeHi =
-    "https://images.unsplash.com/photo-1544006659-f0b21884ce1d?w=1200&q=80&auto=format&fit=crop&fm=webp";
-  const afterHi =
-    "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=1200&q=80&auto=format&fit=crop&fm=webp";
+  const handleSliderMove = useCallback((clientX: number) => {
+    const el = sliderRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+    setAriaSliderPos(percentage); // Remove Math.round for smoother movement
+  }, []);
+
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+    handleSliderMove(e.clientX);
+  }, [handleSliderMove]);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+    handleSliderMove(e.touches[0].clientX);
+  }, [handleSliderMove]);
+
+  const handleContainerClick = useCallback((e: React.MouseEvent) => {
+    if (!isDragging) {
+      handleSliderMove(e.clientX);
+    }
+  }, [handleSliderMove, isDragging]);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (isDragging) {
+        e.preventDefault();
+        e.stopPropagation();
+        handleSliderMove(e.clientX);
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (isDragging) {
+        e.preventDefault();
+        e.stopPropagation();
+        handleSliderMove(e.touches[0].clientX);
+      }
+    };
+
+    const handleEnd = () => {
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove, { passive: false });
+      document.addEventListener('mouseup', handleEnd);
+      document.addEventListener('touchmove', handleTouchMove, { passive: false });
+      document.addEventListener('touchend', handleEnd);
+      document.addEventListener('touchcancel', handleEnd);
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleEnd);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleEnd);
+      document.removeEventListener('touchcancel', handleEnd);
+    };
+  }, [isDragging, handleSliderMove]);
+
+  // Before/After transformation images
+  // Before: Image 3.1 - Casual look
+  // After: Image 3.3 - Professional transformation
+  const beforeLow = "/images/3.1.png";
+  const afterLow = "/images/3.3.png";
+
+  const beforeHi = "/images/3.1.png";
+  const afterHi = "/images/3.3.png";
 
   const beforeSrc = shouldLoadHiRes ? beforeHi : beforeLow;
   const afterSrc = shouldLoadHiRes ? afterHi : afterLow;
@@ -251,33 +267,23 @@ export default function HeroSection({ ctaHref, className }: HeroSectionProps) {
                 className={[
                   "relative group",
                   "rounded-xl border border-border bg-card overflow-hidden",
-                  "shadow-sm",
+                  "shadow-sm cursor-grab active:cursor-grabbing",
                   "aspect-[4/5] md:aspect-[4/3]",
                 ].join(" ")}
                 style={{ ["--pos" as any]: "50%" }}
                 aria-label="Before and after image comparison of a Matchlens photo edit"
+                onClick={handleContainerClick}
               >
-                {/* Base (Before) */}
-                <img
-                  src={beforeSrc}
-                  alt="Before edit example portrait"
-                  width={1200}
-                  height={900}
-                  decoding="async"
-                  loading={shouldLoadHiRes ? "eager" : "lazy"}
-                  className="absolute inset-0 size-full object-cover select-none"
-                  draggable={false}
-                />
-
-                {/* After overlay clipped to --pos */}
+                {/* Before Image */}
                 <div
-                  className="absolute inset-0 overflow-hidden"
-                  style={{ width: "var(--pos)" as any }}
-                  aria-hidden="true"
+                  className="absolute inset-0"
+                  style={{
+                    clipPath: `inset(0 ${100 - ariaSliderPos}% 0 0)`
+                  }}
                 >
                   <img
-                    src={afterSrc}
-                    alt=""
+                    src={beforeSrc}
+                    alt="Before edit example portrait"
                     width={1200}
                     height={900}
                     decoding="async"
@@ -285,82 +291,62 @@ export default function HeroSection({ ctaHref, className }: HeroSectionProps) {
                     className="absolute inset-0 size-full object-cover select-none"
                     draggable={false}
                   />
+                  <div className="absolute inset-0 bg-black/10" />
+                </div>
+
+                {/* After Image */}
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    clipPath: `inset(0 0 0 ${ariaSliderPos}%)`
+                  }}
+                >
+                  <img
+                    src={afterSrc}
+                    alt="After edit example portrait"
+                    width={1200}
+                    height={900}
+                    decoding="async"
+                    loading={shouldLoadHiRes ? "eager" : "lazy"}
+                    className="absolute inset-0 size-full object-cover select-none"
+                    style={{ objectPosition: 'center 30%' }}
+                    draggable={false}
+                  />
                 </div>
 
                 {/* Soft edge gradient mask */}
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/10" />
 
-                {/* Top label */}
-                <div className="absolute left-3 top-3">
-                  <Badge variant="secondary" className="bg-secondary/90 backdrop-blur text-secondary-foreground border border-border">
-                    Before / After — Placeholder
-                  </Badge>
-                </div>
 
-                {/* Divider line */}
+
+                {/* Slider Handle */}
                 <div
-                  className="absolute top-0 h-full w-px bg-white/80 shadow-[0_0_0_1px_rgba(0,0,0,0.06)]"
-                  style={{ left: "var(--pos)" as any }}
-                  aria-hidden="true"
-                />
-
-                {/* Handle */}
-                <button
-                  type="button"
-                  className={[
-                    "absolute top-1/2 -translate-y-1/2",
-                    "translate-x-[-50%]",
-                    "grid place-items-center",
-                    "h-12 w-12 rounded-full",
-                    "bg-white text-foreground shadow-md ring-1 ring-border",
-                    "hover:shadow-lg hover:scale-[1.02]",
-                    "transition-all duration-150",
-                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#10B981]",
-                  ].join(" ")}
-                  style={{ left: "var(--pos)" as any }}
-                  aria-label="Drag to reveal before and after"
+                  className="absolute top-0 bottom-0 w-3 bg-white shadow-lg cursor-grab active:cursor-grabbing z-30 transition-all duration-200 ease-out"
+                  style={{ left: `${ariaSliderPos}%`, transform: 'translateX(-50%)' }}
+                  onMouseDown={handleMouseDown}
+                  onTouchStart={handleTouchStart}
                   role="slider"
                   aria-valuemin={0}
                   aria-valuemax={100}
                   aria-valuenow={ariaSliderPos}
+                  aria-label="Drag to reveal before and after"
+                  tabIndex={0}
                   onKeyDown={onSliderKeyDown}
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    setShouldLoadHiRes(true);
-                    startDrag(e.clientX);
-                  }}
-                  onTouchStart={(e) => {
-                    setShouldLoadHiRes(true);
-                    if (e.touches && e.touches[0]) startTouch(e.touches[0] as Touch);
-                  }}
                 >
-                  <GripVertical className="size-5" aria-hidden="true" />
-                </button>
-
-                {/* Drag microcopy */}
-                <div
-                  className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-white/85 px-3 py-1 text-xs text-foreground shadow-sm ring-1 ring-border opacity-0 group-hover:opacity-100 transition-opacity"
-                  aria-hidden="true"
-                >
-                  Drag to reveal
+                  {/* Handle Circle */}
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg border-2 border-[#10B981] flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95">
+                    <div className="w-2.5 h-2.5 bg-[#10B981] rounded-full" />
+                  </div>
                 </div>
 
-                {/* Click/drag anywhere support */}
-                <div
-                  className="absolute inset-0 cursor-ew-resize"
-                  onMouseDown={(e) => {
-                    setShouldLoadHiRes(true);
-                    startDrag(e.clientX);
-                  }}
-                  onTouchStart={(e) => {
-                    setShouldLoadHiRes(true);
-                    if (e.touches && e.touches[0]) startTouch(e.touches[0] as Touch);
-                  }}
-                />
+                {/* Before/After Labels */}
+                <div className="absolute bottom-4 left-4 text-white text-sm font-medium bg-black/50 backdrop-blur-sm px-2 py-1 rounded">
+                  Before
+                </div>
+                <div className="absolute bottom-4 right-4 text-white text-sm font-medium bg-black/50 backdrop-blur-sm px-2 py-1 rounded">
+                  After
+                </div>
               </div>
-              <p className="mt-3 text-center text-xs italic text-muted-foreground">
-                Real Matchlens edit — sample result
-              </p>
             </div>
           </div>
         </div>

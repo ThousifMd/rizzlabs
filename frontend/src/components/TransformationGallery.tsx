@@ -21,46 +21,25 @@ interface TransformationCardProps {
 
 const transformationsData: TransformationData[] = [
   {
-    id: 'professional',
+    id: 'transformation-1',
     category: 'Professional',
-    beforeImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop&crop=face',
-    afterImage: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=500&fit=crop&crop=face',
-    alt: 'Professional headshot transformation'
+    beforeImage: '/images/1.1.png',
+    afterImage: '/images/1.2.png',
+    alt: 'Professional transformation'
   },
   {
-    id: 'casual',
+    id: 'transformation-2',
     category: 'Casual',
-    beforeImage: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop&crop=face',
-    afterImage: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=500&fit=crop&crop=face',
+    beforeImage: '/images/2.1.png',
+    afterImage: '/images/2.2.png',
     alt: 'Casual style transformation'
   },
   {
-    id: 'activity',
-    category: 'Activity',
-    beforeImage: 'https://images.unsplash.com/photo-1566492031773-4f4e44671d66?w=400&h=500&fit=crop&crop=face',
-    afterImage: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=500&fit=crop&crop=face',
-    alt: 'Activity photo transformation'
-  },
-  {
-    id: 'social',
-    category: 'Social',
-    beforeImage: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=500&fit=crop&crop=face',
-    afterImage: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=500&fit=crop&crop=face',
-    alt: 'Social setting transformation'
-  },
-  {
-    id: 'travel',
-    category: 'Travel',
-    beforeImage: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=500&fit=crop&crop=face',
-    afterImage: 'https://images.unsplash.com/photo-1556474835-b0f3ac40d4d1?w=400&h=500&fit=crop&crop=face',
-    alt: 'Travel photo transformation'
-  },
-  {
-    id: 'nightout',
-    category: 'Night Out',
-    beforeImage: 'https://images.unsplash.com/photo-1463453091185-61582044d556?w=400&h=500&fit=crop&crop=face',
-    afterImage: 'https://images.unsplash.com/photo-1507591064344-4c6ce005b128?w=400&h=500&fit=crop&crop=face',
-    alt: 'Night out transformation'
+    id: 'transformation-3',
+    category: 'Lifestyle',
+    beforeImage: '/images/4.1.png',
+    afterImage: '/images/4.2.png',
+    alt: 'Lifestyle transformation'
   }
 ];
 
@@ -138,7 +117,7 @@ const TransformationCard: React.FC<TransformationCardProps> = ({ data, isVisible
       <div className="relative h-80 sm:h-96 overflow-hidden">
         {/* Before Image */}
         <div
-          className="absolute inset-0 transition-transform duration-300 ease-out"
+          className="absolute inset-0"
           style={{
             clipPath: `inset(0 ${100 - sliderPosition}% 0 0)`
           }}
@@ -147,6 +126,7 @@ const TransformationCard: React.FC<TransformationCardProps> = ({ data, isVisible
             src={data.beforeImage}
             alt={`Before - ${data.alt}`}
             className="w-full h-full object-cover"
+            style={{ objectPosition: 'center center' }}
             loading="lazy"
           />
           <div className="absolute inset-0 bg-black/10" />
@@ -154,7 +134,7 @@ const TransformationCard: React.FC<TransformationCardProps> = ({ data, isVisible
 
         {/* After Image */}
         <div
-          className="absolute inset-0 transition-transform duration-300 ease-out"
+          className="absolute inset-0"
           style={{
             clipPath: `inset(0 0 0 ${sliderPosition}%)`
           }}
@@ -163,6 +143,7 @@ const TransformationCard: React.FC<TransformationCardProps> = ({ data, isVisible
             src={data.afterImage}
             alt={`After - ${data.alt}`}
             className="w-full h-full object-cover"
+            style={{ objectPosition: 'center 20%' }}
             loading="lazy"
           />
         </div>
@@ -178,7 +159,7 @@ const TransformationCard: React.FC<TransformationCardProps> = ({ data, isVisible
         {/* Slider Handle */}
         <div
           ref={sliderRef}
-          className="absolute top-0 bottom-0 w-1 bg-white shadow-lg cursor-grab active:cursor-grabbing z-30 transition-all duration-200 ease-out"
+          className="absolute top-0 bottom-0 w-1 bg-white shadow-lg cursor-grab active:cursor-grabbing z-30"
           style={{ left: `${sliderPosition}%` }}
           onMouseDown={handleMouseDown}
           onTouchStart={handleTouchStart}
@@ -215,7 +196,7 @@ const TransformationCard: React.FC<TransformationCardProps> = ({ data, isVisible
 };
 
 export const TransformationGallery: React.FC = () => {
-  const [visibleCards, setVisibleCards] = useState<boolean[]>(new Array(6).fill(false));
+  const [visibleCards, setVisibleCards] = useState<boolean[]>(new Array(3).fill(false));
   const observerRef = useRef<IntersectionObserver | null>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 

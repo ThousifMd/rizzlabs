@@ -1,9 +1,43 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-    // Removed localhost API rewrites for production deployment
-    // These will be configured in Vercel environment variables
-    // Environment variables will be loaded from frontend/.env.local by Next.js automatically
+  turbopack: {
+    rules: {
+      "*.svg": {
+        loaders: ["@svgr/webpack"],
+        as: "*.js",
+      },
+    },
+  },
+  images: {
+    domains: ['res.cloudinary.com', 'images.unsplash.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+  },
+  env: {
+    BACKEND_URL: process.env.BACKEND_URL || 'http://localhost:5001',
+  },
+  async rewrites() {
+    const backendUrl = process.env.BACKEND_URL || 'http://localhost:5001';
+    return [
+      {
+        source: '/api/:path*',
+        destination: `${backendUrl}/api/:path*`,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
