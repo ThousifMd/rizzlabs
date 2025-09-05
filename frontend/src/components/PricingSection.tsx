@@ -8,10 +8,11 @@ import { usePackage, Package } from "@/contexts/PackageContext";
 
 const pricingTiers = [
   {
-    id: "starter",
-    name: "Starter",
-    price: 39,
-    originalPrice: 59,
+    id: "get-noticed",
+    name: "Get Noticed",
+    price: 37,
+    originalPrice: 99,
+    discount: "Save 62%",
     description: "Perfect for getting started",
     features: [
       "20 enhanced photos",
@@ -21,13 +22,14 @@ const pricingTiers = [
     ],
     buttonText: "Get Started",
     popular: false,
-    mobileOrder: 2
+    mobileOrder: 1
   },
   {
-    id: "professional",
-    name: "Professional",
+    id: "most-matches",
+    name: "Most Matches",
     price: 69,
-    originalPrice: 99,
+    originalPrice: 199,
+    discount: "Most Popular",
     description: "Most popular choice",
     features: [
       "50 enhanced photos",
@@ -37,14 +39,15 @@ const pricingTiers = [
       "12-hour delivery"
     ],
     buttonText: "Get Started",
-    popular: false,
-    mobileOrder: 1
+    popular: true,
+    mobileOrder: 2
   },
   {
-    id: "elite",
-    name: "Elite",
-    price: 99,
-    originalPrice: 149,
+    id: "date-ready",
+    name: "Date Ready",
+    price: 97,
+    originalPrice: 199,
+    discount: "Save 51%",
     description: "For serious results",
     features: [
       "100 enhanced photos",
@@ -58,10 +61,11 @@ const pricingTiers = [
     mobileOrder: 3
   },
   {
-    id: "vip",
-    name: "VIP",
-    price: 199,
-    originalPrice: 249,
+    id: "complete-makeover",
+    name: "Complete Makeover",
+    price: 197,
+    originalPrice: 399,
+    discount: "Save 50%",
     description: "Ultimate transformation",
     features: [
       "Unlimited photos",
@@ -94,18 +98,18 @@ export const PricingSection = () => {
   };
 
   return (
-    <section className="py-16 lg:py-24 bg-background" aria-labelledby="pricing-title">
+    <section className="py-16 lg:py-24" aria-labelledby="pricing-title">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         {/* Header */}
         <div className="text-center mb-12 lg:mb-16">
           <h2
             id="pricing-title"
-            className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-foreground mb-4"
+            className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-white mb-4"
           >
-            Choose Your Transformation Package
+            Pricing
           </h2>
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
-            Get professional photos that get you more matches
+          <p className="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto">
+            Most users see 3x more matches — or we'll re-edit until you do.
           </p>
         </div>
 
@@ -122,11 +126,11 @@ export const PricingSection = () => {
             .map((tier) => (
               <Card
                 key={tier.name}
-                className={`relative group transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer flex flex-col h-full ${selectedPackage?.id === tier.id
-                  ? "border-2 border-emerald-500 shadow-lg bg-emerald-50/50"
+                className={`relative group transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer flex flex-col h-full bg-gray-900 ${selectedPackage?.id === tier.id
+                  ? "border-2 border-yellow-400 shadow-lg"
                   : tier.popular
-                    ? "border-2 border-emerald-500 shadow-lg"
-                    : "border border-border shadow-sm"
+                    ? "border-2 border-yellow-400 shadow-lg"
+                    : "border border-gray-800 shadow-sm"
                   }`}
                 role="article"
                 aria-label={`${tier.name} pricing plan`}
@@ -134,32 +138,39 @@ export const PricingSection = () => {
               >
                 {tier.popular && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <Badge className="bg-emerald-500 text-white hover:bg-emerald-600 px-4 py-1.5 font-medium">
-                      Most Popular
+                    <Badge className="bg-amber-500 text-white hover:bg-amber-400 px-4 py-1.5 font-medium">
+                      {tier.discount}
+                    </Badge>
+                  </div>
+                )}
+                {!tier.popular && (
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                    <Badge className="bg-gray-700 text-white px-4 py-1.5 font-medium">
+                      {tier.discount}
                     </Badge>
                   </div>
                 )}
                 {selectedPackage?.id === tier.id && (
                   <div className="absolute -top-3 right-3">
-                    <Badge className="bg-blue-500 text-white hover:bg-blue-600 px-4 py-1.5 font-medium">
+                    <Badge className="bg-amber-500 text-white hover:bg-amber-400 px-4 py-1.5 font-medium">
                       Selected
                     </Badge>
                   </div>
                 )}
 
                 <CardHeader className="text-center pb-4">
-                  <CardTitle className="text-xl font-heading font-bold text-foreground mb-2">
+                  <CardTitle className="text-xl font-heading font-bold text-white mb-2">
                     {tier.name}
                   </CardTitle>
-                  <CardDescription className="text-muted-foreground mb-4">
+                  <CardDescription className="text-gray-300 mb-4">
                     {tier.description}
                   </CardDescription>
                   <div className="flex items-center justify-center space-x-2">
-                    <span className="text-4xl lg:text-5xl font-heading font-bold text-foreground">
+                    <span className="text-4xl lg:text-5xl font-heading font-bold text-white">
                       ${tier.price}
                     </span>
-                    <div className="text-sm text-muted-foreground">
-                      <div className="line-through">${tier.originalPrice}</div>
+                    <div className="text-sm text-gray-400">
+                      <div className="line-through">Was ${tier.originalPrice}</div>
                     </div>
                   </div>
                 </CardHeader>
@@ -173,11 +184,11 @@ export const PricingSection = () => {
                         role="listitem"
                       >
                         <Check
-                          className={`w-5 h-5 mt-0.5 flex-shrink-0 ${tier.popular ? "text-emerald-500" : "text-primary"
+                          className={`w-5 h-5 mt-0.5 flex-shrink-0 ${tier.popular ? "text-amber-500" : "text-amber-500"
                             }`}
                           aria-hidden="true"
                         />
-                        <span className="text-foreground text-sm leading-relaxed">
+                        <span className="text-white text-sm leading-relaxed">
                           {feature}
                         </span>
                       </li>
@@ -187,8 +198,8 @@ export const PricingSection = () => {
                   <Button
                     onClick={() => handleSelectPackage(tier.id)}
                     className={`w-full transition-all duration-300 mt-auto ${tier.popular
-                      ? "bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg"
-                      : "bg-primary hover:bg-primary/90 text-primary-foreground"
+                      ? "bg-amber-500 hover:bg-amber-400 text-white shadow-lg"
+                      : "bg-amber-500 hover:bg-amber-400 text-white"
                       }`}
                     size="lg"
                     aria-label={`Select ${tier.name} plan for $${tier.price}`}
@@ -202,9 +213,9 @@ export const PricingSection = () => {
 
         {/* Money Back Guarantee */}
         <div className="flex items-center justify-center">
-          <div className="flex items-center gap-3 bg-card border border-border rounded-full px-6 py-3 shadow-sm">
-            <Shield className="w-5 h-5 text-emerald-500" aria-hidden="true" />
-            <span className="text-sm font-medium text-foreground">
+          <div className="flex items-center gap-3 bg-gray-900 border border-gray-800 rounded-full px-6 py-3 shadow-sm">
+            <Shield className="w-5 h-5 text-amber-500" aria-hidden="true" />
+            <span className="text-sm font-medium text-white">
               30-day money-back guarantee
             </span>
           </div>

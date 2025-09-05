@@ -59,7 +59,7 @@ export default function Footer({
             <Link
               href="/terms"
               aria-label="Read our Terms of Service"
-              className="rounded-md px-2 py-1 text-sm transition-colors hover:text-foreground hover:underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-secondary"
+              className="rounded-md px-2 py-1 text-sm transition-colors hover:text-foreground hover:underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#EDC967] focus-visible:ring-offset-2 focus-visible:ring-offset-secondary"
             >
               Terms
             </Link>
@@ -67,7 +67,7 @@ export default function Footer({
             <Link
               href="/privacy"
               aria-label="Read our Privacy Policy"
-              className="rounded-md px-2 py-1 text-sm transition-colors hover:text-foreground hover:underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-secondary"
+              className="rounded-md px-2 py-1 text-sm transition-colors hover:text-foreground hover:underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#EDC967] focus-visible:ring-offset-2 focus-visible:ring-offset-secondary"
             >
               Privacy
             </Link>
@@ -75,7 +75,7 @@ export default function Footer({
             <Link
               href="/contact"
               aria-label="Contact us"
-              className="rounded-md px-2 py-1 text-sm transition-colors hover:text-foreground hover:underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-secondary"
+              className="rounded-md px-2 py-1 text-sm transition-colors hover:text-foreground hover:underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#EDC967] focus-visible:ring-offset-2 focus-visible:ring-offset-secondary"
             >
               Contact
             </Link>

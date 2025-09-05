@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 
-import { CheckCircle2, User, Users, Dumbbell, Plane, UtensilsCrossed, Camera, Music, BookOpen, Gamepad2, Heart, Coffee, Mountain, Upload, X, Check, Smartphone, FileText, TrendingUp, Mail, Phone, Clock, ArrowLeft } from "lucide-react";
+import { CheckCircle2, User, Users, Dumbbell, Plane, UtensilsCrossed, Camera, Music, BookOpen, Gamepad2, Heart, Coffee, Mountain, Upload, X, Check, Smartphone, FileText, TrendingUp, Mail, Phone, Clock } from "lucide-react";
 
 interface OnboardingData {
   name: string;
@@ -144,32 +144,10 @@ export default function OnboardingPage() {
     phone: ""
   });
 
-  // Check for stored form data and jump to step 5 if it exists
+  // Clear any stored form data on page load to start fresh
   useEffect(() => {
-    const storedData = localStorage.getItem('onboardingFormData');
-    if (storedData) {
-      try {
-        const parsedData = JSON.parse(storedData);
-        // If we have stored data, restore it and jump to step 5
-        setFormData(prev => ({
-          ...prev,
-          name: parsedData.name || "",
-          age: parsedData.age || "",
-          datingGoal: parsedData.datingGoal || "",
-          currentMatches: parsedData.currentMatches || "",
-          bodyType: parsedData.bodyType || "",
-          stylePreference: parsedData.stylePreference || "",
-          ethnicity: parsedData.ethnicity || "",
-          interests: parsedData.interests || [],
-          currentBio: parsedData.currentBio || "",
-          email: parsedData.email || "",
-          phone: parsedData.phone || ""
-        }));
-        setCurrentStep(5);
-      } catch (error) {
-        console.error('Error parsing stored form data:', error);
-      }
-    }
+    localStorage.removeItem('onboardingFormData');
+    setCurrentStep(1);
   }, []);
 
   const totalSteps = 5;
@@ -182,6 +160,7 @@ export default function OnboardingPage() {
 
   const isStep2Valid = formData.bodyType !== "" &&
     formData.stylePreference !== "" &&
+    formData.ethnicity !== "" &&
     formData.interests.length === 3;
 
   const isStep3Valid = formData.photos.length >= 10;
@@ -264,14 +243,15 @@ export default function OnboardingPage() {
           (window as any).onboardingScreenshots = formData.screenshots;
         }
 
-        // Redirect to payment page
-        router.push('/checkout');
+        // Redirect to pricing page
+        router.push('/pricing');
       } catch (error) {
         console.error('Error preparing form data:', error);
         alert('Failed to prepare form data. Please try again.');
       }
     }
   };
+
 
   const handleSkipStep4 = () => {
     setCurrentStep(5);
@@ -390,20 +370,24 @@ export default function OnboardingPage() {
 
   if (isCompleted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-white flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
+      <div className="min-h-screen text-white flex items-center justify-center p-4 relative overflow-hidden" style={{ backgroundColor: '#0E0E0F' }}>
+        {/* Glass morphism background elements */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0E0E0F] via-[#1a1a1a] to-[#0E0E0F]"></div>
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#d4ae36]/5 via-transparent to-transparent"></div>
+        <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-[#d4ae36]/3 via-transparent to-transparent"></div>
+        <Card className="w-full max-w-md bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl hover:bg-white/8 hover:border-white/20 transition-all duration-300 ease-out">
           <CardContent className="pt-6">
             <div className="text-center space-y-4">
-              <CheckCircle2 className="h-16 w-16 text-emerald-500 mx-auto" />
-              <h2 className="text-2xl font-bold text-gray-900">All Set!</h2>
-              <p className="text-gray-600">
+              <CheckCircle2 className="h-16 w-16 text-[#d4ae36] mx-auto" />
+              <h2 className="text-2xl font-bold text-white">All Set!</h2>
+              <p className="text-gray-300">
                 Perfect! We'll get started on your optimized photos right away.
               </p>
-              <div className="bg-emerald-50 p-4 rounded-lg">
-                <p className="text-sm text-emerald-700 font-medium">
+              <div className="bg-gray-800/50 p-4 rounded-lg border border-white/20">
+                <p className="text-sm text-[#d4ae36] font-medium">
                   📧 Check your email at {formData.email}
                 </p>
-                <p className="text-sm text-emerald-600 mt-1">
+                <p className="text-sm text-[#c19d2f] mt-1">
                   We'll notify you as soon as your photos are ready!
                 </p>
               </div>
@@ -415,9 +399,22 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-white">
+    <div className="min-h-screen text-white relative overflow-hidden" style={{ backgroundColor: '#0E0E0F', color: 'white' }}>
+      <style jsx global>{`
+        body {
+          background-color: #0E0E0F !important;
+        }
+        html {
+          background-color: #0E0E0F !important;
+        }
+      `}</style>
+
+      {/* Glass morphism background elements */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#0E0E0F] via-[#1a1a1a] to-[#0E0E0F]"></div>
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#d4ae36]/5 via-transparent to-transparent"></div>
+      <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-[#d4ae36]/3 via-transparent to-transparent"></div>
       {/* Progress Bar */}
-      <div className="w-full bg-white shadow-sm">
+      <div className="w-full bg-black/20 backdrop-blur-md border-b border-white/10 shadow-lg relative z-10">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
@@ -426,13 +423,12 @@ export default function OnboardingPage() {
                   variant="ghost"
                   size="sm"
                   onClick={() => setCurrentStep(currentStep - 1)}
-                  className="text-gray-600 hover:text-gray-800 flex items-center gap-1"
+                  className="text-white hover:text-white flex items-center gap-1"
                 >
-                  <ArrowLeft className="h-4 w-4" />
                   Back
                 </Button>
               )}
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium text-white">
                 Step {currentStep} of {totalSteps}
               </span>
             </div>
@@ -441,13 +437,13 @@ export default function OnboardingPage() {
                 variant="ghost"
                 size="sm"
                 onClick={handleSkipStep4}
-                className="text-gray-600 hover:text-gray-800"
+                className="text-white hover:text-white"
               >
                 Skip
               </Button>
             )}
             {currentStep !== 4 && (
-              <Button variant="ghost" size="sm" disabled className="text-gray-400">
+              <Button variant="ghost" size="sm" disabled className="text-gray-500">
                 Skip
               </Button>
             )}
@@ -457,28 +453,28 @@ export default function OnboardingPage() {
       </div>
 
       {/* Main Content */}
-      <div className="flex items-center justify-center min-h-[calc(100vh-100px)] p-4">
+      <div className="flex items-center justify-center min-h-[calc(100vh-100px)] p-4 relative z-10">
         {currentStep === 5 ? (
-          <Card className="w-full max-w-2xl">
+          <Card className="w-full max-w-2xl bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl hover:bg-white/8 hover:border-white/20 transition-all duration-300 ease-out">
             <CardHeader className="text-center space-y-2 pb-6">
-              <CardTitle className="text-3xl font-bold text-gray-900">
+              <CardTitle className="text-3xl font-bold text-white">
                 Where Should We Send Your New Photos?
               </CardTitle>
-              <CardDescription className="text-lg text-gray-600">
+              <CardDescription className="text-lg text-gray-300">
                 We'll deliver your optimized profile photos directly to you
               </CardDescription>
             </CardHeader>
 
             <CardContent className="space-y-8">
               {/* Delivery Time Visual */}
-              <div className="bg-gradient-to-r from-emerald-50 to-blue-50 p-6 rounded-lg border border-emerald-200">
-                <div className="flex items-center justify-center gap-3 text-emerald-700">
+              <div className="bg-gray-800/50 p-6 rounded-lg border border-white/30">
+                <div className="flex items-center justify-center gap-3 text-[#d4ae36]">
                   <Clock className="h-6 w-6" />
                   <div className="text-center">
                     <div className="text-lg font-semibold">
                       Delivered by {getDeliveryTime()}
                     </div>
-                    <div className="text-sm text-emerald-600">
+                    <div className="text-sm text-[#c19d2f]">
                       Tomorrow - We'll email you as soon as they're ready!
                     </div>
                   </div>
@@ -487,7 +483,7 @@ export default function OnboardingPage() {
 
               {/* Email Input */}
               <div className="space-y-2">
-                <label className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                <label className="text-sm font-bold text-white flex items-center gap-2">
                   <Mail className="h-4 w-4" />
                   Email Address
                 </label>
@@ -500,12 +496,12 @@ export default function OnboardingPage() {
                     validateEmail(e.target.value);
                   }}
                   onBlur={(e) => validateEmail(e.target.value)}
-                  className={`h-12 ${emailError ? "border-red-500 focus:border-red-500" : ""}`}
+                  className={`h-12 bg-white/5 backdrop-blur-sm border border-white/20 text-white placeholder-gray-400 focus:border-[#d4ae36] focus:ring-2 focus:ring-[#d4ae36]/30 focus:bg-white/10 transition-all duration-300 ease-out ${emailError ? "border-red-500 focus:border-red-500" : ""}`}
                 />
                 {emailError ? (
                   <p className="text-sm text-red-600">{emailError}</p>
                 ) : (
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-400">
                     Pre-filled from your payment information if available
                   </p>
                 )}
@@ -513,7 +509,7 @@ export default function OnboardingPage() {
 
               {/* Phone Input */}
               <div className="space-y-2">
-                <label className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                <label className="text-sm font-bold text-white flex items-center gap-2">
                   <Phone className="h-4 w-4" />
                   Phone Number
                   <span className="text-gray-400">(Optional)</span>
@@ -527,12 +523,12 @@ export default function OnboardingPage() {
                     validatePhone(e.target.value);
                   }}
                   onBlur={(e) => validatePhone(e.target.value)}
-                  className={`h-12 ${phoneError ? "border-red-500 focus:border-red-500" : ""}`}
+                  className={`h-12 bg-white/5 backdrop-blur-sm border border-white/20 text-white placeholder-gray-400 focus:border-[#d4ae36] focus:ring-2 focus:ring-[#d4ae36]/30 focus:bg-white/10 transition-all duration-300 ease-out ${phoneError ? "border-red-500 focus:border-red-500" : ""}`}
                 />
                 {phoneError ? (
                   <p className="text-sm text-red-600">{phoneError}</p>
                 ) : (
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-400">
                     For SMS updates about your photo generation progress
                   </p>
                 )}
@@ -541,12 +537,12 @@ export default function OnboardingPage() {
 
 
               {/* Email Notification Banner */}
-              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                <div className="flex items-center gap-2 text-blue-700">
+              <div className="bg-gray-800/50 p-4 rounded-lg border border-white/20">
+                <div className="flex items-center gap-2 text-[#d4ae36]">
                   <Mail className="h-5 w-5" />
                   <div>
                     <div className="font-semibold">We'll email you as soon as they're ready!</div>
-                    <div className="text-sm text-blue-600">
+                    <div className="text-sm text-[#c19d2f]">
                       You'll receive a link to download your optimized photos and bio suggestions
                     </div>
                   </div>
@@ -558,7 +554,7 @@ export default function OnboardingPage() {
                 <Button
                   onClick={handleContinue}
                   disabled={!isStep5Valid}
-                  className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-200 disabled:text-gray-400 text-lg font-medium transition-all duration-200"
+                  className="w-full h-12 bg-[#d4ae36] hover:bg-[#c19d2f] disabled:bg-gray-700 disabled:text-gray-400 text-white text-lg font-medium transition-all duration-200"
                 >
                   {isStep5Valid ? "Complete Setup" :
                     emailError ? "Please fix email errors" :
@@ -569,24 +565,24 @@ export default function OnboardingPage() {
               </div>
 
               {/* Privacy Note */}
-              <div className="text-center text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">
+              <div className="text-center text-xs text-gray-400 bg-gray-800 p-3 rounded-lg">
                 🔒 Your information is secure and will only be used to deliver your photos and send updates you've requested
               </div>
             </CardContent>
           </Card>
         ) : currentStep === 4 ? (
-          <Card className="w-full max-w-4xl">
+          <Card className="w-full max-w-4xl bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl hover:bg-white/8 hover:border-white/20 transition-all duration-300 ease-out">
             <CardHeader className="text-center space-y-2 pb-6">
-              <CardTitle className="text-3xl font-bold text-gray-900">
+              <CardTitle className="text-3xl font-bold text-white">
                 Share Your Current Profile (Optional but Recommended)
               </CardTitle>
-              <CardDescription className="text-lg text-gray-600">
+              <CardDescription className="text-lg text-gray-300">
                 This helps us improve what's not working
               </CardDescription>
 
               {/* Value Proposition */}
-              <div className="bg-gradient-to-r from-emerald-50 to-blue-50 p-4 rounded-lg border border-emerald-200 mt-6">
-                <div className="flex items-center justify-center gap-2 text-emerald-700 font-semibold">
+              <div className="bg-gray-800/50 p-4 rounded-lg border border-white/30 mt-6">
+                <div className="flex items-center justify-center gap-2 text-[#d4ae36] font-semibold">
                   <TrendingUp className="h-5 w-5" />
                   Users who share profiles get 2x better results
                 </div>
@@ -597,17 +593,17 @@ export default function OnboardingPage() {
               {/* Tinder Screenshots Upload */}
               <div className="space-y-4">
                 <div className="flex items-center gap-2">
-                  <Smartphone className="h-5 w-5 text-gray-600" />
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <Smartphone className="h-5 w-5 text-white" />
+                  <h3 className="text-lg font-semibold text-white">
                     Upload Tinder Screenshots
                   </h3>
-                  <span className="text-sm text-gray-500">(Optional)</span>
+                  <span className="text-sm text-gray-400">(Optional)</span>
                 </div>
 
                 <div
                   className={`border-2 border-dashed rounded-lg p-6 text-center transition-all duration-200 ${screenshotDragActive
-                    ? "border-emerald-400 bg-emerald-50"
-                    : "border-gray-300 hover:border-emerald-400 hover:bg-emerald-50"
+                    ? "border-[#d4ae36] bg-[#d4ae36]/10"
+                    : "border-white/20 hover:border-[#d4ae36] hover:bg-white/5"
                     }`}
                   onDragEnter={handleScreenshotDrag}
                   onDragLeave={handleScreenshotDrag}
@@ -615,10 +611,10 @@ export default function OnboardingPage() {
                   onDrop={handleScreenshotDrop}
                 >
                   <Smartphone className="h-10 w-10 text-gray-400 mx-auto mb-3" />
-                  <h4 className="text-md font-semibold text-gray-900 mb-2">
+                  <h4 className="text-md font-semibold text-white mb-2">
                     Drop screenshots here or click to browse
                   </h4>
-                  <p className="text-gray-600 mb-4 text-sm">
+                  <p className="text-gray-300 mb-4 text-sm">
                     Upload screenshots of your current profile, photos, or matches
                   </p>
                   <input
@@ -633,7 +629,7 @@ export default function OnboardingPage() {
                     asChild
                     variant="outline"
                     size="sm"
-                    className="hover:bg-emerald-50 hover:border-emerald-400"
+                    className="hover:bg-white/5 hover:border-[#d4ae36] text-white border-white/20"
                   >
                     <label htmlFor="screenshot-upload" className="cursor-pointer">
                       <Camera className="h-4 w-4 mr-2" />
@@ -646,17 +642,17 @@ export default function OnboardingPage() {
                 {formData.screenshots.length > 0 && (
                   <div>
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-sm font-medium text-gray-700">
+                      <span className="text-sm font-medium text-white">
                         Uploaded Screenshots
                       </span>
-                      <span className="text-sm text-gray-500">
+                      <span className="text-sm text-gray-400">
                         {formData.screenshots.length} uploaded
                       </span>
                     </div>
                     <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3">
                       {formData.screenshots.map((screenshot, index) => (
                         <div key={index} className="relative group">
-                          <div className="aspect-[9/16] rounded-lg overflow-hidden border-2 border-gray-200">
+                          <div className="aspect-[9/16] rounded-lg overflow-hidden border-2 border-white/20">
                             <img
                               src={URL.createObjectURL(screenshot)}
                               alt={`Screenshot ${index + 1}`}
@@ -679,22 +675,22 @@ export default function OnboardingPage() {
               {/* Current Bio */}
               <div className="space-y-4">
                 <div className="flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-gray-600" />
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <FileText className="h-5 w-5 text-white" />
+                  <h3 className="text-lg font-semibold text-white">
                     Current Bio
                   </h3>
-                  <span className="text-sm text-gray-500">(Optional)</span>
+                  <span className="text-sm text-gray-400">(Optional)</span>
                 </div>
 
                 <Textarea
                   placeholder="Paste your current Tinder bio here... This helps us understand what's working and what needs improvement."
                   value={formData.currentBio}
                   onChange={(e) => setFormData(prev => ({ ...prev, currentBio: e.target.value }))}
-                  className="min-h-[120px] resize-none"
+                  className="min-h-[120px] resize-none bg-white/5 backdrop-blur-sm border border-white/20 text-white placeholder-gray-400 focus:border-[#d4ae36] focus:ring-2 focus:ring-[#d4ae36]/30 focus:bg-white/10 transition-all duration-300 ease-out"
                 />
 
                 {formData.currentBio && (
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-gray-400">
                     {formData.currentBio.length} characters
                   </div>
                 )}
@@ -705,7 +701,7 @@ export default function OnboardingPage() {
                 {/* Continue Button */}
                 <Button
                   onClick={handleContinue}
-                  className="flex-1 h-12 bg-emerald-600 hover:bg-emerald-700 text-lg font-medium transition-all duration-200"
+                  className="flex-1 h-12 bg-[#d4ae36] hover:bg-[#c19d2f] text-black text-lg font-medium transition-all duration-200"
                 >
                   Continue to Final Step
                 </Button>
@@ -714,16 +710,16 @@ export default function OnboardingPage() {
                 <Button
                   onClick={handleSkipStep4}
                   variant="outline"
-                  className="flex-1 h-12 border-2 border-gray-300 hover:border-gray-400 text-lg font-medium transition-all duration-200"
+                  className="flex-1 h-12 border-2 border-white/20 hover:border-[#d4ae36] text-white hover:text-white text-lg font-medium transition-all duration-200"
                 >
                   <div className="text-center">
-                    <div className="text-gray-700">Skip and use generic optimization</div>
+                    <div className="text-white">Skip and use generic optimization</div>
                   </div>
                 </Button>
               </div>
 
               {/* Helper Text */}
-              <div className="text-center text-sm text-gray-500 bg-gray-50 p-3 rounded-lg">
+              <div className="text-center text-sm text-gray-400 bg-gray-800/50 p-3 rounded-lg border border-white/20">
                 💡 Sharing your current profile helps our AI identify specific areas for improvement and create more targeted optimizations
               </div>
             </CardContent>
@@ -731,10 +727,10 @@ export default function OnboardingPage() {
         ) : currentStep === 3 ? (
           <div className="w-full max-w-6xl">
             <div className="text-center space-y-2 mb-8">
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-3xl font-bold text-white">
                 Upload Your Best Selfies
               </h1>
-              <p className="text-lg text-gray-600">
+              <p className="text-lg text-gray-300">
                 We need 10-20 clear photos of your face
               </p>
             </div>
@@ -800,8 +796,8 @@ export default function OnboardingPage() {
                 {/* Upload Area */}
                 <div
                   className={`border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 ${dragActive
-                    ? "border-emerald-400 bg-emerald-50"
-                    : "border-gray-300 hover:border-emerald-400 hover:bg-emerald-50"
+                    ? "border-[#d4ae36] bg-[#d4ae36]/10"
+                    : "border-white/20 hover:border-[#d4ae36] hover:bg-white/5"
                     }`}
                   onDragEnter={handleDrag}
                   onDragLeave={handleDrag}
@@ -809,10 +805,10 @@ export default function OnboardingPage() {
                   onDrop={handleDrop}
                 >
                   <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  <h3 className="text-lg font-semibold text-white mb-2">
                     Drag & drop your photos here
                   </h3>
-                  <p className="text-gray-600 mb-4">
+                  <p className="text-gray-300 mb-4">
                     or click to browse from your device
                   </p>
                   <input
@@ -826,7 +822,7 @@ export default function OnboardingPage() {
                   <Button
                     asChild
                     variant="outline"
-                    className="hover:bg-emerald-50 hover:border-emerald-400"
+                    className="hover:bg-white/5 hover:border-[#d4ae36] text-white border-white/20"
                   >
                     <label htmlFor="photo-upload" className="cursor-pointer">
                       <Camera className="h-4 w-4 mr-2" />
@@ -837,12 +833,12 @@ export default function OnboardingPage() {
 
                 {/* Photo Counter */}
                 <div className="flex items-center justify-between mt-6 mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">Uploaded Photos</h3>
+                  <h3 className="text-lg font-semibold text-white">Uploaded Photos</h3>
                   <div className="text-sm">
-                    <span className={`font-semibold ${formData.photos.length >= 10 ? 'text-emerald-600' : 'text-gray-600'}`}>
+                    <span className={`font-semibold ${formData.photos.length >= 10 ? 'text-[#d4ae36]' : 'text-gray-400'}`}>
                       {formData.photos.length}/10
                     </span>
-                    <span className="text-gray-500 ml-1">minimum photos uploaded</span>
+                    <span className="text-gray-400 ml-1">minimum photos uploaded</span>
                   </div>
                 </div>
 
@@ -873,7 +869,7 @@ export default function OnboardingPage() {
                 <Button
                   onClick={handleContinue}
                   disabled={!isStep3Valid}
-                  className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-200 disabled:text-gray-400 text-lg font-medium transition-all duration-200"
+                  className="w-full h-12 bg-[#d4ae36] hover:bg-[#c19d2f] disabled:bg-gray-700 disabled:text-gray-400 text-black text-lg font-medium transition-all duration-200"
                 >
                   {isStep3Valid ? "Continue" : `Upload ${10 - formData.photos.length} more photos to continue`}
                 </Button>
@@ -881,12 +877,12 @@ export default function OnboardingPage() {
             </Card>
           </div>
         ) : currentStep === 2 ? (
-          <Card className="w-full max-w-2xl">
+          <Card className="w-full max-w-2xl bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl hover:bg-white/8 hover:border-white/20 transition-all duration-300 ease-out">
             <CardHeader className="text-center space-y-2">
-              <CardTitle className="text-3xl font-bold text-gray-900">
+              <CardTitle className="text-3xl font-bold text-white">
                 What vibe do you want?
               </CardTitle>
-              <CardDescription className="text-lg text-gray-600">
+              <CardDescription className="text-lg text-gray-300">
                 Help us understand your style preferences and interests
               </CardDescription>
             </CardHeader>
@@ -894,16 +890,16 @@ export default function OnboardingPage() {
             <CardContent className="space-y-8">
               {/* Body Type Selection */}
               <div className="space-y-2">
-                <label className="text-sm font-bold text-gray-900">
+                <label className="text-sm font-bold text-white">
                   Body Type
                 </label>
                 <Select value={formData.bodyType} onValueChange={(value) => setFormData(prev => ({ ...prev, bodyType: value }))}>
-                  <SelectTrigger className="h-12">
+                  <SelectTrigger className="h-12 bg-white/5 backdrop-blur-sm border border-white/20 text-white focus:border-[#d4ae36] focus:ring-2 focus:ring-[#d4ae36]/30 focus:bg-white/10 transition-all duration-300 ease-out">
                     <SelectValue placeholder="Select your body type" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-[#0E0E0F] border border-white/20 text-white">
                     {bodyTypes.map(type => (
-                      <SelectItem key={type.value} value={type.value}>
+                      <SelectItem key={type.value} value={type.value} className="hover:bg-white/5 hover:border hover:border-[#d4ae36] hover:text-white focus:bg-white/5 focus:text-white focus:border focus:border-[#d4ae36] text-white transition-all duration-200">
                         {type.label}
                       </SelectItem>
                     ))}
@@ -913,24 +909,24 @@ export default function OnboardingPage() {
 
               {/* Style Preferences */}
               <div className="space-y-3">
-                <label className="text-sm font-bold text-gray-900">
+                <label className="text-sm font-bold text-white">
                   Style Preference
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {stylePreferences.map(style => (
                     <Card
                       key={style.value}
-                      className={`cursor-pointer transition-all duration-200 ${formData.stylePreference === style.value
-                        ? "border-emerald-500 bg-emerald-50 ring-2 ring-emerald-200"
-                        : "hover:border-emerald-300 hover:bg-emerald-50"
+                      className={`cursor-pointer bg-white/5 backdrop-blur-sm border border-white/20 transition-all duration-300 ease-out ${formData.stylePreference === style.value
+                        ? "border-2 border-[#d4ae36] bg-[#d4ae36]/20 shadow-lg shadow-[#d4ae36]/30"
+                        : "hover:border-[#d4ae36]"
                         }`}
                       onClick={() => handleStylePreferenceSelect(style.value)}
                     >
                       <CardContent className="p-4">
-                        <h3 className="font-semibold text-gray-900 mb-1">
+                        <h3 className="font-semibold text-white mb-1">
                           {style.label}
                         </h3>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-gray-300">
                           {style.description}
                         </p>
                       </CardContent>
@@ -939,18 +935,18 @@ export default function OnboardingPage() {
                 </div>
               </div>
 
-              {/* Ethnicity (Optional) */}
+              {/* Ethnicity (Required) */}
               <div className="space-y-2">
-                <label className="text-sm font-bold text-gray-900">
-                  Ethnicity <span className="text-gray-400">(Optional)</span>
+                <label className="text-sm font-bold text-white">
+                  Ethnicity <span className="text-red-400">*</span>
                 </label>
                 <Select value={formData.ethnicity} onValueChange={(value) => setFormData(prev => ({ ...prev, ethnicity: value }))}>
-                  <SelectTrigger className="h-12">
+                  <SelectTrigger className="h-12 bg-white/5 backdrop-blur-sm border border-white/20 text-white focus:border-[#d4ae36] focus:ring-2 focus:ring-[#d4ae36]/30 focus:bg-white/10 transition-all duration-300 ease-out">
                     <SelectValue placeholder="Select your ethnicity" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-[#0E0E0F] border border-white/20 text-white">
                     {ethnicityOptions.map(option => (
-                      <SelectItem key={option.value} value={option.value}>
+                      <SelectItem key={option.value} value={option.value} className="hover:bg-white/5 hover:border hover:border-[#d4ae36] hover:text-white focus:bg-white/5 focus:text-white focus:border focus:border-[#d4ae36] text-white transition-all duration-200">
                         {option.label}
                       </SelectItem>
                     ))}
@@ -961,10 +957,10 @@ export default function OnboardingPage() {
               {/* Interests Selection */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <label className="text-sm font-bold text-gray-900">
+                  <label className="text-sm font-bold text-white">
                     Select Your Interests
                   </label>
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-gray-400">
                     {formData.interests.length}/3 selected
                   </span>
                 </div>
@@ -978,11 +974,11 @@ export default function OnboardingPage() {
                       <Button
                         key={interest.value}
                         variant={isSelected ? "default" : "outline"}
-                        className={`h-20 flex flex-col items-center gap-2 p-3 ${isSelected
-                          ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                        className={`h-20 flex flex-col items-center gap-2 p-3 bg-white/5 backdrop-blur-sm border border-white/20 text-white transition-all duration-300 ease-out ${isSelected
+                          ? "border-2 border-[#d4ae36] bg-[#d4ae36]/20 shadow-lg shadow-[#d4ae36]/30"
                           : isDisabled
                             ? "opacity-50 cursor-not-allowed"
-                            : "hover:bg-emerald-50 hover:border-emerald-300"
+                            : "hover:border-[#d4ae36] hover:text-white"
                           }`}
                         onClick={() => !isDisabled && handleInterestToggle(interest.value)}
                         disabled={isDisabled}
@@ -998,7 +994,7 @@ export default function OnboardingPage() {
               </div>
 
               {/* Helper Text */}
-              <div className="text-center text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
+              <div className="text-center text-sm text-gray-400 bg-gray-800/50 p-3 rounded-lg border border-white/20">
                 This helps our AI create authentic photos that match your personality and style
               </div>
 
@@ -1007,7 +1003,7 @@ export default function OnboardingPage() {
                 <Button
                   onClick={handleContinue}
                   disabled={!isStep2Valid}
-                  className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-200 disabled:text-gray-400 text-lg font-medium transition-all duration-200"
+                  className="w-full h-12 bg-[#d4ae36] hover:bg-[#c19d2f] disabled:bg-gray-700 disabled:text-gray-400 text-black text-lg font-medium transition-all duration-200"
                 >
                   Continue to Photo Upload
                 </Button>
@@ -1015,12 +1011,12 @@ export default function OnboardingPage() {
             </CardContent>
           </Card>
         ) : (
-          <Card className="w-full max-w-2xl">
+          <Card className="w-full max-w-2xl bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl hover:bg-white/8 hover:border-white/20 transition-all duration-300 ease-out">
             <CardHeader className="text-center space-y-2">
-              <CardTitle className="text-3xl font-bold text-gray-900">
+              <CardTitle className="text-3xl font-bold text-white">
                 Let's get to know you better
               </CardTitle>
-              <CardDescription className="text-lg text-gray-600">
+              <CardDescription className="text-lg text-gray-300">
                 Help us personalize your experience with some basic information
               </CardDescription>
             </CardHeader>
@@ -1028,16 +1024,15 @@ export default function OnboardingPage() {
             <CardContent className="space-y-8">
               {/* Back to Homepage Button */}
               <div className="flex justify-start">
-                <Button asChild variant="ghost" size="sm">
+                <Button asChild variant="ghost" size="sm" className="text-white hover:text-white">
                   <Link href="/">
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    Back to Homepage
+                    ← Back to Homepage
                   </Link>
                 </Button>
               </div>
               {/* Name Field */}
               <div className="space-y-2">
-                <label htmlFor="name" className="text-sm font-bold text-gray-900">
+                <label htmlFor="name" className="text-sm font-bold text-white">
                   Full Name
                 </label>
                 <Input
@@ -1045,21 +1040,21 @@ export default function OnboardingPage() {
                   placeholder="John Doe"
                   value={formData.name}
                   onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  className="h-12"
+                  className="h-12 bg-white/5 backdrop-blur-sm border border-white/20 text-white placeholder-gray-400 focus:border-[#d4ae36] focus:ring-2 focus:ring-[#d4ae36]/30 focus:bg-white/10 transition-all duration-300 ease-out"
                 />
               </div>
 
               {/* Age Selection */}
               <div className="space-y-3">
-                <label className="text-sm font-bold text-gray-900">
+                <label className="text-sm font-bold text-white">
                   Select your age
                 </label>
                 <div className="grid grid-cols-1 gap-3">
                   <Button
                     variant={formData.age === "20-29" ? "default" : "outline"}
                     className={`h-12 ${formData.age === "20-29"
-                      ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                      : "hover:bg-emerald-50 hover:border-emerald-300"
+                      ? "bg-[#d4ae36]/20 backdrop-blur-sm border-2 border-[#d4ae36] text-white shadow-lg shadow-[#d4ae36]/30 transition-all duration-300 ease-out"
+                      : "bg-white/5 backdrop-blur-sm border border-white/20 text-white hover:border-[#d4ae36] hover:text-white hover:shadow-lg hover:shadow-[#d4ae36]/20 transition-all duration-300 ease-out"
                       }`}
                     onClick={() => setFormData(prev => ({ ...prev, age: "20-29" }))}
                   >
@@ -1068,8 +1063,8 @@ export default function OnboardingPage() {
                   <Button
                     variant={formData.age === "30-45" ? "default" : "outline"}
                     className={`h-12 ${formData.age === "30-45"
-                      ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                      : "hover:bg-emerald-50 hover:border-emerald-300"
+                      ? "bg-[#d4ae36]/20 backdrop-blur-sm border-2 border-[#d4ae36] text-white shadow-lg shadow-[#d4ae36]/30 transition-all duration-300 ease-out"
+                      : "bg-white/5 backdrop-blur-sm border border-white/20 text-white hover:border-[#d4ae36] hover:text-white hover:shadow-lg hover:shadow-[#d4ae36]/20 transition-all duration-300 ease-out"
                       }`}
                     onClick={() => setFormData(prev => ({ ...prev, age: "30-45" }))}
                   >
@@ -1078,8 +1073,8 @@ export default function OnboardingPage() {
                   <Button
                     variant={formData.age === "46-60" ? "default" : "outline"}
                     className={`h-12 ${formData.age === "46-60"
-                      ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                      : "hover:bg-emerald-50 hover:border-emerald-300"
+                      ? "bg-[#d4ae36]/20 backdrop-blur-sm border-2 border-[#d4ae36] text-white shadow-lg shadow-[#d4ae36]/30 transition-all duration-300 ease-out"
+                      : "bg-white/5 backdrop-blur-sm border border-white/20 text-white hover:border-[#d4ae36] hover:text-white hover:shadow-lg hover:shadow-[#d4ae36]/20 transition-all duration-300 ease-out"
                       }`}
                     onClick={() => setFormData(prev => ({ ...prev, age: "46-60" }))}
                   >
@@ -1088,8 +1083,8 @@ export default function OnboardingPage() {
                   <Button
                     variant={formData.age === "60+" ? "default" : "outline"}
                     className={`h-12 ${formData.age === "60+"
-                      ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                      : "hover:bg-emerald-50 hover:border-emerald-300"
+                      ? "bg-[#d4ae36]/20 backdrop-blur-sm border-2 border-[#d4ae36] text-white shadow-lg shadow-[#d4ae36]/30 transition-all duration-300 ease-out"
+                      : "bg-white/5 backdrop-blur-sm border border-white/20 text-white hover:border-[#d4ae36] hover:text-white hover:shadow-lg hover:shadow-[#d4ae36]/20 transition-all duration-300 ease-out"
                       }`}
                     onClick={() => setFormData(prev => ({ ...prev, age: "60+" }))}
                   >
@@ -1100,7 +1095,7 @@ export default function OnboardingPage() {
 
               {/* Dating Goals */}
               <div className="space-y-3">
-                <label className="text-sm font-bold text-gray-900">
+                <label className="text-sm font-bold text-white">
                   What are your dating goals?
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -1109,8 +1104,8 @@ export default function OnboardingPage() {
                       key={goal.value}
                       variant={formData.datingGoal === goal.value ? "default" : "outline"}
                       className={`h-12 ${formData.datingGoal === goal.value
-                        ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                        : "hover:bg-emerald-50 hover:border-emerald-300"
+                        ? "bg-[#d4ae36]/20 backdrop-blur-sm border-2 border-[#d4ae36] text-white shadow-lg shadow-[#d4ae36]/30 transition-all duration-300 ease-out"
+                        : "bg-white/5 backdrop-blur-sm border border-white/20 text-white hover:border-[#d4ae36] hover:bg-white/10 hover:text-white hover:shadow-lg hover:shadow-[#d4ae36]/20 transition-all duration-300 ease-out"
                         }`}
                       onClick={() => handleDatingGoalSelect(goal.value)}
                     >
@@ -1122,7 +1117,7 @@ export default function OnboardingPage() {
 
               {/* Current Matches */}
               <div className="space-y-3">
-                <label className="text-sm font-bold text-gray-900">
+                <label className="text-sm font-bold text-white">
                   How many matches do you typically get per week?
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -1131,8 +1126,8 @@ export default function OnboardingPage() {
                       key={option.value}
                       variant={formData.currentMatches === option.value ? "default" : "outline"}
                       className={`h-12 ${formData.currentMatches === option.value
-                        ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                        : "hover:bg-emerald-50 hover:border-emerald-300"
+                        ? "bg-[#d4ae36]/20 backdrop-blur-sm border-2 border-[#d4ae36] text-white shadow-lg shadow-[#d4ae36]/30 transition-all duration-300 ease-out"
+                        : "bg-white/5 backdrop-blur-sm border border-white/20 text-white hover:border-[#d4ae36] hover:bg-white/10 hover:text-white hover:shadow-lg hover:shadow-[#d4ae36]/20 transition-all duration-300 ease-out"
                         }`}
                       onClick={() => handleMatchOptionSelect(option.value)}
                     >
@@ -1147,7 +1142,7 @@ export default function OnboardingPage() {
                 <Button
                   onClick={handleContinue}
                   disabled={!isStep1Valid}
-                  className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-200 disabled:text-gray-400 text-lg font-medium transition-all duration-200"
+                  className="w-full h-12 bg-[#d4ae36] hover:bg-[#c19d2f] disabled:bg-gray-700 disabled:text-gray-400 text-white text-lg font-medium transition-all duration-200"
                 >
                   Continue to Next Step
                 </Button>

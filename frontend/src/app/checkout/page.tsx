@@ -39,7 +39,7 @@ const packages: Package[] = [
     id: "starter",
     name: "Starter Package",
     originalPrice: 59,
-    price: 39,
+    price: 1,
     features: [
       "20 enhanced photos",
       "3 style variations",
@@ -51,7 +51,7 @@ const packages: Package[] = [
     id: "professional",
     name: "Professional Package",
     originalPrice: 99,
-    price: 69,
+    price: 1,
     features: [
       "50 enhanced photos",
       "6 style variations",
@@ -65,7 +65,7 @@ const packages: Package[] = [
     id: "elite",
     name: "Elite Package",
     originalPrice: 149,
-    price: 99,
+    price: 1,
     features: [
       "100 enhanced photos",
       "10 style variations",
@@ -78,7 +78,7 @@ const packages: Package[] = [
     id: "vip",
     name: "VIP Package",
     originalPrice: 249,
-    price: 199,
+    price: 1,
     features: [
       "Unlimited photos",
       "All styles",
@@ -224,30 +224,30 @@ function PaymentForm({ selectedPackage, onPaymentSuccess }: PaymentFormProps) {
 function TrustBadges() {
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-center space-x-6 text-sm text-muted-foreground">
+      <div className="flex items-center justify-center space-x-6 text-sm text-white/70">
         <div className="flex items-center space-x-2">
-          <Shield className="w-4 h-4 text-emerald-600" />
+          <Shield className="w-4 h-4 text-[#d4ae36]" />
           <span>SSL Secured</span>
         </div>
         <div className="flex items-center space-x-2">
-          <RotateCcw className="w-4 h-4 text-emerald-600" />
+          <RotateCcw className="w-4 h-4 text-[#d4ae36]" />
           <span>Money Back Guarantee</span>
         </div>
       </div>
 
       <div className="text-center">
-        <div className="flex items-center justify-center space-x-2 text-emerald-600">
+        <div className="flex items-center justify-center space-x-2 text-[#d4ae36]">
           <Users className="w-4 h-4" />
           <span className="text-sm font-medium">2,847 customers served</span>
         </div>
       </div>
 
       <div className="flex justify-center space-x-4">
-        <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 border-emerald-200">
+        <Badge variant="secondary" className="bg-[#d4ae36]/20 text-[#d4ae36] border-[#d4ae36]/30">
           <CheckCircle className="w-3 h-3 mr-1" />
           Secure Payment
         </Badge>
-        <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 border-emerald-200">
+        <Badge variant="secondary" className="bg-[#d4ae36]/20 text-[#d4ae36] border-[#d4ae36]/30">
           <Lock className="w-3 h-3 mr-1" />
           256-bit SSL
         </Badge>
@@ -259,13 +259,13 @@ function TrustBadges() {
 function TestimonialSidebar() {
   return (
     <div className="hidden xl:block space-y-6 sticky top-8">
-      <h3 className="font-heading text-lg font-semibold text-foreground">
+      <h3 className="font-heading text-lg font-semibold text-white">
         What Our Customers Say
       </h3>
 
       <div className="space-y-4">
         {testimonials.map((testimonial, index) => (
-          <Card key={index} className="p-4">
+          <Card key={index} className="p-4 bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl hover:bg-white/8 hover:border-white/20 transition-all duration-300 ease-out">
             <div className="flex items-start space-x-3">
               <img
                 src={testimonial.image}
@@ -275,11 +275,11 @@ function TestimonialSidebar() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center space-x-1 mb-1">
                   {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                    <Star key={i} className="w-3 h-3 fill-[#d4ae36] text-[#d4ae36]" />
                   ))}
                 </div>
-                <p className="text-sm text-muted-foreground mb-2">{testimonial.quote}</p>
-                <p className="text-xs font-medium text-foreground">{testimonial.name}</p>
+                <p className="text-sm text-white/70 mb-2">{testimonial.quote}</p>
+                <p className="text-xs font-medium text-white">{testimonial.name}</p>
               </div>
             </div>
           </Card>
@@ -409,43 +409,48 @@ function CheckoutContent() {
   const savings = selectedPackage.originalPrice - selectedPackage.price;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+      {/* Glass morphism background elements */}
+      <div className="absolute inset-0 bg-gradient-to-br from-black via-[#0E0E0F] to-black"></div>
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#d4ae36]/5 via-transparent to-transparent"></div>
+      <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-[#d4ae36]/3 via-transparent to-transparent"></div>
+
       {/* Header */}
-      <div className="border-b border-border bg-background">
+      <div className="relative z-10 border-b border-white/10 bg-black/20 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center space-x-4">
-            <Button asChild variant="ghost" size="sm">
-              <Link href="/onboarding">
+            <Button asChild variant="ghost" size="sm" className="text-white hover:text-white">
+              <Link href="/pricing">
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
+                Back to Packages
               </Link>
             </Button>
-            <h1 className="text-xl font-semibold text-foreground">Secure Checkout</h1>
+            <h1 className="text-xl font-semibold text-white">Secure Checkout</h1>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
           {/* Order Details - Left Column */}
           <div className="xl:col-span-1 space-y-6">
-            <Card>
+            <Card className="bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl hover:bg-white/8 hover:border-white/20 transition-all duration-300 ease-out">
               <CardHeader>
-                <CardTitle className="flex items-center justify-between">
+                <CardTitle className="flex items-center justify-between text-white">
                   <span>Order Summary</span>
                   {selectedPackage.popular && (
-                    <Badge className="bg-emerald-600">Most Popular</Badge>
+                    <Badge className="bg-[#d4ae36] text-black">Most Popular</Badge>
                   )}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="font-semibold text-lg">{selectedPackage.name}</h3>
-                    <ul className="text-sm text-muted-foreground mt-2 space-y-1">
+                    <h3 className="font-semibold text-lg text-white">{selectedPackage.name}</h3>
+                    <ul className="text-sm text-white/70 mt-2 space-y-1">
                       {selectedPackage.features.map((feature, index) => (
                         <li key={index} className="flex items-center">
-                          <CheckCircle className="w-4 h-4 text-emerald-600 mr-2 flex-shrink-0" />
+                          <CheckCircle className="w-4 h-4 text-[#d4ae36] mr-2 flex-shrink-0" />
                           {feature}
                         </li>
                       ))}
@@ -457,34 +462,34 @@ function CheckoutContent() {
 
                 <div className="space-y-3">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Regular Price</span>
-                    <span className="line-through text-muted-foreground">
+                    <span className="text-white/70">Regular Price</span>
+                    <span className="line-through text-white/70">
                       ${selectedPackage.originalPrice}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Today's Price</span>
-                    <span className="text-emerald-600 font-semibold">
+                    <span className="text-white/70">Today's Price</span>
+                    <span className="text-[#d4ae36] font-semibold">
                       ${selectedPackage.price}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm font-medium">
-                    <span className="text-emerald-600">You Save</span>
-                    <span className="text-emerald-600">${savings}</span>
+                    <span className="text-[#d4ae36]">You Save</span>
+                    <span className="text-[#d4ae36]">${savings}</span>
                   </div>
                 </div>
 
-                <Separator />
+                <Separator className="bg-white/20" />
 
                 <div className="flex items-center justify-between text-lg font-bold">
-                  <span>Total</span>
-                  <span className="text-emerald-600">${selectedPackage.price}</span>
+                  <span className="text-white">Total</span>
+                  <span className="text-[#d4ae36]">${selectedPackage.price}</span>
                 </div>
               </CardContent>
             </Card>
 
             {/* Trust Elements */}
-            <Card>
+            <Card className="bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl hover:bg-white/8 hover:border-white/20 transition-all duration-300 ease-out">
               <CardContent className="pt-6">
                 <TrustBadges />
               </CardContent>
@@ -493,10 +498,10 @@ function CheckoutContent() {
 
           {/* Payment Form - Center Column */}
           <div className="xl:col-span-2">
-            <Card className="sticky top-8">
+            <Card className="sticky top-8 bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl hover:bg-white/8 hover:border-white/20 transition-all duration-300 ease-out">
               <CardHeader>
-                <CardTitle className="flex items-center">
-                  <CreditCard className="w-5 h-5 mr-2" />
+                <CardTitle className="flex items-center text-white">
+                  <CreditCard className="w-5 h-5 mr-2 text-[#d4ae36]" />
                   Payment Details
                 </CardTitle>
               </CardHeader>
@@ -517,10 +522,10 @@ function CheckoutContent() {
       </div>
 
       {/* Mobile Fixed Payment Button */}
-      <div className="xl:hidden fixed bottom-0 left-0 right-0 bg-background border-t border-border p-4 z-50">
+      <div className="xl:hidden fixed bottom-0 left-0 right-0 bg-black/20 backdrop-blur-md border-t border-white/10 p-4 z-50">
         <Button
           onClick={() => setShowMobilePayment(true)}
-          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-4 text-lg"
+          className="w-full bg-gradient-to-r from-[#d4ae36] to-[#c19d2f] hover:from-[#c19d2f] hover:to-[#b8941f] text-black font-semibold py-4 text-lg rounded-xl transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-2xl hover:shadow-[#d4ae36]/30"
         >
           <Lock className="w-4 h-4 mr-2" />
           Pay ${selectedPackage.price} Now
@@ -530,13 +535,14 @@ function CheckoutContent() {
       {/* Mobile Payment Modal */}
       {showMobilePayment && (
         <div className="xl:hidden fixed inset-0 bg-black/50 z-50 flex items-end">
-          <div className="w-full bg-background rounded-t-xl p-6 max-h-[80vh] overflow-y-auto">
+          <div className="w-full bg-black/20 backdrop-blur-md border border-white/10 rounded-t-xl p-6 max-h-[80vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">Complete Payment</h2>
+              <h2 className="text-lg font-semibold text-white">Complete Payment</h2>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowMobilePayment(false)}
+                className="text-white hover:text-white"
               >
                 ✕
               </Button>

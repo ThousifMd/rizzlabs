@@ -42,7 +42,7 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
 
     const storePaymentAndOnboarding = async (paymentDetails: any) => {
         try {
-            // Always use $1.00 for testing regardless of package
+            // Hardcoded to $1.00 for testing
             const actualAmountPaid = "1.00";
 
             // STEP 1: Store payment data
@@ -116,21 +116,21 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
 
                     // Create onboarding submission data
                     const onboardingData = {
-                        name: onboardingFormData.name,
+                        name: onboardingFormData.name || '',
                         gender: onboardingFormData.gender || 'not_specified',
-                        age: onboardingFormData.age,
-                        datingGoal: onboardingFormData.datingGoal,
-                        currentMatches: onboardingFormData.currentMatches,
-                        bodyType: onboardingFormData.bodyType,
-                        stylePreference: onboardingFormData.stylePreference,
-                        ethnicity: onboardingFormData.ethnicity,
-                        interests: JSON.stringify(onboardingFormData.interests),
-                        currentBio: onboardingFormData.currentBio,
-                        email: onboardingFormData.email,
-                        phone: onboardingFormData.phone,
-                        weeklyTips: onboardingFormData.weeklyTips.toString(),
-                        originalPhotos: JSON.stringify(photoDataUrls),
-                        screenshotPhotos: JSON.stringify(screenshotDataUrls)
+                        age: onboardingFormData.age || 0,
+                        datingGoal: onboardingFormData.datingGoal || '',
+                        currentMatches: onboardingFormData.currentMatches || 0,
+                        bodyType: onboardingFormData.bodyType || '',
+                        stylePreference: onboardingFormData.stylePreference || '',
+                        ethnicity: onboardingFormData.ethnicity || '',
+                        interests: JSON.stringify(onboardingFormData.interests || []),
+                        currentBio: onboardingFormData.currentBio || '',
+                        email: onboardingFormData.email || '',
+                        phone: onboardingFormData.phone || '',
+                        weeklyTips: onboardingFormData.weeklyTips ? onboardingFormData.weeklyTips.toString() : 'false',
+                        originalPhotos: JSON.stringify(photoDataUrls || []),
+                        screenshotPhotos: JSON.stringify(screenshotDataUrls || [])
                     };
 
                     console.log("Submitting onboarding data:", onboardingData);
@@ -185,14 +185,14 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
 
     if (!showForm) {
         return (
-            <div className="w-full max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-                <h2 className="text-xl font-bold mb-4 text-center">Ready to Start?</h2>
-                <p className="text-gray-600 mb-6 text-center">
-                    {selectedPackage ? `${selectedPackage.name}: $1.00 (Testing)` : 'Test payment: $1.00'}
+            <div className="w-full max-w-md mx-auto p-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-lg shadow-2xl">
+                <h2 className="text-xl font-bold mb-4 text-center text-white">Ready to Start?</h2>
+                <p className="text-white/70 mb-6 text-center">
+                    {selectedPackage ? `${selectedPackage.name}: $1.00 (Testing)` : 'Payment: $1.00 (Testing)'}
                 </p>
                 <button
                     onClick={handleStartPayment}
-                    className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+                    className="w-full bg-gradient-to-r from-[#d4ae36] to-[#c19d2f] hover:from-[#c19d2f] hover:to-[#b8941f] text-black py-3 px-4 rounded-lg transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#d4ae36]/30"
                 >
                     Start Payment Process
                 </button>
@@ -201,10 +201,10 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
     }
 
     return (
-        <div className="w-full max-w-2xl mx-auto p-8 bg-white rounded-xl shadow-lg border border-gray-100">
-            <h2 className="text-2xl font-bold mb-2 text-center text-gray-800">Complete Your Order</h2>
-            <p className="text-gray-600 mb-6 text-center">
-                {selectedPackage ? `${selectedPackage.name}: $1.00 (Testing)` : 'Test payment: $1.00'}
+        <div className="w-full max-w-2xl mx-auto p-8 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl shadow-2xl">
+            <h2 className="text-2xl font-bold mb-2 text-center text-white">Complete Your Order</h2>
+            <p className="text-white/70 mb-6 text-center">
+                {selectedPackage ? `${selectedPackage.name}: $1.00 (Testing)` : 'Payment: $1.00 (Testing)'}
             </p>
 
             <form onSubmit={handleFormSubmit} className="space-y-4 mb-6">
@@ -214,7 +214,7 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
                         placeholder="First Name"
                         value={formData.firstName}
                         onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                        className="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        className="bg-white/5 backdrop-blur-sm border border-white/20 text-white placeholder-white/50 rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#d4ae36]/30 focus:border-[#d4ae36] focus:bg-white/10 transition-all duration-300"
                         required
                     />
                     <input
@@ -222,7 +222,7 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
                         placeholder="Last Name"
                         value={formData.lastName}
                         onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                        className="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        className="bg-white/5 backdrop-blur-sm border border-white/20 text-white placeholder-white/50 rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#d4ae36]/30 focus:border-[#d4ae36] focus:bg-white/10 transition-all duration-300"
                         required
                     />
                 </div>
@@ -247,11 +247,11 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
             </form>
 
             {/* PayPal Integration */}
-            <div className="mt-6 p-8 bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-200 rounded-xl shadow-lg">
-                <h3 className="text-xl font-bold text-blue-900 mb-3 text-center">💳 Complete Payment</h3>
-                <p className="text-blue-700 mb-6 text-center text-sm">Secure payment powered by PayPal</p>
+            <div className="mt-6 p-8 bg-gradient-to-br from-[#d4ae36]/10 to-[#c19d2f]/10 border-2 border-[#d4ae36]/20 rounded-xl shadow-lg">
+                <h3 className="text-xl font-bold text-white mb-3 text-center">💳 Complete Payment</h3>
+                <p className="text-white/70 mb-6 text-center text-sm">Secure payment powered by PayPal</p>
 
-                <div className="bg-white rounded-lg p-6 border border-blue-100 shadow-sm">
+                <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10 shadow-sm">
                     <style dangerouslySetInnerHTML={{ __html: paypalStyles }} />
                     <div className="paypal-button-container">
                         <PayPalScriptProvider
@@ -268,7 +268,7 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
                                         console.log('📦 Package data:', { selectedPackage, amount: "1.00" });
 
                                         const orderData = {
-                                            amount: "1.00", // Hardcoded to $1 for testing
+                                            amount: "1.00",
                                             description: selectedPackage?.name || "Test Payment",
                                             packageId: selectedPackage?.id,
                                             packageName: selectedPackage?.name
