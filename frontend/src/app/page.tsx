@@ -11,7 +11,7 @@ import Footer from "@/components/Footer";
 import { MobileStickyCTA } from "@/components/MobileStickyCTA";
 
 export default function HomePage() {
-  const ctaHref = "/checkout";
+  const ctaHref = "/onboarding";
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
@@ -56,7 +56,7 @@ export default function HomePage() {
 
       {/* Mobile Sticky CTA */}
       <MobileStickyCTA
-        href="/checkout"
+        href="/onboarding"
         customersCount={2847}
       />
     </div>

@@ -9,8 +9,7 @@ interface HeroSectionProps {
 
 export default function HeroSection({ ctaHref, className }: HeroSectionProps) {
   const handleCTA = () => {
-    localStorage.setItem('selectedPackage', 'professional');
-    window.location.href = "/checkout";
+    window.location.href = "/onboarding";
   };
 
   return (
