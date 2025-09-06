@@ -11,17 +11,11 @@ type NavbarProps = {
 }
 
 const HEADER_BASE =
-  "fixed inset-x-0 top-0 z-50 bg-black backdrop-blur-sm transition-colors duration-300"
+  "fixed inset-x-0 top-0 z-50 bg-white/5 backdrop-blur-md border-b border-white/10 transition-colors duration-300"
 const HEADER_SCROLLED =
-  "fixed inset-x-0 top-0 z-50 bg-black backdrop-blur-md border-b border-[#d4ae36]/20 transition-colors duration-300"
+  "fixed inset-x-0 top-0 z-50 bg-white/10 backdrop-blur-xl border-b border-[#d4ae36]/30 shadow-lg transition-colors duration-300"
 
-const navItems = [
-  { label: "Examples", href: "#examples" },
-  { label: "Why", href: "#why" },
-  { label: "How It Works", href: "#how" },
-  { label: "Proof", href: "#proof" },
-  { label: "Pricing", href: "#pricing" },
-]
+const navItems = []
 
 export default function Navbar({ ctaHref, className }: NavbarProps) {
   const [scrolled, setScrolled] = React.useState(false)
@@ -62,7 +56,7 @@ export default function Navbar({ ctaHref, className }: NavbarProps) {
             href={ctaHref}
             className="hidden md:inline-flex items-center px-5 py-2 bg-transparent backdrop-blur-sm border border-[#d4ae36]/40 text-[#d4ae36] rounded-lg font-medium hover:border-[#d4ae36]/60 hover:bg-transparent transition-all duration-300"
           >
-            Make Me a Match Magnet
+            Join the Top 5%
           </Link>
 
           <div className="flex items-center md:hidden">
@@ -154,7 +148,7 @@ function MobileMenu({
             className="inline-flex items-center px-6 py-2 bg-amber-500 text-white rounded-full font-semibold hover:bg-amber-400 transition-colors mt-4"
             onClick={() => setOpen(false)}
           >
-            Make Me a Match Magnet
+            Join the Top 5%
           </Link>
         </div>
 

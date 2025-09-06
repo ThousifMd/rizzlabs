@@ -262,4 +262,263 @@ color utility to any element that depends on these defaults.
         --tw-ring-color: #d4ae36;
         --tw-ring-offset-color: #000000;
     }
+
+    /* Flowing wave collision animation for CTA button */
+    @keyframes flowingWaveLeft {
+        0% {
+            opacity: 0;
+            transform: translateX(-100%);
+        }
+
+        20% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 1;
+            transform: translateX(0%);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translateX(0%);
+        }
+    }
+
+    @keyframes flowingWaveRight {
+        0% {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+
+        20% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 1;
+            transform: translateX(0%);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translateX(0%);
+        }
+    }
+
+    @keyframes sparkleBurst {
+
+        0%,
+        45% {
+            opacity: 0;
+            transform: scale(0);
+        }
+
+        50% {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        55% {
+            opacity: 0;
+            transform: scale(1.5);
+        }
+
+        100% {
+            opacity: 0;
+            transform: scale(0);
+        }
+    }
+
+    @keyframes sparkle1 {
+
+        0%,
+        45% {
+            opacity: 0;
+            transform: translate(0, 0) scale(0);
+        }
+
+        50% {
+            opacity: 1;
+            transform: translate(-8px, -8px) scale(1);
+        }
+
+        60% {
+            opacity: 0;
+            transform: translate(-12px, -12px) scale(0.5);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translate(-12px, -12px) scale(0);
+        }
+    }
+
+    @keyframes sparkle2 {
+
+        0%,
+        45% {
+            opacity: 0;
+            transform: translate(0, 0) scale(0);
+        }
+
+        50% {
+            opacity: 1;
+            transform: translate(8px, -8px) scale(1);
+        }
+
+        60% {
+            opacity: 0;
+            transform: translate(12px, -12px) scale(0.5);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translate(12px, -12px) scale(0);
+        }
+    }
+
+    @keyframes sparkle3 {
+
+        0%,
+        45% {
+            opacity: 0;
+            transform: translate(0, 0) scale(0);
+        }
+
+        50% {
+            opacity: 1;
+            transform: translate(-8px, 8px) scale(1);
+        }
+
+        60% {
+            opacity: 0;
+            transform: translate(-12px, 12px) scale(0.5);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translate(-12px, 12px) scale(0);
+        }
+    }
+
+    @keyframes sparkle4 {
+
+        0%,
+        45% {
+            opacity: 0;
+            transform: translate(0, 0) scale(0);
+        }
+
+        50% {
+            opacity: 1;
+            transform: translate(8px, 8px) scale(1);
+        }
+
+        60% {
+            opacity: 0;
+            transform: translate(12px, 12px) scale(0.5);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translate(12px, 12px) scale(0);
+        }
+    }
+
+    @keyframes sparkle5 {
+
+        0%,
+        45% {
+            opacity: 0;
+            transform: translate(0, 0) scale(0);
+        }
+
+        50% {
+            opacity: 1;
+            transform: translate(-6px, 0) scale(1);
+        }
+
+        60% {
+            opacity: 0;
+            transform: translate(-10px, 0) scale(0.5);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translate(-10px, 0) scale(0);
+        }
+    }
+
+    @keyframes sparkle6 {
+
+        0%,
+        45% {
+            opacity: 0;
+            transform: translate(0, 0) scale(0);
+        }
+
+        50% {
+            opacity: 1;
+            transform: translate(6px, 0) scale(1);
+        }
+
+        60% {
+            opacity: 0;
+            transform: translate(10px, 0) scale(0.5);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translate(10px, 0) scale(0);
+        }
+    }
+
+    @keyframes sparkle7 {
+
+        0%,
+        45% {
+            opacity: 0;
+            transform: translate(0, 0) scale(0);
+        }
+
+        50% {
+            opacity: 1;
+            transform: translate(0, -6px) scale(1);
+        }
+
+        60% {
+            opacity: 0;
+            transform: translate(0, -10px) scale(0.5);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translate(0, -10px) scale(0);
+        }
+    }
+
+    @keyframes sparkle8 {
+
+        0%,
+        45% {
+            opacity: 0;
+            transform: translate(0, 0) scale(0);
+        }
+
+        50% {
+            opacity: 1;
+            transform: translate(0, 6px) scale(1);
+        }
+
+        60% {
+            opacity: 0;
+            transform: translate(0, 10px) scale(0.5);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translate(0, 10px) scale(0);
+        }
+    }
 }

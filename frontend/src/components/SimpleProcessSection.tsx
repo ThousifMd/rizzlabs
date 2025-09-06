@@ -35,14 +35,14 @@ export const SimpleProcessSection: React.FC = () => {
         <section className="py-24 px-4 max-w-6xl mx-auto">
             {/* Header */}
             <div className="text-center mb-20">
-                <div className="inline-block bg-gradient-to-r from-[#d4ae36]/20 to-[#c19d2f]/20 rounded-full px-6 py-2 mb-6">
-                    <span className="text-[#d4ae36] font-medium text-sm">HOW IT WORKS</span>
+                <div className="inline-block bg-[#d4ae36] text-black px-6 py-2 rounded-full font-bold text-sm mb-6">
+                    HOW IT WORKS
                 </div>
                 <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
                     From Selfie to Success
                 </h2>
                 <p className="text-xl text-white/80 max-w-2xl mx-auto">
-                    Our proven process transforms ordinary photos into irresistible profiles
+                    We turn your basic selfies into profiles that actually get matches (yes, it's possible)
                 </p>
             </div>
 
@@ -76,14 +76,6 @@ export const SimpleProcessSection: React.FC = () => {
                         </div>
                     </div>
                 ))}
-            </div>
-
-            {/* Bottom CTA */}
-            <div className="text-center">
-                <div className="inline-flex items-center gap-3 bg-gradient-to-r from-[#d4ae36] to-[#c19d2f] hover:from-[#c19d2f] hover:to-[#b8941f] text-black px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#d4ae36]/30 border-2 border-[#d4ae36]/20 backdrop-blur-sm">
-                    <span>Start Your Transformation</span>
-                    <span>→</span>
-                </div>
             </div>
         </section>
     );

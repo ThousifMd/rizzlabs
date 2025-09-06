@@ -37,10 +37,10 @@ router.post("/submit", async (req, res) => {
     console.log('Request headers:', req.headers);
     console.log('Request body type:', typeof req.body);
     console.log('Request body:', JSON.stringify(req.body, null, 2));
-    
+
     // Handle FormData
     const formData = req.body;
-    
+
     console.log('Parsed formData:', JSON.stringify(formData, null, 2));
 
     // Check if formData exists
@@ -53,13 +53,13 @@ router.post("/submit", async (req, res) => {
     }
 
     // Validate required fields
-    const { name, gender, age, datingGoal, currentMatches, bodyType, stylePreference, email, interests } = formData;
+    const { name, gender, age, datingGoal, currentMatches, anchorQuestion, bodyType, stylePreference, email, interests } = formData;
 
-    if (!name || !age || !datingGoal || !currentMatches || !bodyType || !stylePreference || !email) {
+    if (!name || !age || !datingGoal || !currentMatches || !anchorQuestion || !bodyType || !stylePreference || !email) {
       return res.status(400).json({
         success: false,
         error: "Missing required fields",
-        required: ["name", "age", "datingGoal", "currentMatches", "bodyType", "stylePreference", "email"]
+        required: ["name", "age", "datingGoal", "currentMatches", "anchorQuestion", "bodyType", "stylePreference", "email"]
       });
     }
 
@@ -141,6 +141,7 @@ router.post("/submit", async (req, res) => {
       age,
       datingGoal,
       currentMatches,
+      anchorQuestion,
       bodyType,
       stylePreference,
       email,

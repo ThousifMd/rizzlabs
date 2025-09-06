@@ -121,6 +121,7 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
                         age: onboardingFormData.age || 0,
                         datingGoal: onboardingFormData.datingGoal || '',
                         currentMatches: onboardingFormData.currentMatches || 0,
+                        anchorQuestion: onboardingFormData.anchorQuestion || '',
                         bodyType: onboardingFormData.bodyType || '',
                         stylePreference: onboardingFormData.stylePreference || '',
                         ethnicity: onboardingFormData.ethnicity || '',

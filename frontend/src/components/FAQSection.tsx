@@ -14,12 +14,12 @@ const faqData: FAQItem[] = [
         answer: "Yes, absolutely. We keep all your photos and information completely private and secure. No public sharing or social media posting."
     },
     {
-        question: "What if I don't see results?",
-        answer: "We guarantee 3x more matches or we'll re-edit your photos and profile until you do. If you're still not satisfied, we offer a full refund."
-    },
-    {
         question: "Which apps does this work for?",
         answer: "Our optimized photos and profiles work on all major dating apps including Tinder, Bumble, Hinge, Coffee Meets Bagel, and more."
+    },
+    {
+        question: "How long does it take?",
+        answer: "It depends on the plan you choose - if it's basic then it's going to be 48 hours and premium then up to 24 hours."
     }
 ];
 

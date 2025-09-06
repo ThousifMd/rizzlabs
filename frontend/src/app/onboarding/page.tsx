@@ -17,6 +17,7 @@ interface OnboardingData {
   age: string;
   datingGoal: string;
   currentMatches: string;
+  anchorQuestion: string;
   bodyType: string;
   stylePreference: string;
   ethnicity: string;
@@ -40,6 +41,15 @@ const matchOptions = [
   { value: "3-5", label: "3-5 matches" },
   { value: "5-10", label: "5-10 matches" },
   { value: "10+", label: "10+ matches" }
+];
+
+const anchorQuestionOptions = [
+  { value: "wrong-message", label: "Sent a message meant for someone else" },
+  { value: "swiped-cousin", label: "Accidentally swiped right on my cousin" },
+  { value: "old-gym-photo", label: "Posted a gym selfie from 2019" },
+  { value: "caught-at-work", label: "Got caught using dating apps at work" },
+  { value: "blurry-photo", label: "Used a blurry photo as my main pic" },
+  { value: "group-photo", label: "Used a group photo where I'm hard to find" }
 ];
 
 const bodyTypes = [
@@ -100,22 +110,22 @@ const goodExamples = [
     alt: "Different angle selfie"
   },
   {
-    src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/project-uploads/49e44d8b-77c8-42bb-baaa-b51976a9a14a/generated_images/close-up-selfie-of-a-young-woman-with-br-15f0206a-20250821192842.jpg",
-    alt: "Variety of angles"
+    src: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&h=400&fit=crop&crop=face",
+    alt: "Good selfie example"
   }
 ];
 
 const badExamples = [
   {
-    src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/project-uploads/49e44d8b-77c8-42bb-baaa-b51976a9a14a/generated_images/group-photo-of-three-young-women-at-a-pa-a57a9f74-20250821192906.jpg",
+    src: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=400&fit=crop&crop=face",
     alt: "Group photos"
   },
   {
-    src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/project-uploads/49e44d8b-77c8-42bb-baaa-b51976a9a14a/generated_images/blurry-selfie-photo%2c-out-of-focus%2c-m-78d89336-20250821192926.jpg",
+    src: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face&blur=2",
     alt: "Blurry photos"
   },
   {
-    src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/project-uploads/49e44d8b-77c8-42bb-baaa-b51976a9a14a/generated_images/person-wearing-dark-sunglasses-covering--b612c2e3-20250821192948.jpg",
+    src: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
     alt: "Covered faces"
   }
 ];
@@ -133,6 +143,7 @@ export default function OnboardingPage() {
     age: "",
     datingGoal: "",
     currentMatches: "",
+    anchorQuestion: "",
     bodyType: "",
     stylePreference: "",
     ethnicity: "",
@@ -156,7 +167,8 @@ export default function OnboardingPage() {
   const isStep1Valid = formData.name.trim() !== "" &&
     formData.age !== "" &&
     formData.datingGoal !== "" &&
-    formData.currentMatches !== "";
+    formData.currentMatches !== "" &&
+    formData.anchorQuestion !== "";
 
   const isStep2Valid = formData.bodyType !== "" &&
     formData.stylePreference !== "" &&
@@ -243,8 +255,9 @@ export default function OnboardingPage() {
           (window as any).onboardingScreenshots = formData.screenshots;
         }
 
-        // Redirect to pricing page
-        router.push('/pricing');
+        // Set default package and redirect to checkout
+        localStorage.setItem('selectedPackage', 'professional');
+        router.push('/checkout');
       } catch (error) {
         console.error('Error preparing form data:', error);
         alert('Failed to prepare form data. Please try again.');
@@ -938,7 +951,7 @@ export default function OnboardingPage() {
               {/* Ethnicity (Required) */}
               <div className="space-y-2">
                 <label className="text-sm font-bold text-white">
-                  Ethnicity <span className="text-red-400">*</span>
+                  Ethnicity
                 </label>
                 <Select value={formData.ethnicity} onValueChange={(value) => setFormData(prev => ({ ...prev, ethnicity: value }))}>
                   <SelectTrigger className="h-12 bg-white/5 backdrop-blur-sm border border-white/20 text-white focus:border-[#d4ae36] focus:ring-2 focus:ring-[#d4ae36]/30 focus:bg-white/10 transition-all duration-300 ease-out">
@@ -1130,6 +1143,28 @@ export default function OnboardingPage() {
                         : "bg-white/5 backdrop-blur-sm border border-white/20 text-white hover:border-[#d4ae36] hover:bg-white/10 hover:text-white hover:shadow-lg hover:shadow-[#d4ae36]/20 transition-all duration-300 ease-out"
                         }`}
                       onClick={() => handleMatchOptionSelect(option.value)}
+                    >
+                      {option.label}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Anchor Question */}
+              <div className="space-y-3">
+                <label className="text-sm font-bold text-white">
+                  What's your most embarrassing dating app moment? 😅
+                </label>
+                <div className="grid grid-cols-1 gap-3">
+                  {anchorQuestionOptions.map(option => (
+                    <Button
+                      key={option.value}
+                      variant={formData.anchorQuestion === option.value ? "default" : "outline"}
+                      className={`h-12 text-left justify-start ${formData.anchorQuestion === option.value
+                        ? "bg-[#d4ae36]/20 backdrop-blur-sm border-2 border-[#d4ae36] text-white shadow-lg shadow-[#d4ae36]/30 transition-all duration-300 ease-out"
+                        : "bg-white/5 backdrop-blur-sm border border-white/20 text-white hover:border-[#d4ae36] hover:bg-white/10 hover:text-white hover:shadow-lg hover:shadow-[#d4ae36]/20 transition-all duration-300 ease-out"
+                        }`}
+                      onClick={() => setFormData(prev => ({ ...prev, anchorQuestion: option.value }))}
                     >
                       {option.label}
                     </Button>

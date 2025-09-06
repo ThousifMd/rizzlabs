@@ -1,87 +1,97 @@
 "use client";
 
 import React from 'react';
+import { TrendingUp, Clock, Target, AlertTriangle } from 'lucide-react';
 
 export const StatsSection: React.FC = () => {
 
-    const stats = [
+    const insights = [
         {
-            number: "85%",
-            label: "of women swipe on just 5% of men",
-            description: "Tinder study shows extreme inequality in match distribution"
+            icon: <TrendingUp className="w-6 h-6" />,
+            stat: "85%",
+            highlight: "of women swipe on just 5% of men",
+            context: "Tinder study reveals extreme inequality in match distribution"
         },
         {
-            number: "3s",
-            label: "average time spent on a profile",
-            description: "First impression is everything - your photos decide your fate"
+            icon: <Clock className="w-6 h-6" />,
+            stat: "3s",
+            highlight: "average time spent on a profile",
+            context: "First impression is everything - your photos decide your fate"
         },
         {
-            number: "10x",
-            label: "more matches with optimized photos",
-            description: "Professional photos vs. selfies - the difference is staggering"
+            icon: <Target className="w-6 h-6" />,
+            stat: "10x",
+            highlight: "more matches with optimized photos",
+            context: "Professional photos vs. selfies - the difference is staggering"
         },
         {
-            number: "78%",
-            label: "get rejected on first photo alone",
-            description: "Your main photo makes or breaks your dating success"
+            icon: <AlertTriangle className="w-6 h-6" />,
+            stat: "78%",
+            highlight: "get rejected on first photo alone",
+            context: "Your main photo makes or breaks your dating success"
         }
     ];
 
     return (
-        <section className="py-20 px-4 max-w-7xl mx-auto">
-            {/* Header */}
-            <div className="text-center mb-16">
-                <h2 className="text-4xl md:text-5xl font-heading font-bold text-white mb-4">
-                    The Science of Swiping
-                </h2>
-                <p className="text-xl text-white max-w-3xl mx-auto">
-                    Real data reveals why your profile photos matter more than you think
-                </p>
-            </div>
+        <section className="py-24 px-4 max-w-6xl mx-auto">
+            {/* Main Container with Glass Morphism */}
+            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl">
 
-            {/* Stats in a Single Row */}
-            <div className="flex flex-col lg:flex-row gap-8 mb-16">
-                {stats.map((stat, index) => (
-                    <div key={index} className="flex-1 text-center">
-                        {/* Number */}
-                        <div className="text-5xl md:text-6xl font-black text-[#d4ae36] mb-3">
-                            {stat.number}
-                        </div>
-
-                        {/* Label */}
-                        <h3 className="text-lg font-semibold text-white mb-2">
-                            {stat.label}
-                        </h3>
-
-                        {/* Description */}
-                        <p className="text-white/70 text-sm leading-relaxed">
-                            {stat.description}
-                        </p>
-
-                        {/* Divider line (except for last item) */}
-                        {index < stats.length - 1 && (
-                            <div className="hidden lg:block absolute top-1/2 right-0 w-px h-16 bg-[#d4ae36]/30 transform -translate-y-1/2"></div>
-                        )}
-                    </div>
-                ))}
-            </div>
-
-            {/* Bottom Insight */}
-            <div className="text-center">
-                <div className="inline-block bg-[#d4ae36] text-black px-8 py-3 rounded-full font-bold text-lg mb-6">
-                    HERE'S THE REALITY
+                {/* Header */}
+                <div className="text-center mb-12">
+                    <h2 className="text-3xl md:text-5xl font-heading font-bold text-white mb-4">
+                        The Science of Swiping
+                    </h2>
+                    <p className="text-lg text-white/80 max-w-2xl mx-auto">
+                        Real data reveals the harsh reality of modern dating apps
+                    </p>
                 </div>
-                <h3 className="text-3xl md:text-4xl font-bold text-white mb-6">
-                    Your photos decide your dating fate
-                </h3>
-                <div className="max-w-4xl mx-auto">
-                    <p className="text-xl text-white/90 mb-4">
-                        In a world where <span className="text-[#d4ae36] font-bold">85% of women swipe on just 5% of men</span>,
-                        your photos aren't just pictures—they're your competitive advantage.
-                    </p>
-                    <p className="text-lg text-white/80">
-                        Professional photos are the difference between being invisible and being irresistible.
-                    </p>
+
+                {/* Stats Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+                    {insights.map((insight, index) => (
+                        <div key={index} className="group">
+                            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-5 text-center hover:bg-white/8 hover:border-[#d4ae36]/30 transition-all duration-300 hover:scale-105 h-full flex flex-col">
+                                {/* Icon */}
+                                <div className="w-10 h-10 bg-gradient-to-br from-[#d4ae36] to-[#c19d2f] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                                    <div className="text-black">
+                                        {insight.icon}
+                                    </div>
+                                </div>
+
+                                {/* Stat Number */}
+                                <div className="text-3xl md:text-4xl font-black text-[#d4ae36] mb-3">
+                                    {insight.stat}
+                                </div>
+
+                                {/* Highlight */}
+                                <h3 className="text-sm md:text-base font-semibold text-white mb-3 leading-tight">
+                                    {insight.highlight}
+                                </h3>
+
+                                {/* Context */}
+                                <p className="text-xs md:text-sm text-white/70 leading-relaxed flex-grow">
+                                    {insight.context}
+                                </p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Bottom Reality Section */}
+                <div className="text-center">
+                    <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+                        <h3 className="text-2xl md:text-3xl font-bold text-[#d4ae36] mb-4">
+                            Here's the Reality
+                        </h3>
+                        <h4 className="text-xl md:text-2xl font-bold text-white mb-4">
+                            Your photos decide your dating fate
+                        </h4>
+                        <p className="text-base md:text-lg text-white/90 max-w-3xl mx-auto">
+                            In a world where <span className="text-[#d4ae36] font-bold">85% of women swipe on just 5% of men</span>,
+                            professional photos aren't just nice to have—they're your competitive advantage.
+                        </p>
+                    </div>
                 </div>
             </div>
         </section>

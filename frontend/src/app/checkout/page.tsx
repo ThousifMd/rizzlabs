@@ -416,17 +416,15 @@ function CheckoutContent() {
       <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-[#d4ae36]/3 via-transparent to-transparent"></div>
 
       {/* Header */}
-      <div className="relative z-10 border-b border-white/10 bg-black/20 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center space-x-4">
-            <Button asChild variant="ghost" size="sm" className="text-white hover:text-white">
-              <Link href="/pricing">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Packages
-              </Link>
-            </Button>
-            <h1 className="text-xl font-semibold text-white">Secure Checkout</h1>
-          </div>
+      <div className="relative z-10 bg-red-500/50 backdrop-blur-xl border-4 border-yellow-400 rounded-3xl shadow-2xl mx-6 mt-6 p-6">
+        <div className="flex items-center space-x-4">
+          <Button asChild variant="ghost" size="sm" className="text-white hover:text-white hover:bg-white/20 transition-all duration-200">
+            <Link href="/pricing">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Packages
+            </Link>
+          </Button>
+          <h1 className="text-xl font-semibold text-white">Secure Checkout - GLASS MORPHISM TEST</h1>
         </div>
       </div>
 

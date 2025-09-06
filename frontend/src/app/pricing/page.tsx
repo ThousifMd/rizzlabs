@@ -129,19 +129,17 @@ export default function PricingPage() {
 
             {/* Header */}
             <div
-                className="relative z-10 border-b border-white/10 bg-black/20 backdrop-blur-md"
+                className="relative z-10 bg-gradient-to-r from-white/20 to-white/10 backdrop-blur-xl border-2 border-[#d4ae36]/30 rounded-3xl shadow-2xl mx-6 mt-6 p-6"
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="max-w-7xl mx-auto px-4 py-4">
-                    <div className="flex items-center space-x-4">
-                        <Button asChild variant="ghost" size="sm" className="text-white hover:text-white">
-                            <Link href="/onboarding">
-                                <ArrowLeft className="w-4 h-4 mr-2" />
-                                Back to Questionnaire
-                            </Link>
-                        </Button>
-                        <h1 className="text-xl font-semibold text-white">Choose Your Package</h1>
-                    </div>
+                <div className="flex items-center space-x-4">
+                    <Button asChild variant="ghost" size="sm" className="text-white hover:text-white hover:bg-white/20 transition-all duration-200">
+                        <Link href="/onboarding">
+                            <ArrowLeft className="w-4 h-4 mr-2" />
+                            Back to Questionnaire
+                        </Link>
+                    </Button>
+                    <h1 className="text-xl font-semibold text-white">Choose Your Package</h1>
                 </div>
             </div>
 

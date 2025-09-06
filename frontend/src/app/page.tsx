@@ -8,9 +8,10 @@ import { FAQSection } from "@/components/FAQSection";
 import { SimpleProcessSection } from "@/components/SimpleProcessSection";
 import { PricingSection } from "@/components/PricingSection";
 import Footer from "@/components/Footer";
+import { MobileStickyCTA } from "@/components/MobileStickyCTA";
 
 export default function HomePage() {
-  const ctaHref = "/onboarding";
+  const ctaHref = "/checkout";
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
@@ -40,6 +41,9 @@ export default function HomePage() {
         {/* Simple Process Section */}
         <SimpleProcessSection />
 
+        {/* Pricing Section */}
+        <PricingSection />
+
         {/* FAQ Section */}
         <FAQSection />
       </main>
@@ -47,7 +51,13 @@ export default function HomePage() {
       <Footer
         customersCount={2847}
         rating={4.9}
-        trustCopy="GDPR‑compliant • Secure checkout via Stripe"
+        trustCopy="GDPR‑compliant • Secure checkout"
+      />
+
+      {/* Mobile Sticky CTA */}
+      <MobileStickyCTA
+        href="/checkout"
+        customersCount={2847}
       />
     </div>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -82,142 +83,136 @@ const pricingTiers = [
 
 export const PricingSection = () => {
   const { selectedPackage, setSelectedPackage } = usePackage();
+  const [localSelectedPackage, setLocalSelectedPackage] = React.useState<string | null>(null);
 
-  const handleSelectPackage = (packageId: string) => {
+  const handlePackageSelect = (packageId: string) => {
+    setLocalSelectedPackage(packageId);
+  };
+
+  const handleGetStarted = (packageId: string) => {
     const packageData = pricingTiers.find(tier => tier.id === packageId);
     if (packageData) {
+      // Set global selection
       setSelectedPackage(packageData);
       // Store selected package in localStorage for payment page
       localStorage.setItem('selectedPackage', packageId);
-      window.location.href = `/onboarding`;
+      window.location.href = `/checkout`;
     }
-  };
-
-  const handlePackageClick = (packageData: Package) => {
-    setSelectedPackage(packageData);
   };
 
   return (
     <section className="py-16 lg:py-24" aria-labelledby="pricing-title">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-        {/* Header */}
-        <div className="text-center mb-12 lg:mb-16">
-          <h2
-            id="pricing-title"
-            className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-white mb-4"
-          >
-            Pricing
-          </h2>
-          <p className="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto">
-            Most users see 3x more matches — or we'll re-edit until you do.
-          </p>
-        </div>
+        {/* Main Container with Glass Morphism */}
+        <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl">
+          {/* Header */}
+          <div className="text-center mb-12 lg:mb-16">
+            <h2
+              id="pricing-title"
+              className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-white mb-4"
+            >
+              Pricing
+            </h2>
+            <p className="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto">
+              Choose your transformation level. Most users see 3x more matches with our proven approach.
+            </p>
+          </div>
 
-        {/* Pricing Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-8 mb-12 items-stretch">
-          {pricingTiers
-            .sort((a, b) => {
-              // Sort by mobile order on small screens
-              if (typeof window !== 'undefined' && window.innerWidth < 1280) {
-                return a.mobileOrder - b.mobileOrder;
-              }
-              return 0;
-            })
-            .map((tier) => (
-              <Card
-                key={tier.name}
-                className={`relative group transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer flex flex-col h-full bg-gray-900 ${selectedPackage?.id === tier.id
-                  ? "border-2 border-yellow-400 shadow-lg"
-                  : tier.popular
-                    ? "border-2 border-yellow-400 shadow-lg"
-                    : "border border-gray-800 shadow-sm"
-                  }`}
-                role="article"
-                aria-label={`${tier.name} pricing plan`}
-                onClick={() => handlePackageClick(tier)}
-              >
-                {tier.popular && (
+          {/* Pricing Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-8 mb-12 items-stretch">
+            {pricingTiers
+              .sort((a, b) => {
+                // Sort by mobile order on small screens
+                if (typeof window !== 'undefined' && window.innerWidth < 1280) {
+                  return a.mobileOrder - b.mobileOrder;
+                }
+                return 0;
+              })
+              .map((tier) => (
+                <Card
+                  key={tier.name}
+                  className={`relative group transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer flex flex-col h-full bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/8 hover:border-[#d4ae36]/30 hover:shadow-[#d4ae36]/20 ${localSelectedPackage === tier.id
+                    ? "border-2 border-[#d4ae36] shadow-lg shadow-[#d4ae36]/30"
+                    : "border border-white/10 shadow-sm"
+                    }`}
+                  role="article"
+                  aria-label={`${tier.name} pricing plan`}
+                  onClick={() => handlePackageSelect(tier.id)}
+                >
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <Badge className="bg-amber-500 text-white hover:bg-amber-400 px-4 py-1.5 font-medium">
+                    <Badge className="bg-gradient-to-r from-[#d4ae36] to-[#c19d2f] text-black hover:from-[#c19d2f] hover:to-[#b8941f] px-4 py-1.5 font-medium">
                       {tier.discount}
                     </Badge>
                   </div>
-                )}
-                {!tier.popular && (
-                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <Badge className="bg-gray-700 text-white px-4 py-1.5 font-medium">
-                      {tier.discount}
-                    </Badge>
-                  </div>
-                )}
-                {selectedPackage?.id === tier.id && (
-                  <div className="absolute -top-3 right-3">
-                    <Badge className="bg-amber-500 text-white hover:bg-amber-400 px-4 py-1.5 font-medium">
-                      Selected
-                    </Badge>
-                  </div>
-                )}
 
-                <CardHeader className="text-center pb-4">
-                  <CardTitle className="text-xl font-heading font-bold text-white mb-2">
-                    {tier.name}
-                  </CardTitle>
-                  <CardDescription className="text-gray-300 mb-4">
-                    {tier.description}
-                  </CardDescription>
-                  <div className="flex items-center justify-center space-x-2">
-                    <span className="text-4xl lg:text-5xl font-heading font-bold text-white">
-                      ${tier.price}
-                    </span>
-                    <div className="text-sm text-gray-400">
-                      <div className="line-through">Was ${tier.originalPrice}</div>
+                  <CardHeader className="text-center pb-4">
+                    <CardTitle className="text-xl font-heading font-bold text-white mb-2">
+                      {tier.name}
+                    </CardTitle>
+                    <CardDescription className="text-gray-300 mb-4">
+                      {tier.description}
+                    </CardDescription>
+                    <div className="flex items-center justify-center space-x-2">
+                      <span className="text-4xl lg:text-5xl font-heading font-bold text-white">
+                        ${tier.price}
+                      </span>
+                      <div className="text-sm text-gray-400">
+                        <div className="line-through">Was ${tier.originalPrice}</div>
+                      </div>
                     </div>
-                  </div>
-                </CardHeader>
+                  </CardHeader>
 
-                <CardContent className="pt-4 flex flex-col flex-grow">
-                  <ul className="space-y-4 mb-8 flex-grow" role="list">
-                    {tier.features.map((feature, index) => (
-                      <li
-                        key={index}
-                        className="flex items-start gap-3"
-                        role="listitem"
-                      >
-                        <Check
-                          className={`w-5 h-5 mt-0.5 flex-shrink-0 ${tier.popular ? "text-amber-500" : "text-amber-500"
-                            }`}
-                          aria-hidden="true"
-                        />
-                        <span className="text-white text-sm leading-relaxed">
-                          {feature}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
+                  <CardContent className="pt-4 flex flex-col flex-grow">
+                    <ul className="space-y-4 mb-8 flex-grow" role="list">
+                      {tier.features.map((feature, index) => (
+                        <li
+                          key={index}
+                          className="flex items-start gap-3"
+                          role="listitem"
+                        >
+                          <Check
+                            className="w-5 h-5 mt-0.5 flex-shrink-0 text-[#d4ae36]"
+                            aria-hidden="true"
+                          />
+                          <span className="text-white text-sm leading-relaxed">
+                            {feature}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
 
-                  <Button
-                    onClick={() => handleSelectPackage(tier.id)}
-                    className={`w-full transition-all duration-300 mt-auto ${tier.popular
-                      ? "bg-amber-500 hover:bg-amber-400 text-white shadow-lg"
-                      : "bg-amber-500 hover:bg-amber-400 text-white"
-                      }`}
-                    size="lg"
-                    aria-label={`Select ${tier.name} plan for $${tier.price}`}
-                  >
-                    {tier.buttonText}
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-        </div>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (localSelectedPackage === tier.id) {
+                          handleGetStarted(tier.id);
+                        } else {
+                          handlePackageSelect(tier.id);
+                        }
+                      }}
+                      className={`w-full transition-all duration-300 mt-auto ${localSelectedPackage === tier.id
+                        ? "bg-gradient-to-r from-[#d4ae36] to-[#c19d2f] hover:from-[#c19d2f] hover:to-[#b8941f] text-black shadow-lg shadow-[#d4ae36]/30"
+                        : tier.id === "most-matches"
+                          ? "bg-gradient-to-r from-[#d4ae36] to-[#c19d2f] hover:from-[#c19d2f] hover:to-[#b8941f] text-black shadow-lg shadow-[#d4ae36]/30"
+                          : "bg-white/5 backdrop-blur-sm border border-white/20 text-white hover:bg-white/10 hover:border-[#d4ae36] hover:text-white"
+                        }`}
+                      size="lg"
+                    >
+                      {localSelectedPackage === tier.id ? "Get Started" : "Get Selected"}
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+          </div>
 
-        {/* Money Back Guarantee */}
-        <div className="flex items-center justify-center">
-          <div className="flex items-center gap-3 bg-gray-900 border border-gray-800 rounded-full px-6 py-3 shadow-sm">
-            <Shield className="w-5 h-5 text-amber-500" aria-hidden="true" />
-            <span className="text-sm font-medium text-white">
-              30-day money-back guarantee
-            </span>
+          {/* Money Back Guarantee */}
+          <div className="flex items-center justify-center">
+            <div className="flex items-center gap-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3 shadow-sm">
+              <Shield className="w-5 h-5 text-[#d4ae36]" aria-hidden="true" />
+              <span className="text-sm font-medium text-white">
+                30-day money-back guarantee
+              </span>
+            </div>
           </div>
         </div>
       </div>
