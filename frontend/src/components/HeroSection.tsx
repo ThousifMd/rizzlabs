@@ -33,8 +33,8 @@ export default function HeroSection({ ctaHref, className }: HeroSectionProps) {
           Your photos and profile are holding you back — not you. We transform both into a swipe-magnet that gets you noticed instantly.
         </p>
 
-        {/* CTA Button with Supporting Text */}
-        <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+        {/* CTA Button */}
+        <div className="mb-4">
           <button
             type="button"
             onClick={handleCTA}
@@ -113,14 +113,15 @@ export default function HeroSection({ ctaHref, className }: HeroSectionProps) {
 
             <span className="relative z-10">Make Me a Match Magnet →</span>
           </button>
+        </div>
 
-          <div className="flex items-center gap-2 text-sm text-white">
-            <span>Private</span>
-            <span>•</span>
-            <span>Secure</span>
-            <span>•</span>
-            <span>24h delivery</span>
-          </div>
+        {/* Supporting Text */}
+        <div className="flex items-center gap-2 text-sm text-white">
+          <span>Private</span>
+          <span>•</span>
+          <span>Secure</span>
+          <span>•</span>
+          <span>24h delivery</span>
         </div>
       </div>
     </section>

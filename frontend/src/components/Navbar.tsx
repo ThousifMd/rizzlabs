@@ -15,7 +15,7 @@ const HEADER_BASE =
 const HEADER_SCROLLED =
   "fixed inset-x-0 top-0 z-50 bg-white/10 backdrop-blur-xl border-b border-[#d4ae36]/30 shadow-lg transition-colors duration-300"
 
-const navItems = []
+const navItems: Array<{label: string, href: string}> = []
 
 export default function Navbar({ ctaHref, className }: NavbarProps) {
   const [scrolled, setScrolled] = React.useState(false)
