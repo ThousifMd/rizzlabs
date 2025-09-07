@@ -567,7 +567,7 @@ export default function OnboardingPage() {
                 <Button
                   onClick={handleContinue}
                   disabled={!isStep5Valid}
-                  className="w-full h-12 bg-[#d4ae36] hover:bg-[#c19d2f] disabled:bg-gray-700 disabled:text-gray-400 text-white text-lg font-medium transition-all duration-200"
+                  className="w-full h-12 bg-[#d4ae36] hover:from-[#c19d2f] hover:via-[#e04a5f] hover:to-[#c19d2f] disabled:bg-gray-700 disabled:text-gray-400 text-white text-lg font-medium transition-all duration-200"
                 >
                   {isStep5Valid ? "Complete Setup" :
                     emailError ? "Please fix email errors" :
@@ -714,7 +714,7 @@ export default function OnboardingPage() {
                 {/* Continue Button */}
                 <Button
                   onClick={handleContinue}
-                  className="flex-1 h-12 bg-[#d4ae36] hover:bg-[#c19d2f] text-black text-lg font-medium transition-all duration-200"
+                  className="flex-1 h-12 bg-[#d4ae36] hover:from-[#c19d2f] hover:via-[#e04a5f] hover:to-[#c19d2f] text-black text-lg font-medium transition-all duration-200"
                 >
                   Continue to Final Step
                 </Button>
@@ -751,11 +751,11 @@ export default function OnboardingPage() {
             {/* Desktop: Two columns, Mobile: Stacked */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
               {/* Good Examples */}
-              <Card className="border-2 border-emerald-200">
+              <Card className="border-2 border-[#d4ae36]/20">
                 <CardHeader className="pb-4">
                   <div className="flex items-center gap-2">
-                    <Check className="h-5 w-5 text-emerald-600" />
-                    <CardTitle className="text-xl text-emerald-700">Good Examples</CardTitle>
+                    <Check className="h-5 w-5 text-[#d4ae36]" />
+                    <CardTitle className="text-xl text-[#d4ae36]">Good Examples</CardTitle>
                   </div>
                   <CardDescription>
                     Close up selfies, same person, adults, variety of backgrounds, facial expressions, head tilts and angles
@@ -764,7 +764,7 @@ export default function OnboardingPage() {
                 <CardContent>
                   <div className="grid grid-cols-3 gap-3">
                     {goodExamples.map((example, index) => (
-                      <div key={index} className="aspect-square rounded-lg overflow-hidden border-2 border-emerald-300">
+                      <div key={index} className="aspect-square rounded-lg overflow-hidden border-2 border-[#d4ae36]/30">
                         <img
                           src={example.src}
                           alt={example.alt}
@@ -882,7 +882,7 @@ export default function OnboardingPage() {
                 <Button
                   onClick={handleContinue}
                   disabled={!isStep3Valid}
-                  className="w-full h-12 bg-[#d4ae36] hover:bg-[#c19d2f] disabled:bg-gray-700 disabled:text-gray-400 text-black text-lg font-medium transition-all duration-200"
+                  className="w-full h-12 bg-[#d4ae36] hover:from-[#c19d2f] hover:via-[#e04a5f] hover:to-[#c19d2f] disabled:bg-gray-700 disabled:text-gray-400 text-black text-lg font-medium transition-all duration-200"
                 >
                   {isStep3Valid ? "Continue" : `Upload ${10 - formData.photos.length} more photos to continue`}
                 </Button>
@@ -1016,7 +1016,7 @@ export default function OnboardingPage() {
                 <Button
                   onClick={handleContinue}
                   disabled={!isStep2Valid}
-                  className="w-full h-12 bg-[#d4ae36] hover:bg-[#c19d2f] disabled:bg-gray-700 disabled:text-gray-400 text-black text-lg font-medium transition-all duration-200"
+                  className="w-full h-12 bg-[#d4ae36] hover:from-[#c19d2f] hover:via-[#e04a5f] hover:to-[#c19d2f] disabled:bg-gray-700 disabled:text-gray-400 text-black text-lg font-medium transition-all duration-200"
                 >
                   Continue to Photo Upload
                 </Button>
@@ -1177,7 +1177,7 @@ export default function OnboardingPage() {
                 <Button
                   onClick={handleContinue}
                   disabled={!isStep1Valid}
-                  className="w-full h-12 bg-[#d4ae36] hover:bg-[#c19d2f] disabled:bg-gray-700 disabled:text-gray-400 text-white text-lg font-medium transition-all duration-200"
+                  className="w-full h-12 bg-[#d4ae36] hover:from-[#c19d2f] hover:via-[#e04a5f] hover:to-[#c19d2f] disabled:bg-gray-700 disabled:text-gray-400 text-white text-lg font-medium transition-all duration-200"
                 >
                   Continue to Next Step
                 </Button>

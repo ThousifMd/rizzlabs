@@ -20,8 +20,8 @@ const TransformationCard: React.FC<TransformationCardProps> = ({ title, beforeIm
         <button
           onClick={() => setShowAfter(false)}
           className={`flex-1 py-3 px-4 text-sm font-medium transition-colors ${!showAfter
-              ? 'bg-[#EDC967] text-black'
-              : 'text-white hover:text-[#EDC967]'
+            ? 'bg-[#EDC967] text-black'
+            : 'text-white hover:text-[#EDC967]'
             }`}
         >
           Before
@@ -29,8 +29,8 @@ const TransformationCard: React.FC<TransformationCardProps> = ({ title, beforeIm
         <button
           onClick={() => setShowAfter(true)}
           className={`flex-1 py-3 px-4 text-sm font-medium transition-colors ${showAfter
-              ? 'bg-[#EDC967] text-black'
-              : 'text-white hover:text-[#EDC967]'
+            ? 'bg-[#EDC967] text-black'
+            : 'text-white hover:text-[#EDC967]'
             }`}
         >
           After
@@ -79,13 +79,13 @@ export const TransformationGallery: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
         <TransformationCard
           title="Urban Confidence"
-          beforeImage="/images/3.1.png"
+          beforeImage="/images/frat_before.jpeg"
           afterImage="/images/3.3.png"
           alt="Urban confidence transformation"
         />
         <TransformationCard
           title="Fitness Edge"
-          beforeImage="/images/4.1.png"
+          beforeImage="/images/tedx_before.jpeg"
           afterImage="/images/4.2.png"
           alt="Fitness edge transformation"
         />

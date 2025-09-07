@@ -15,7 +15,7 @@ const HEADER_BASE =
 const HEADER_SCROLLED =
   "fixed inset-x-0 top-0 z-50 bg-white/10 backdrop-blur-xl border-b border-[#d4ae36]/30 shadow-lg transition-colors duration-300"
 
-const navItems: Array<{label: string, href: string}> = []
+const navItems: Array<{ label: string, href: string }> = []
 
 export default function Navbar({ ctaHref, className }: NavbarProps) {
   const [scrolled, setScrolled] = React.useState(false)
@@ -54,9 +54,11 @@ export default function Navbar({ ctaHref, className }: NavbarProps) {
           {/* CTA Button */}
           <Link
             href={ctaHref}
-            className="hidden md:inline-flex items-center px-5 py-2 bg-transparent backdrop-blur-sm border border-[#d4ae36]/40 text-[#d4ae36] rounded-lg font-medium hover:border-[#d4ae36]/60 hover:bg-transparent transition-all duration-300"
+            className="hidden md:inline-flex items-center px-5 py-2 bg-transparent backdrop-blur-sm border border-[#d4ae36]/40 rounded-lg font-medium hover:border-[#d4ae36]/60 hover:bg-transparent transition-all duration-300"
           >
-            Join the Top 5%
+            <span className="bg-gradient-to-r from-[#d4ae36] via-[#FD5E76] to-[#d4ae36] bg-clip-text text-transparent">
+              Join the Top 5%
+            </span>
           </Link>
 
           <div className="flex items-center md:hidden">
@@ -77,14 +79,49 @@ function Brand() {
     <Link
       href="/"
       aria-label="Matchlens home"
-      className="group inline-flex items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4ae36]"
+      className="group inline-flex items-center rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4ae36]"
     >
-      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#d4ae36] to-[#c19d2f] text-black transition-all duration-300 group-hover:scale-110">
-        <Sparkles className="h-4 w-4" aria-hidden="true" />
-      </span>
-      <span className="font-heading text-base tracking-tight text-white transition-colors group-hover:text-gray-300 sm:text-lg">
-        Matchlens AI
-      </span>
+      <div className="flex items-center gap-4 transition-all duration-300 group-hover:scale-110">
+        {/* Heart/Lens Icon */}
+        <div className="w-8 h-8 flex items-center justify-center relative">
+          <svg
+            viewBox="0 0 24 24"
+            className="w-8 h-8 fill-none stroke-[3] transition-all duration-300 group-hover:scale-125 group-hover:rotate-12"
+            style={{
+              stroke: 'url(#logoGradient)',
+              filter: 'drop-shadow(0 0 8px rgba(212, 174, 54, 0.5))'
+            }}
+          >
+            <defs>
+              <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#d4ae36" />
+                <stop offset="50%" stopColor="#ffffff" />
+                <stop offset="100%" stopColor="#FD5E76" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M16 8l-4 4-4-4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          {/* Glow effect */}
+          <div className="absolute inset-0 w-8 h-8 bg-gradient-to-r from-[#d4ae36]/20 via-white/10 to-[#FD5E76]/20 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        </div>
+
+        {/* Text */}
+        <span className="font-heading text-2xl font-bold tracking-tight bg-gradient-to-r from-[#d4ae36] via-white to-[#FD5E76] bg-clip-text text-transparent transition-all duration-300 drop-shadow-lg"
+          style={{
+            textShadow: '0 0 20px rgba(212, 174, 54, 0.3), 0 0 40px rgba(253, 94, 118, 0.2)'
+          }}>
+          Matchlens AI
+        </span>
+      </div>
     </Link>
   )
 }
@@ -145,10 +182,12 @@ function MobileMenu({
 
           <Link
             href={ctaHref}
-            className="inline-flex items-center px-6 py-2 bg-amber-500 text-white rounded-full font-semibold hover:bg-amber-400 transition-colors mt-4"
+            className="inline-flex items-center px-6 py-2 bg-transparent border border-[#d4ae36]/40 rounded-full font-semibold hover:border-[#d4ae36]/60 transition-all duration-300 mt-4"
             onClick={() => setOpen(false)}
           >
-            Join the Top 5%
+            <span className="bg-gradient-to-r from-[#d4ae36] via-[#FD5E76] to-[#d4ae36] bg-clip-text text-transparent">
+              Join the Top 5%
+            </span>
           </Link>
         </div>
 

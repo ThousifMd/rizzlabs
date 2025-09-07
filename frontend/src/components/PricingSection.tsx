@@ -16,7 +16,7 @@ const pricingTiers = [
     discount: "Save 62%",
     description: "Perfect for getting started",
     features: [
-      "20 enhanced photos",
+      "5 enhanced photos",
       "3 style variations",
       "Basic bio tips",
       "24-hour delivery"
@@ -33,7 +33,7 @@ const pricingTiers = [
     discount: "Most Popular",
     description: "Most popular choice",
     features: [
-      "50 enhanced photos",
+      "10 enhanced photos",
       "6 style variations",
       "Bio optimization",
       "Profile strategy guide",
@@ -51,7 +51,7 @@ const pricingTiers = [
     discount: "Save 51%",
     description: "For serious results",
     features: [
-      "100 enhanced photos",
+      "20 enhanced photos",
       "10 style variations",
       "Complete profile makeover",
       "Message templates",
@@ -69,7 +69,7 @@ const pricingTiers = [
     discount: "Save 50%",
     description: "Ultimate transformation",
     features: [
-      "Unlimited photos",
+      "30 enhanced photos",
       "All styles",
       "1-on-1 consultation",
       "Weekly updates for 1 month",
@@ -181,39 +181,48 @@ export const PricingSection = () => {
                       ))}
                     </ul>
 
-                    <Button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (localSelectedPackage === tier.id) {
-                          handleGetStarted(tier.id);
-                        } else {
-                          handlePackageSelect(tier.id);
-                        }
-                      }}
-                      className={`w-full transition-all duration-300 mt-auto ${localSelectedPackage === tier.id
-                        ? "bg-gradient-to-r from-[#d4ae36] to-[#c19d2f] hover:from-[#c19d2f] hover:to-[#b8941f] text-black shadow-lg shadow-[#d4ae36]/30"
-                        : tier.id === "most-matches"
+                    {tier.id === "most-matches" ? (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.location.href = "/onboarding";
+                        }}
+                        className="relative w-full h-auto min-h-[48px] px-8 py-3 rounded-lg font-semibold text-lg bg-gradient-to-br from-white/10 via-white/5 to-white/10 backdrop-blur-md border-2 border-transparent bg-clip-border hover:bg-white/15 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#d4ae36]/20 overflow-hidden group mt-auto flex items-center justify-center"
+                        style={{
+                          backgroundImage: 'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05), rgba(255,255,255,0.1)), linear-gradient(135deg, #d4ae36, #FD5E76, #d4ae36)',
+                          backgroundOrigin: 'border-box',
+                          backgroundClip: 'padding-box, border-box'
+                        }}
+                        aria-label="Make me a match magnet"
+                      >
+
+                        <span className="relative z-20 text-white font-black drop-shadow-lg text-sm whitespace-nowrap">Level Up My Man Game</span>
+                      </button>
+                    ) : (
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (localSelectedPackage === tier.id) {
+                            handleGetStarted(tier.id);
+                          } else {
+                            handlePackageSelect(tier.id);
+                          }
+                        }}
+                        className={`w-full transition-all duration-300 mt-auto ${localSelectedPackage === tier.id
                           ? "bg-gradient-to-r from-[#d4ae36] to-[#c19d2f] hover:from-[#c19d2f] hover:to-[#b8941f] text-black shadow-lg shadow-[#d4ae36]/30"
                           : "bg-white/5 backdrop-blur-sm border border-white/20 text-white hover:bg-white/10 hover:border-[#d4ae36] hover:text-white"
-                        }`}
-                      size="lg"
-                    >
-                      {localSelectedPackage === tier.id ? "Get Started" : "Get Selected"}
-                    </Button>
+                          }`}
+                        size="lg"
+                      >
+                        {localSelectedPackage === tier.id ? "Get Started" : "Get Selected"}
+                      </Button>
+                    )}
                   </CardContent>
                 </Card>
               ))}
           </div>
 
-          {/* Money Back Guarantee */}
-          <div className="flex items-center justify-center">
-            <div className="flex items-center gap-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3 shadow-sm">
-              <Shield className="w-5 h-5 text-[#d4ae36]" aria-hidden="true" />
-              <span className="text-sm font-medium text-white">
-                30-day money-back guarantee
-              </span>
-            </div>
-          </div>
         </div>
       </div>
     </section>

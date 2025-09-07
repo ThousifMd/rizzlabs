@@ -2,6 +2,7 @@ import * as React from "react";
 import { Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
+import DatingPlatformsSection from "@/components/DatingPlatformsSection";
 import { DatingAppContext } from "@/components/DatingAppContext";
 import { StatsSection } from "@/components/StatsSection";
 import { FAQSection } from "@/components/FAQSection";
@@ -31,7 +32,6 @@ export default function HomePage() {
           />
         </div>
 
-
         {/* Stats Section */}
         <StatsSection />
 
@@ -40,6 +40,9 @@ export default function HomePage() {
 
         {/* Simple Process Section */}
         <SimpleProcessSection />
+
+        {/* Dating Platforms Section */}
+        <DatingPlatformsSection />
 
         {/* Pricing Section */}
         <PricingSection />

@@ -521,4 +521,49 @@ color utility to any element that depends on these defaults.
             transform: translate(0, 10px) scale(0);
         }
     }
+
+    /* Scrolling animation for dating platforms */
+    @keyframes scroll {
+        0% {
+            transform: translateX(0);
+        }
+
+        100% {
+            transform: translateX(-50%);
+        }
+    }
+
+    .animate-scroll {
+        animation: scroll 30s linear infinite;
+    }
+
+    /* Gradient animation */
+    @keyframes gradient-x {
+
+        0%,
+        100% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+    }
+
+    .animate-gradient-x {
+        animation: gradient-x 3s ease infinite;
+    }
+
+    /* Fade in up animation for companies */
+    @keyframes fadeInUp {
+        0% {
+            opacity: 0;
+            transform: translateY(30px) scale(0.8);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
 }

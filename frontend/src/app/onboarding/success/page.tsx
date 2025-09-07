@@ -94,7 +94,7 @@ export default function SuccessPage() {
               }}
               className="flex justify-center mb-8"
             >
-              <div className="w-24 h-24 md:w-32 md:h-32 bg-emerald-500 rounded-full flex items-center justify-center">
+              <div className="w-24 h-24 md:w-32 md:h-32 bg-[#d4ae36] rounded-full flex items-center justify-center">
                 <Check className="w-12 h-12 md:w-16 md:h-16 text-white" strokeWidth={3} />
               </div>
             </motion.div>
@@ -116,7 +116,7 @@ export default function SuccessPage() {
               transition={{ delay: 0.7 }}
               className="mb-8"
             >
-              <Badge variant="secondary" className="text-lg px-4 py-2 bg-emerald-100 text-emerald-800">
+              <Badge variant="secondary" className="text-lg px-4 py-2 bg-[#d4ae36]/10 text-[#d4ae36] border-[#d4ae36]/20">
                 Submission ID: {submissionId}
               </Badge>
             </motion.div>
@@ -126,12 +126,12 @@ export default function SuccessPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.9 }}
-              className="mb-12 p-6 bg-emerald-50 rounded-xl border border-emerald-200"
+              className="mb-12 p-6 bg-[#d4ae36]/5 rounded-xl border border-[#d4ae36]/20"
             >
               <h2 className="text-xl md:text-2xl font-semibold text-gray-900 mb-4">
                 Photos ready in:
               </h2>
-              <div className="text-4xl md:text-6xl font-mono font-bold text-emerald-600">
+              <div className="text-4xl md:text-6xl font-mono font-bold text-[#d4ae36]">
                 {formatTime(timeLeft)}
               </div>
             </motion.div>
@@ -155,7 +155,7 @@ export default function SuccessPage() {
                     transition={{ delay: 1.3 + index * 0.2 }}
                     className="p-6 bg-gray-50 rounded-xl"
                   >
-                    <div className="w-12 h-12 bg-emerald-500 rounded-lg flex items-center justify-center mb-4 mx-auto">
+                    <div className="w-12 h-12 bg-[#d4ae36] rounded-lg flex items-center justify-center mb-4 mx-auto">
                       <step.icon className="w-6 h-6 text-white" />
                     </div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -177,7 +177,7 @@ export default function SuccessPage() {
               className="mb-8 p-6 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-xl text-white"
             >
               <h3 className="text-xl font-bold mb-2">Share and get 5 bonus photos</h3>
-              <p className="text-emerald-100 mb-4">
+              <p className="text-[#d4ae36]/80 mb-4">
                 Tell your friends about your AI photo upgrade!
               </p>
 
@@ -229,7 +229,7 @@ export default function SuccessPage() {
             >
               <Button
                 onClick={() => router.push('/')}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 text-lg"
+                className="bg-[#d4ae36] hover:bg-[#c19d2f] text-black px-8 py-3 text-lg"
               >
                 Go to Homepage
               </Button>

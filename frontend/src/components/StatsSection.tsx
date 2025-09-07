@@ -53,7 +53,7 @@ export const StatsSection: React.FC = () => {
                         <div key={index} className="group">
                             <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-5 text-center hover:bg-white/8 hover:border-[#d4ae36]/30 transition-all duration-300 hover:scale-105 h-full flex flex-col">
                                 {/* Icon */}
-                                <div className="w-10 h-10 bg-gradient-to-br from-[#d4ae36] to-[#c19d2f] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                                <div className="w-10 h-10 bg-[#d4ae36] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                                     <div className="text-black">
                                         {insight.icon}
                                     </div>

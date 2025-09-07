@@ -401,7 +401,7 @@ function CheckoutContent() {
   if (!selectedPackage) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#d4ae36]" />
       </div>
     );
   }
@@ -415,18 +415,6 @@ function CheckoutContent() {
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#d4ae36]/5 via-transparent to-transparent"></div>
       <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-[#d4ae36]/3 via-transparent to-transparent"></div>
 
-      {/* Header */}
-      <div className="relative z-10 bg-red-500/50 backdrop-blur-xl border-4 border-yellow-400 rounded-3xl shadow-2xl mx-6 mt-6 p-6">
-        <div className="flex items-center space-x-4">
-          <Button asChild variant="ghost" size="sm" className="text-white hover:text-white hover:bg-white/20 transition-all duration-200">
-            <Link href="/pricing">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Packages
-            </Link>
-          </Button>
-          <h1 className="text-xl font-semibold text-white">Secure Checkout - GLASS MORPHISM TEST</h1>
-        </div>
-      </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
@@ -523,7 +511,7 @@ function CheckoutContent() {
       <div className="xl:hidden fixed bottom-0 left-0 right-0 bg-black/20 backdrop-blur-md border-t border-white/10 p-4 z-50">
         <Button
           onClick={() => setShowMobilePayment(true)}
-          className="w-full bg-gradient-to-r from-[#d4ae36] to-[#c19d2f] hover:from-[#c19d2f] hover:to-[#b8941f] text-black font-semibold py-4 text-lg rounded-xl transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-2xl hover:shadow-[#d4ae36]/30"
+          className="w-full bg-[#d4ae36] hover:bg-[#c19d2f] text-black font-semibold py-4 text-lg rounded-xl transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-2xl hover:shadow-[#d4ae36]/30"
         >
           <Lock className="w-4 h-4 mr-2" />
           Pay ${selectedPackage.price} Now
@@ -563,7 +551,7 @@ export default function CheckoutPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#d4ae36]" />
       </div>
     }>
       <CheckoutContent />

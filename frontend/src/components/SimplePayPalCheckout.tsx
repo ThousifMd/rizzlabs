@@ -202,7 +202,7 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
     }
 
     return (
-        <div className="w-full max-w-2xl mx-auto p-8 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl shadow-2xl">
+        <div className="w-full max-w-2xl mx-auto p-8">
             <h2 className="text-2xl font-bold mb-2 text-center text-white">Complete Your Order</h2>
             <p className="text-white/70 mb-6 text-center">
                 {selectedPackage ? `${selectedPackage.name}: $1.00 (Testing)` : 'Payment: $1.00 (Testing)'}
@@ -215,7 +215,7 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
                         placeholder="First Name"
                         value={formData.firstName}
                         onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                        className="bg-white/5 backdrop-blur-sm border border-white/20 text-white placeholder-white/50 rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#d4ae36]/30 focus:border-[#d4ae36] focus:bg-white/10 transition-all duration-300"
+                        className="bg-white/5 border border-white/20 text-white placeholder-white/50 rounded-lg px-4 py-3 focus:ring-0 focus:border-[#d4ae36] focus:bg-white/10 focus:outline-none transition-all duration-300"
                         required
                     />
                     <input
@@ -223,7 +223,7 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
                         placeholder="Last Name"
                         value={formData.lastName}
                         onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                        className="bg-white/5 backdrop-blur-sm border border-white/20 text-white placeholder-white/50 rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#d4ae36]/30 focus:border-[#d4ae36] focus:bg-white/10 transition-all duration-300"
+                        className="bg-white/5 border border-white/20 text-white placeholder-white/50 rounded-lg px-4 py-3 focus:ring-0 focus:border-[#d4ae36] focus:bg-white/10 focus:outline-none transition-all duration-300"
                         required
                     />
                 </div>
@@ -252,7 +252,7 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
                 <h3 className="text-xl font-bold text-white mb-3 text-center">💳 Complete Payment</h3>
                 <p className="text-white/70 mb-6 text-center text-sm">Secure payment powered by PayPal</p>
 
-                <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10 shadow-sm">
+                <div className="rounded-lg p-6">
                     <style dangerouslySetInnerHTML={{ __html: paypalStyles }} />
                     <div className="paypal-button-container">
                         <PayPalScriptProvider
