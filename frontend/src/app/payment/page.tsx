@@ -342,8 +342,10 @@ function PaymentContent() {
 
     const handlePaymentSuccess = (submissionId: string) => {
         // Track successful purchase
-        trackPurchase(selectedPackage.price, 'USD', selectedPackage.name);
-
+        if (selectedPackage) {
+            trackPurchase(selectedPackage.price, 'USD', selectedPackage.name);
+        }
+        
         // Redirect to success page with submission ID
         router.push(`/onboarding/success?submissionId=${submissionId}`);
     };
