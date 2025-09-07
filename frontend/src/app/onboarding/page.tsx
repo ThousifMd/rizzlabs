@@ -11,6 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress";
 
 import { CheckCircle2, User, Users, Dumbbell, Plane, UtensilsCrossed, Camera, Music, BookOpen, Gamepad2, Heart, Coffee, Mountain, Upload, X, Check, Smartphone, FileText, TrendingUp, Mail, Phone, Clock } from "lucide-react";
+import { trackInitiateCheckout, trackCompleteRegistration, trackFormStep } from "@/lib/metaPixel";
 
 interface OnboardingData {
   name: string;
@@ -159,6 +160,8 @@ export default function OnboardingPage() {
   useEffect(() => {
     localStorage.removeItem('onboardingFormData');
     setCurrentStep(1);
+    // Track form initiation
+    trackInitiateCheckout("Onboarding Form");
   }, []);
 
   const totalSteps = 5;
@@ -221,14 +224,27 @@ export default function OnboardingPage() {
 
   const handleContinue = async () => {
     if (currentStep === 1 && isStep1Valid) {
+      trackFormStep(1, "Basic Information");
       setCurrentStep(2);
     } else if (currentStep === 2 && isStep2Valid) {
+      trackFormStep(2, "Photo Upload");
       setCurrentStep(3);
     } else if (currentStep === 3 && isStep3Valid) {
+      trackFormStep(3, "Screenshot Upload");
       setCurrentStep(4);
     } else if (currentStep === 4) {
+      trackFormStep(4, "Bio and Preferences");
       setCurrentStep(5);
     } else if (currentStep === 5 && isStep5Valid) {
+      // Track form completion
+      trackCompleteRegistration({
+        name: formData.name,
+        age: formData.age,
+        dating_goal: formData.datingGoal,
+        photo_count: formData.photos.length,
+        screenshot_count: formData.screenshots.length
+      });
+
       // Store form data in localStorage and redirect to payment
       try {
         // Store form data locally (without photos to avoid storage quota issues)

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, Shield } from "lucide-react";
 import { usePackage, Package } from "@/contexts/PackageContext";
+import { trackAddToCart, trackCTAClick } from "@/lib/metaPixel";
 
 const pricingTiers = [
   {
@@ -87,11 +88,17 @@ export const PricingSection = () => {
 
   const handlePackageSelect = (packageId: string) => {
     setLocalSelectedPackage(packageId);
+    const packageData = pricingTiers.find(tier => tier.id === packageId);
+    if (packageData) {
+      trackAddToCart(packageData.name, packageData.price);
+    }
   };
 
   const handleGetStarted = (packageId: string) => {
     const packageData = pricingTiers.find(tier => tier.id === packageId);
     if (packageData) {
+      // Track CTA click
+      trackCTAClick(`Get Started - ${packageData.name}`, "Pricing Section");
       // Set global selection
       setSelectedPackage(packageData);
       // Store selected package in localStorage for payment page

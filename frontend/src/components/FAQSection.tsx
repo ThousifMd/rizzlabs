@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { ChevronDown, HelpCircle, MessageCircle } from 'lucide-react';
+import { trackViewContent } from '@/lib/metaPixel';
 
 interface FAQItem {
     question: string;
@@ -27,11 +28,18 @@ export const FAQSection: React.FC = () => {
     const [openItems, setOpenItems] = useState<number[]>([]);
 
     const toggleItem = (index: number) => {
+        const isOpening = !openItems.includes(index);
+
         setOpenItems(prev =>
             prev.includes(index)
                 ? prev.filter(i => i !== index)
                 : [...prev, index]
         );
+
+        // Track FAQ interaction
+        if (isOpening) {
+            trackViewContent(faqData[index].question, 'FAQ Expand');
+        }
     };
 
     return (

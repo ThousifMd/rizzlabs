@@ -4,6 +4,7 @@ import * as React from "react"
 import Link from "next/link"
 import { Menu, Sparkles, X } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { trackCTAClick } from "@/lib/metaPixel"
 
 type NavbarProps = {
   ctaHref: string
@@ -55,6 +56,7 @@ export default function Navbar({ ctaHref, className }: NavbarProps) {
           <Link
             href={ctaHref}
             className="hidden md:inline-flex items-center px-5 py-2 bg-transparent backdrop-blur-sm border border-[#d4ae36]/40 rounded-lg font-medium hover:border-[#d4ae36]/60 hover:bg-transparent transition-all duration-300"
+            onClick={() => trackCTAClick("Join the Top 5%", "Navbar Desktop")}
           >
             <span className="bg-gradient-to-r from-[#d4ae36] via-[#FD5E76] to-[#d4ae36] bg-clip-text text-transparent">
               Join the Top 5%
@@ -183,7 +185,10 @@ function MobileMenu({
           <Link
             href={ctaHref}
             className="inline-flex items-center px-6 py-2 bg-transparent border border-[#d4ae36]/40 rounded-full font-semibold hover:border-[#d4ae36]/60 transition-all duration-300 mt-4"
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              trackCTAClick("Join the Top 5%", "Navbar Mobile");
+              setOpen(false);
+            }}
           >
             <span className="bg-gradient-to-r from-[#d4ae36] via-[#FD5E76] to-[#d4ae36] bg-clip-text text-transparent">
               Join the Top 5%

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { trackCTAClick } from "@/lib/metaPixel";
 
 interface HeroSectionProps {
   ctaHref: string;
@@ -9,6 +10,7 @@ interface HeroSectionProps {
 
 export default function HeroSection({ ctaHref, className }: HeroSectionProps) {
   const handleCTA = () => {
+    trackCTAClick("Level Up My Man Game", "Hero Section");
     window.location.href = "/onboarding";
   };
 

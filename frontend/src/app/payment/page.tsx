@@ -30,6 +30,7 @@ import {
     Mail,
 } from "lucide-react";
 import Link from "next/link";
+import { trackPurchase } from "@/lib/metaPixel";
 
 const stripePromise = loadStripe(
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ||
@@ -340,6 +341,9 @@ function PaymentContent() {
     }, [searchParams]);
 
     const handlePaymentSuccess = (submissionId: string) => {
+        // Track successful purchase
+        trackPurchase(selectedPackage.price, 'USD', selectedPackage.name);
+
         // Redirect to success page with submission ID
         router.push(`/onboarding/success?submissionId=${submissionId}`);
     };
