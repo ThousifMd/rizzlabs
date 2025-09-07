@@ -343,7 +343,7 @@ function PaymentContent() {
     const handlePaymentSuccess = (submissionId: string) => {
         // Track successful purchase
         if (selectedPackage) {
-            trackPurchase(selectedPackage.price, 'USD', selectedPackage.name);
+            trackPurchase(selectedPackage.salePrice, 'USD', selectedPackage.name);
         }
         
         // Redirect to success page with submission ID
