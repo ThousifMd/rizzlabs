@@ -18,7 +18,6 @@ interface OnboardingData {
   age: string;
   datingGoal: string;
   currentMatches: string;
-  anchorQuestion: string;
   bodyType: string;
   stylePreference: string;
   ethnicity: string;
@@ -28,6 +27,10 @@ interface OnboardingData {
   currentBio: string;
   email: string;
   phone: string;
+  // New fields for step 5
+  vibe: string;
+  wantMore: string;
+  oneLiner: string;
 }
 
 const datingGoals = [
@@ -44,13 +47,17 @@ const matchOptions = [
   { value: "10+", label: "10+ matches" }
 ];
 
-const anchorQuestionOptions = [
-  { value: "wrong-message", label: "Sent a message meant for someone else" },
-  { value: "swiped-cousin", label: "Accidentally swiped right on my cousin" },
-  { value: "old-gym-photo", label: "Posted a gym selfie from 2019" },
-  { value: "caught-at-work", label: "Got caught using dating apps at work" },
-  { value: "blurry-photo", label: "Used a blurry photo as my main pic" },
-  { value: "group-photo", label: "Used a group photo where I'm hard to find" }
+const vibeOptions = [
+  { value: "fitness-lifestyle", label: "🔘 Fitness & Lifestyle" },
+  { value: "career-success", label: "🔘 Career & Success" },
+  { value: "foodie-traveler", label: "🔘 Foodie & Traveler" },
+  { value: "fun-adventurous", label: "🔘 Fun & Adventurous" }
+];
+
+const wantMoreOptions = [
+  { value: "matches", label: "🔘 Matches" },
+  { value: "dates", label: "🔘 Dates" },
+  { value: "serious-connections", label: "🔘 Serious Connections" }
 ];
 
 const bodyTypes = [
@@ -144,7 +151,6 @@ export default function OnboardingPage() {
     age: "",
     datingGoal: "",
     currentMatches: "",
-    anchorQuestion: "",
     bodyType: "",
     stylePreference: "",
     ethnicity: "",
@@ -153,7 +159,10 @@ export default function OnboardingPage() {
     screenshots: [],
     currentBio: "",
     email: "",
-    phone: ""
+    phone: "",
+    vibe: "",
+    wantMore: "",
+    oneLiner: ""
   });
 
   // Clear any stored form data on page load to start fresh
@@ -170,8 +179,7 @@ export default function OnboardingPage() {
   const isStep1Valid = formData.name.trim() !== "" &&
     formData.age !== "" &&
     formData.datingGoal !== "" &&
-    formData.currentMatches !== "" &&
-    formData.anchorQuestion !== "";
+    formData.currentMatches !== "";
 
   const isStep2Valid = formData.bodyType !== "" &&
     formData.stylePreference !== "" &&
@@ -220,7 +228,9 @@ export default function OnboardingPage() {
 
   const isStep5Valid = formData.email.trim() !== "" &&
     isValidEmail(formData.email) &&
-    (formData.phone.trim() === "" || isValidPhone(formData.phone));
+    (formData.phone.trim() === "" || isValidPhone(formData.phone)) &&
+    formData.vibe !== "" &&
+    formData.wantMore !== "";
 
   const handleContinue = async () => {
     if (currentStep === 1 && isStep1Valid) {
@@ -242,7 +252,10 @@ export default function OnboardingPage() {
         age: formData.age,
         dating_goal: formData.datingGoal,
         photo_count: formData.photos.length,
-        screenshot_count: formData.screenshots.length
+        screenshot_count: formData.screenshots.length,
+        vibe: formData.vibe,
+        want_more: formData.wantMore,
+        one_liner: formData.oneLiner
       });
 
       // Store form data in localStorage and redirect to payment
@@ -261,7 +274,10 @@ export default function OnboardingPage() {
           email: formData.email,
           phone: formData.phone,
           photoCount: formData.photos.length,
-          screenshotCount: formData.screenshots.length
+          screenshotCount: formData.screenshots.length,
+          vibe: formData.vibe,
+          wantMore: formData.wantMore,
+          oneLiner: formData.oneLiner
         }));
 
         // Store photos in memory using a global variable instead of sessionStorage
@@ -487,27 +503,70 @@ export default function OnboardingPage() {
           <Card className="w-full max-w-2xl bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl hover:bg-white/8 hover:border-white/20 transition-all duration-300 ease-out">
             <CardHeader className="text-center space-y-2 pb-6">
               <CardTitle className="text-3xl font-bold text-white">
-                Where Should We Send Your New Photos?
+                "What makes you stand out?"
               </CardTitle>
               <CardDescription className="text-lg text-gray-300">
-                We'll deliver your optimized profile photos directly to you
+                Help us understand your personality and goals
               </CardDescription>
             </CardHeader>
 
             <CardContent className="space-y-8">
-              {/* Delivery Time Visual */}
-              <div className="bg-gray-800/50 p-6 rounded-lg border border-white/30">
-                <div className="flex items-center justify-center gap-3 text-[#d4ae36]">
-                  <Clock className="h-6 w-6" />
-                  <div className="text-center">
-                    <div className="text-lg font-semibold">
-                      Delivered by {getDeliveryTime()}
-                    </div>
-                    <div className="text-sm text-[#c19d2f]">
-                      Tomorrow - We'll email you as soon as they're ready!
-                    </div>
-                  </div>
+              {/* Pick your vibe */}
+              <div className="space-y-3">
+                <label className="text-lg font-bold text-white">
+                  Pick your vibe:
+                </label>
+                <div className="grid grid-cols-1 gap-3">
+                  {vibeOptions.map(option => (
+                    <Button
+                      key={option.value}
+                      variant={formData.vibe === option.value ? "default" : "outline"}
+                      className={`h-12 text-left justify-start ${formData.vibe === option.value
+                        ? "bg-[#FFD700]/20 backdrop-blur-sm border-2 border-[#FFD700] text-white shadow-lg shadow-[#FFD700]/30 transition-all duration-300 ease-out"
+                        : "bg-white/5 backdrop-blur-sm border border-white/20 text-white hover:border-[#FFD700] hover:bg-white/10 hover:text-white hover:shadow-lg hover:shadow-[#FFD700]/20 transition-all duration-300 ease-out"
+                        }`}
+                      onClick={() => setFormData(prev => ({ ...prev, vibe: option.value }))}
+                    >
+                      {option.label}
+                    </Button>
+                  ))}
                 </div>
+              </div>
+
+              {/* What do you want more of? */}
+              <div className="space-y-3">
+                <label className="text-lg font-bold text-white">
+                  What do you want more of?
+                </label>
+                <div className="grid grid-cols-1 gap-3">
+                  {wantMoreOptions.map(option => (
+                    <Button
+                      key={option.value}
+                      variant={formData.wantMore === option.value ? "default" : "outline"}
+                      className={`h-12 text-left justify-start ${formData.wantMore === option.value
+                        ? "bg-[#FFD700]/20 backdrop-blur-sm border-2 border-[#FFD700] text-white shadow-lg shadow-[#FFD700]/30 transition-all duration-300 ease-out"
+                        : "bg-white/5 backdrop-blur-sm border border-white/20 text-white hover:border-[#FFD700] hover:bg-white/10 hover:text-white hover:shadow-lg hover:shadow-[#FFD700]/20 transition-all duration-300 ease-out"
+                        }`}
+                      onClick={() => setFormData(prev => ({ ...prev, wantMore: option.value }))}
+                    >
+                      {option.label}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* One line about yourself */}
+              <div className="space-y-3">
+                <label className="text-lg font-bold text-white">
+                  One line about yourself we should know<br />
+                  <span className="text-sm font-normal text-gray-300">(Recommended)</span>
+                </label>
+                <Textarea
+                  placeholder="e.g., I'm a software engineer who loves hiking and cooking Italian food..."
+                  value={formData.oneLiner}
+                  onChange={(e) => setFormData(prev => ({ ...prev, oneLiner: e.target.value }))}
+                  className="h-20 bg-white/5 backdrop-blur-sm border border-white/20 text-white placeholder-gray-400 focus:border-[#FFD700] focus:ring-2 focus:ring-[#FFD700]/30 focus:bg-white/10 transition-all duration-300 ease-out resize-none"
+                />
               </div>
 
               {/* Email Input */}
@@ -525,7 +584,7 @@ export default function OnboardingPage() {
                     validateEmail(e.target.value);
                   }}
                   onBlur={(e) => validateEmail(e.target.value)}
-                  className={`h-12 bg-white/5 backdrop-blur-sm border border-white/20 text-white placeholder-gray-400 focus:border-[#d4ae36] focus:ring-2 focus:ring-[#d4ae36]/30 focus:bg-white/10 transition-all duration-300 ease-out ${emailError ? "border-red-500 focus:border-red-500" : ""}`}
+                  className={`h-12 bg-white/5 backdrop-blur-sm border border-white/20 text-white placeholder-gray-400 focus:border-[#FFD700] focus:ring-2 focus:ring-[#FFD700]/30 focus:bg-white/10 transition-all duration-300 ease-out ${emailError ? "border-red-500 focus:border-red-500" : ""}`}
                 />
                 {emailError ? (
                   <p className="text-sm text-red-600">{emailError}</p>
@@ -552,7 +611,7 @@ export default function OnboardingPage() {
                     validatePhone(e.target.value);
                   }}
                   onBlur={(e) => validatePhone(e.target.value)}
-                  className={`h-12 bg-white/5 backdrop-blur-sm border border-white/20 text-white placeholder-gray-400 focus:border-[#d4ae36] focus:ring-2 focus:ring-[#d4ae36]/30 focus:bg-white/10 transition-all duration-300 ease-out ${phoneError ? "border-red-500 focus:border-red-500" : ""}`}
+                  className={`h-12 bg-white/5 backdrop-blur-sm border border-white/20 text-white placeholder-gray-400 focus:border-[#FFD700] focus:ring-2 focus:ring-[#FFD700]/30 focus:bg-white/10 transition-all duration-300 ease-out ${phoneError ? "border-red-500 focus:border-red-500" : ""}`}
                 />
                 {phoneError ? (
                   <p className="text-sm text-red-600">{phoneError}</p>
@@ -563,15 +622,13 @@ export default function OnboardingPage() {
                 )}
               </div>
 
-
-
               {/* Email Notification Banner */}
               <div className="bg-gray-800/50 p-4 rounded-lg border border-white/20">
-                <div className="flex items-center gap-2 text-[#d4ae36]">
+                <div className="flex items-center gap-2 text-[#FFD700]">
                   <Mail className="h-5 w-5" />
                   <div>
                     <div className="font-semibold">We'll email you as soon as they're ready!</div>
-                    <div className="text-sm text-[#c19d2f]">
+                    <div className="text-sm text-[#FFA500]">
                       You'll receive a link to download your optimized photos and bio suggestions
                     </div>
                   </div>
@@ -583,12 +640,12 @@ export default function OnboardingPage() {
                 <Button
                   onClick={handleContinue}
                   disabled={!isStep5Valid}
-                  className="w-full h-12 bg-[#d4ae36] hover:from-[#c19d2f] hover:via-[#e04a5f] hover:to-[#c19d2f] disabled:bg-gray-700 disabled:text-gray-400 text-white text-lg font-medium transition-all duration-200"
+                  className="w-full h-12 bg-[#FFD700] hover:bg-[#FFA500] disabled:bg-gray-700 disabled:text-gray-400 text-black text-lg font-medium transition-all duration-200"
                 >
-                  {isStep5Valid ? "Complete Setup" :
+                  {isStep5Valid ? "➡️ Next → Build My Profile" :
                     emailError ? "Please fix email errors" :
                       phoneError ? "Please fix phone number errors" :
-                        "Please enter a valid email address"
+                        "Please select your vibe and what you want more of"
                   }
                 </Button>
               </div>
@@ -1166,27 +1223,6 @@ export default function OnboardingPage() {
                 </div>
               </div>
 
-              {/* Anchor Question */}
-              <div className="space-y-3">
-                <label className="text-sm font-bold text-white">
-                  What's your most embarrassing dating app moment? 😅
-                </label>
-                <div className="grid grid-cols-1 gap-3">
-                  {anchorQuestionOptions.map(option => (
-                    <Button
-                      key={option.value}
-                      variant={formData.anchorQuestion === option.value ? "default" : "outline"}
-                      className={`h-12 text-left justify-start ${formData.anchorQuestion === option.value
-                        ? "bg-[#d4ae36]/20 backdrop-blur-sm border-2 border-[#d4ae36] text-white shadow-lg shadow-[#d4ae36]/30 transition-all duration-300 ease-out"
-                        : "bg-white/5 backdrop-blur-sm border border-white/20 text-white hover:border-[#d4ae36] hover:bg-white/10 hover:text-white hover:shadow-lg hover:shadow-[#d4ae36]/20 transition-all duration-300 ease-out"
-                        }`}
-                      onClick={() => setFormData(prev => ({ ...prev, anchorQuestion: option.value }))}
-                    >
-                      {option.label}
-                    </Button>
-                  ))}
-                </div>
-              </div>
 
               {/* Continue Button */}
               <div className="pt-6">

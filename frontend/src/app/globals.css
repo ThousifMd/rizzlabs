@@ -529,12 +529,29 @@ color utility to any element that depends on these defaults.
         }
 
         100% {
-            transform: translateX(-50%);
+            transform: translateX(-25%);
         }
     }
 
     .animate-scroll {
-        animation: scroll 30s linear infinite;
+        animation: scroll 50s linear infinite;
+        will-change: transform;
+    }
+
+    /* Slow scrolling animation for testimonials */
+    @keyframes scroll-slow {
+        0% {
+            transform: translateX(0);
+        }
+
+        100% {
+            transform: translateX(-25%);
+        }
+    }
+
+    .animate-scroll-slow {
+        animation: scroll-slow 80s linear infinite;
+        will-change: transform;
     }
 
     /* Gradient animation */
@@ -565,5 +582,15 @@ color utility to any element that depends on these defaults.
             opacity: 1;
             transform: translateY(0) scale(1);
         }
+    }
+
+    /* Hide scrollbar for horizontal scrolling */
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
     }
 }

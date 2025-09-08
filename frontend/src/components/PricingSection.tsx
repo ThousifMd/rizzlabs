@@ -138,8 +138,8 @@ export const PricingSection = () => {
               .map((tier) => (
                 <Card
                   key={tier.name}
-                  className={`relative group transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer flex flex-col h-full bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/8 hover:border-[#d4ae36]/30 hover:shadow-[#d4ae36]/20 ${localSelectedPackage === tier.id
-                    ? "border-2 border-[#d4ae36] shadow-lg shadow-[#d4ae36]/30"
+                  className={`relative group transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer flex flex-col h-full bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/8 hover:border-[#FFD700]/30 hover:shadow-[#FFD700]/20 ${localSelectedPackage === tier.id
+                    ? "border-2 border-[#FFD700] shadow-lg shadow-[#FFD700]/30"
                     : "border border-white/10 shadow-sm"
                     }`}
                   role="article"
@@ -147,7 +147,7 @@ export const PricingSection = () => {
                   onClick={() => handlePackageSelect(tier.id)}
                 >
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <Badge className="bg-gradient-to-r from-[#d4ae36] to-[#c19d2f] text-black hover:from-[#c19d2f] hover:to-[#b8941f] px-4 py-1.5 font-medium">
+                    <Badge className="bg-gradient-to-r from-[#FFD700] to-[#FFA500] text-black hover:from-[#FFA500] hover:to-[#FF8C00] px-4 py-1.5 font-medium">
                       {tier.discount}
                     </Badge>
                   </div>
@@ -178,7 +178,7 @@ export const PricingSection = () => {
                           role="listitem"
                         >
                           <Check
-                            className="w-5 h-5 mt-0.5 flex-shrink-0 text-[#d4ae36]"
+                            className="w-5 h-5 mt-0.5 flex-shrink-0 text-[#FFD700]"
                             aria-hidden="true"
                           />
                           <span className="text-white text-sm leading-relaxed">
@@ -195,9 +195,9 @@ export const PricingSection = () => {
                           e.stopPropagation();
                           window.location.href = "/onboarding";
                         }}
-                        className="relative w-full h-auto min-h-[48px] px-8 py-3 rounded-lg font-semibold text-lg bg-gradient-to-br from-white/10 via-white/5 to-white/10 backdrop-blur-md border-2 border-transparent bg-clip-border hover:bg-white/15 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#d4ae36]/20 overflow-hidden group mt-auto flex items-center justify-center"
+                        className="relative w-full h-auto min-h-[48px] px-8 py-3 rounded-lg font-semibold text-lg bg-gradient-to-br from-white/10 via-white/5 to-white/10 backdrop-blur-md border-2 border-transparent bg-clip-border hover:bg-white/15 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#FFD700]/20 overflow-hidden group mt-auto flex items-center justify-center"
                         style={{
-                          backgroundImage: 'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05), rgba(255,255,255,0.1)), linear-gradient(135deg, #d4ae36, #FD5E76, #d4ae36)',
+                          backgroundImage: 'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05), rgba(255,255,255,0.1)), linear-gradient(135deg, #FFD700, #FFA500, #FFD700)',
                           backgroundOrigin: 'border-box',
                           backgroundClip: 'padding-box, border-box'
                         }}
@@ -217,8 +217,8 @@ export const PricingSection = () => {
                           }
                         }}
                         className={`w-full transition-all duration-300 mt-auto ${localSelectedPackage === tier.id
-                          ? "bg-gradient-to-r from-[#d4ae36] to-[#c19d2f] hover:from-[#c19d2f] hover:to-[#b8941f] text-black shadow-lg shadow-[#d4ae36]/30"
-                          : "bg-white/5 backdrop-blur-sm border border-white/20 text-white hover:bg-white/10 hover:border-[#d4ae36] hover:text-white"
+                          ? "bg-gradient-to-r from-[#FFD700] to-[#FFA500] hover:from-[#FFA500] hover:to-[#FF8C00] text-black shadow-lg shadow-[#FFD700]/30"
+                          : "bg-white/5 backdrop-blur-sm border border-white/20 text-white hover:bg-white/10 hover:border-[#FFD700] hover:text-white"
                           }`}
                         size="lg"
                       >

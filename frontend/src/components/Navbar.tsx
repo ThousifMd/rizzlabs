@@ -55,10 +55,10 @@ export default function Navbar({ ctaHref, className }: NavbarProps) {
           {/* CTA Button */}
           <Link
             href={ctaHref}
-            className="hidden md:inline-flex items-center px-5 py-2 bg-transparent backdrop-blur-sm border border-[#d4ae36]/40 rounded-lg font-medium hover:border-[#d4ae36]/60 hover:bg-transparent transition-all duration-300"
+            className="hidden md:inline-flex items-center px-5 py-2 bg-transparent backdrop-blur-sm border border-[#FFD700]/40 rounded-lg font-medium hover:border-[#FFD700]/60 hover:bg-transparent transition-all duration-300"
             onClick={() => trackCTAClick("Join the Top 5%", "Navbar Desktop")}
           >
-            <span className="bg-gradient-to-r from-[#d4ae36] via-[#FD5E76] to-[#d4ae36] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#FFD700] via-[#FFA500] to-[#FFD700] bg-clip-text text-transparent">
               Join the Top 5%
             </span>
           </Link>
@@ -81,21 +81,45 @@ function Brand() {
     <Link
       href="/"
       aria-label="Matchlens home"
-      className="group inline-flex items-center rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4ae36]"
+      className="group inline-flex items-center rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFD700]"
     >
-      <div className="flex items-center gap-4 transition-all duration-300 group-hover:scale-110">
-        {/* Heart/Lens Icon */}
+      <div className="flex items-center gap-4 transition-all duration-300 group-hover:scale-105 group-hover:-translate-y-0.5">
+        {/* Heart/Lens Icon with Sharp 3D effects */}
         <div className="w-8 h-8 flex items-center justify-center relative">
+          {/* Sharp 3D Shadow Layer */}
           <svg
             viewBox="0 0 24 24"
-            className="w-8 h-8 fill-none stroke-[3] transition-all duration-300 group-hover:scale-125 group-hover:rotate-12"
+            className="absolute w-8 h-8 fill-none stroke-[2.5]"
             style={{
-              stroke: 'url(#logoGradient)',
-              filter: 'drop-shadow(0 0 8px rgba(212, 174, 54, 0.5))'
+              stroke: '#000000',
+              transform: 'translate(1px, 1px)',
+              opacity: 0.4
+            }}
+          >
+            <path
+              d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M16 8l-4 4-4-4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+
+          {/* Main Sharp 3D Icon */}
+          <svg
+            viewBox="0 0 24 24"
+            className="relative w-8 h-8 fill-none stroke-[2.5] transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-hover:-translate-y-0.5"
+            style={{
+              stroke: 'url(#sharpLogoGradient)',
+              filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
+              transform: 'perspective(200px) rotateX(10deg) rotateY(-3deg)'
             }}
           >
             <defs>
-              <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <linearGradient id="sharpLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor="#d4ae36" />
                 <stop offset="50%" stopColor="#ffffff" />
                 <stop offset="100%" stopColor="#FD5E76" />
@@ -112,8 +136,9 @@ function Brand() {
               strokeLinejoin="round"
             />
           </svg>
-          {/* Glow effect */}
-          <div className="absolute inset-0 w-8 h-8 bg-gradient-to-r from-[#d4ae36]/20 via-white/10 to-[#FD5E76]/20 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+          {/* Sharp Highlight */}
+          <div className="absolute top-0.5 left-0.5 w-1.5 h-1.5 bg-white/60 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         </div>
 
         {/* Text */}
@@ -162,7 +187,7 @@ function MobileMenu({
             type="button"
             onClick={() => setOpen(false)}
             aria-label="Close menu"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-white/80 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4ae36]"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-white/80 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFD700]"
           >
             <X className="h-5 w-5" aria-hidden="true" />
           </button>
@@ -184,13 +209,13 @@ function MobileMenu({
 
           <Link
             href={ctaHref}
-            className="inline-flex items-center px-6 py-2 bg-transparent border border-[#d4ae36]/40 rounded-full font-semibold hover:border-[#d4ae36]/60 transition-all duration-300 mt-4"
+            className="inline-flex items-center px-6 py-2 bg-transparent border border-[#FFD700]/40 rounded-full font-semibold hover:border-[#FFD700]/60 transition-all duration-300 mt-4"
             onClick={() => {
               trackCTAClick("Join the Top 5%", "Navbar Mobile");
               setOpen(false);
             }}
           >
-            <span className="bg-gradient-to-r from-[#d4ae36] via-[#FD5E76] to-[#d4ae36] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#FFD700] via-[#FFA500] to-[#FFD700] bg-clip-text text-transparent">
               Join the Top 5%
             </span>
           </Link>

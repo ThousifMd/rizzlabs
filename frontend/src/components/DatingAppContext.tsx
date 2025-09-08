@@ -149,7 +149,7 @@ export const DatingAppContext: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                 <DatingAppCard
                     appName="Tinder-style"
-                    beforeImage="/images/1.1.png"
+                    beforeImage="/images/frat_before.jpeg"
                     afterImage="/images/3.3.png"
                     upgradedImage="/images/3.3.png"
                     name="Alex"
@@ -175,7 +175,7 @@ export const DatingAppContext: React.FC = () => {
 
                 <DatingAppCard
                     appName="Hinge-style"
-                    beforeImage="/images/1.2.png"
+                    beforeImage="/images/tedx_before.jpeg"
                     afterImage="/images/4.2.png"
                     upgradedImage="/images/4.3.png"
                     name="Noah"

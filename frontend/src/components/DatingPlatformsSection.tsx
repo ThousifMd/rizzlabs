@@ -2,14 +2,14 @@
 
 export default function DatingPlatformsSection() {
     const platforms = [
-        { name: "Tinder", logo: "🔥" },
-        { name: "Bumble", logo: "🐝" },
-        { name: "Hinge", logo: "💕" },
-        { name: "OkCupid", logo: "💘" },
-        { name: "Coffee Meets Bagel", logo: "☕" },
-        { name: "Happn", logo: "📍" },
-        { name: "Match", logo: "💍" },
-        { name: "eHarmony", logo: "💝" },
+        { name: "Tinder" },
+        { name: "Bumble" },
+        { name: "Hinge" },
+        { name: "OkCupid" },
+        { name: "Coffee Meets Bagel" },
+        { name: "Happn" },
+        { name: "Match" },
+        { name: "eHarmony" },
     ];
 
     return (
@@ -22,27 +22,49 @@ export default function DatingPlatformsSection() {
                 <div className="relative overflow-hidden">
                     {/* Scrolling container */}
                     <div className="flex animate-scroll space-x-12 items-center">
-                        {/* First set of logos */}
+                        {/* First set of platforms */}
                         {platforms.map((platform, index) => (
                             <div
                                 key={`first-${index}`}
-                                className="flex-shrink-0 flex items-center space-x-3 text-white/60 hover:text-white/80 transition-colors duration-300"
+                                className="flex-shrink-0 flex items-center text-white/60 hover:text-white/80 transition-colors duration-300"
                             >
-                                <span className="text-2xl">{platform.logo}</span>
-                                <span className="text-lg font-medium whitespace-nowrap">
+                                <span className="text-xl font-semibold whitespace-nowrap">
                                     {platform.name}
                                 </span>
                             </div>
                         ))}
 
-                        {/* Duplicate set for seamless scrolling */}
+                        {/* Second set for seamless scrolling */}
                         {platforms.map((platform, index) => (
                             <div
                                 key={`second-${index}`}
-                                className="flex-shrink-0 flex items-center space-x-3 text-white/60 hover:text-white/80 transition-colors duration-300"
+                                className="flex-shrink-0 flex items-center text-white/60 hover:text-white/80 transition-colors duration-300"
                             >
-                                <span className="text-2xl">{platform.logo}</span>
-                                <span className="text-lg font-medium whitespace-nowrap">
+                                <span className="text-xl font-semibold whitespace-nowrap">
+                                    {platform.name}
+                                </span>
+                            </div>
+                        ))}
+
+                        {/* Third set for extra smoothness */}
+                        {platforms.map((platform, index) => (
+                            <div
+                                key={`third-${index}`}
+                                className="flex-shrink-0 flex items-center text-white/60 hover:text-white/80 transition-colors duration-300"
+                            >
+                                <span className="text-xl font-semibold whitespace-nowrap">
+                                    {platform.name}
+                                </span>
+                            </div>
+                        ))}
+
+                        {/* Fourth set for perfect seamless loop */}
+                        {platforms.map((platform, index) => (
+                            <div
+                                key={`fourth-${index}`}
+                                className="flex-shrink-0 flex items-center text-white/60 hover:text-white/80 transition-colors duration-300"
+                            >
+                                <span className="text-xl font-semibold whitespace-nowrap">
                                     {platform.name}
                                 </span>
                             </div>

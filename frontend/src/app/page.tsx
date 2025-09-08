@@ -8,6 +8,8 @@ import { StatsSection } from "@/components/StatsSection";
 import { FAQSection } from "@/components/FAQSection";
 import { SimpleProcessSection } from "@/components/SimpleProcessSection";
 import { PricingSection } from "@/components/PricingSection";
+import CompaniesSection from "@/components/CompaniesSection";
+import { TestimonialsSection } from "@/components/TestimonialsSection";
 import Footer from "@/components/Footer";
 import { MobileStickyCTA } from "@/components/MobileStickyCTA";
 
@@ -46,6 +48,12 @@ export default function HomePage() {
 
         {/* Pricing Section */}
         <PricingSection />
+
+        {/* Testimonials Section */}
+        <TestimonialsSection />
+
+        {/* Companies Section */}
+        <CompaniesSection />
 
         {/* FAQ Section */}
         <FAQSection />
