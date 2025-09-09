@@ -21,8 +21,7 @@ const pricingTiers = [
       "5 enhanced photos",
       "3 style variations",
       "Basic bio tips",
-      "Private and secure",
-      "24-hour delivery"
+      "Private and secure"
     ],
     buttonText: "Make me a match magnet",
     popular: false,
@@ -41,8 +40,7 @@ const pricingTiers = [
       "6 style variations",
       "Bio optimization",
       "Profile strategy guide",
-      "Private and secure",
-      "12-hour delivery"
+      "Private and secure"
     ],
     buttonText: "Make me a match magnet",
     popular: true,
@@ -50,43 +48,23 @@ const pricingTiers = [
   },
   {
     id: "date-ready",
-    name: "Date Ready",
+    name: "Complete Makeover",
     price: 97,
     originalPrice: 199,
     discount: "Save 51%",
-    description: "For serious results",
+    description: "Ultimate transformation",
     benefit: "Full profile makeover so you're ready for real dates, not just swipes.",
     features: [
       "20 enhanced photos",
       "10 style variations",
       "Complete profile makeover",
+      "Bio optimization",
       "Message templates",
-      "Private and secure",
-      "Priority 6-hour delivery"
+      "Private and secure"
     ],
     buttonText: "Make me a match magnet",
     popular: false,
     mobileOrder: 3
-  },
-  {
-    id: "complete-makeover",
-    name: "Complete Makeover",
-    price: 197,
-    originalPrice: 399,
-    discount: "Save 50%",
-    description: "Ultimate transformation",
-    benefit: "Complete transformation with personal coaching for maximum dating success.",
-    features: [
-      "30 enhanced photos",
-      "All styles",
-      "1-on-1 consultation",
-      "Weekly updates for 1 month",
-      "Private and secure",
-      "2-hour rush delivery"
-    ],
-    buttonText: "Make me a match magnet",
-    popular: false,
-    mobileOrder: 4
   }
 ];
 
@@ -117,9 +95,9 @@ export const PricingSection = () => {
 
   return (
     <section className="py-16 lg:py-24" aria-labelledby="pricing-title">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+      <div className="container">
         {/* Main Container with Glass Morphism */}
-        <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl">
+        <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl">
           {/* Header */}
           <div className="text-center mb-12 lg:mb-16 relative">
             {/* Background decoration */}
@@ -142,7 +120,7 @@ export const PricingSection = () => {
                 <p className="text-lg sm:text-xl text-gray-300 leading-relaxed mb-6">
                   For a fraction of that, we'll transform your profile into a <span className="text-[#FFD700] font-bold">swipe-magnet</span>.
                 </p>
-                <div className="inline-flex items-center gap-3 bg-gradient-to-r from-[#FFD700]/10 to-[#FFA500]/10 backdrop-blur-sm border border-[#FFD700]/30 rounded-2xl px-6 py-3">
+                <div className="inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-3 bg-gradient-to-r from-[#FFD700]/10 to-[#FFA500]/10 backdrop-blur-sm border border-[#FFD700]/30 rounded-2xl px-6 py-3">
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
                     <span className="text-white font-semibold">Most users see</span>
@@ -155,45 +133,40 @@ export const PricingSection = () => {
           </div>
 
           {/* Pricing Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-8 mb-12 items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6 mb-8 items-stretch">
             {pricingTiers
-              .sort((a, b) => {
-                // Sort by mobile order on small screens
-                if (typeof window !== 'undefined' && window.innerWidth < 1280) {
-                  return a.mobileOrder - b.mobileOrder;
-                }
-                return 0;
-              })
               .map((tier) => (
                 <Card
                   key={tier.name}
                   className={`relative group transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer flex flex-col h-full bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/8 hover:border-[#FFD700]/30 hover:shadow-[#FFD700]/20 ${localSelectedPackage === tier.id
                     ? "border-2 border-[#FFD700] shadow-lg shadow-[#FFD700]/30"
                     : "border border-white/10 shadow-sm"
-                    }`}
+                    } ${tier.mobileOrder === 1 ? 'order-1' : tier.mobileOrder === 2 ? 'order-2' : tier.mobileOrder === 3 ? 'order-3' : 'order-4'}`}
                   role="article"
                   aria-label={`${tier.name} pricing plan`}
                   onClick={() => handlePackageSelect(tier.id)}
                 >
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <Badge className="bg-gradient-to-r from-[#FFD700] to-[#FFA500] text-black hover:from-[#FFA500] hover:to-[#FF8C00] px-4 py-1.5 font-medium">
+                    <Badge className="bg-gradient-to-r from-[#FFD700] to-[#FFA500] text-black px-4 py-1.5 font-medium">
                       {tier.discount}
                     </Badge>
                   </div>
 
-                  <CardHeader className="text-center pb-4">
-                    <CardTitle className="text-xl font-heading font-bold text-white mb-2">
-                      {tier.name}
-                    </CardTitle>
-                    <CardDescription className="text-gray-300 mb-4">
-                      {tier.description}
-                    </CardDescription>
-                    <div className="flex items-center justify-center space-x-2">
-                      <span className="text-4xl lg:text-5xl font-heading font-bold text-white">
-                        ${tier.price}
-                      </span>
-                      <div className="text-sm text-gray-400">
-                        <div className="line-through">Was ${tier.originalPrice}</div>
+                  <CardHeader className="text-center pb-2 h-48 flex flex-col justify-center items-center">
+                    <div>
+                      <CardTitle className="text-xl font-heading font-bold text-white mb-2">
+                        {tier.name}
+                      </CardTitle>
+                      <CardDescription className="text-gray-300 mb-4">
+                        {tier.description}
+                      </CardDescription>
+                      <div className="flex items-center justify-center space-x-2">
+                        <span className="text-4xl lg:text-5xl font-heading font-bold text-white">
+                          ${tier.price}
+                        </span>
+                        <div className="text-sm text-gray-400">
+                          <div className="line-through">Was ${tier.originalPrice}</div>
+                        </div>
                       </div>
                     </div>
                     <div className="mt-4 border-l-2 border-[#d4ae36] pl-4">
@@ -203,8 +176,8 @@ export const PricingSection = () => {
                     </div>
                   </CardHeader>
 
-                  <CardContent className="pt-4 flex flex-col flex-grow">
-                    <ul className="space-y-4 mb-8 flex-grow" role="list">
+                  <CardContent className="pt-2 flex flex-col flex-grow">
+                    <ul className="space-y-2 mb-4 flex-grow px-3" role="list">
                       {tier.features.map((feature, index) => (
                         <li
                           key={index}
