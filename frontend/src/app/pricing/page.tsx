@@ -239,11 +239,11 @@ export default function PricingPage() {
                                             : "bg-white/10 hover:bg-white/20 text-white border border-white/20 hover:border-[#d4ae36]/50"
                                             }`}
                                         onClick={(e) => {
-                                            e.stopPropagation(); // Prevent deselection when clicking button
-                                            handleSelectPackage(pkg.id);
+                                            e.stopPropagation();
+                                            router.push('/onboarding');
                                         }}
                                     >
-                                        {isSelected ? "✓ Selected" : "Select Package"}
+                                        Make me a match magnet
                                     </Button>
                                 </CardContent>
                             </Card>

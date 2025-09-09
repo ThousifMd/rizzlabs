@@ -417,6 +417,36 @@ function CheckoutContent() {
 
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 py-8">
+        {/* First Impression Header */}
+        <div className="mb-8">
+          <div className="relative overflow-hidden bg-black/40 backdrop-blur-sm border-2 border-[#d4ae36]/30 rounded-xl p-8 text-center shadow-2xl">
+            {/* Animated background gradient */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#d4ae36]/20 via-[#FD5E76]/20 to-[#d4ae36]/20 animate-pulse"></div>
+
+            {/* Quote icon */}
+            <div className="relative z-10 mb-4">
+              <div className="w-12 h-12 mx-auto bg-gradient-to-r from-[#d4ae36] to-[#FD5E76] rounded-full flex items-center justify-center mb-4">
+                <span className="text-white text-2xl font-bold">"</span>
+              </div>
+            </div>
+
+            {/* Quote text */}
+            <div className="relative z-10">
+              <p className="text-2xl text-white italic mb-4 font-bold leading-relaxed">
+                You never get a second chance to make a first impression
+              </p>
+              <div className="w-16 h-1 bg-gradient-to-r from-[#d4ae36] to-[#FD5E76] mx-auto mb-4 rounded-full"></div>
+              <p className="text-lg text-[#d4ae36] font-semibold">
+                We make sure your first impression counts.
+              </p>
+            </div>
+
+            {/* Decorative elements */}
+            <div className="absolute top-2 right-2 w-3 h-3 bg-[#d4ae36] rounded-full opacity-60"></div>
+            <div className="absolute bottom-2 left-2 w-2 h-2 bg-[#FD5E76] rounded-full opacity-60"></div>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
           {/* Order Details - Left Column */}
           <div className="xl:col-span-1 space-y-6">
@@ -509,13 +539,66 @@ function CheckoutContent() {
 
       {/* Mobile Fixed Payment Button */}
       <div className="xl:hidden fixed bottom-0 left-0 right-0 bg-black/20 backdrop-blur-md border-t border-white/10 p-4 z-50">
-        <Button
+        <button
+          type="button"
           onClick={() => setShowMobilePayment(true)}
-          className="w-full bg-[#d4ae36] hover:bg-[#c19d2f] text-black font-semibold py-4 text-lg rounded-xl transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-2xl hover:shadow-[#d4ae36]/30"
+          className="relative w-full h-auto min-h-[56px] px-8 py-4 rounded-xl font-semibold text-lg bg-white/5 backdrop-blur-md border border-white/20 hover:bg-white/10 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#FFD700]/20 overflow-hidden group"
         >
-          <Lock className="w-4 h-4 mr-2" />
-          Pay ${selectedPackage.price} Now
-        </Button>
+          {/* Glass morphism background with flowing colors */}
+          <div className="absolute inset-0 rounded-xl overflow-hidden">
+            {/* Gold wave from left */}
+            <div className="absolute top-0 left-0 w-full h-full">
+              <div className="w-full h-full bg-gradient-to-r from-[#d4ae36]/30 via-[#d4ae36]/20 to-transparent opacity-80"
+                style={{
+                  animation: 'flowingWaveLeft 3s ease-in-out infinite'
+                }}>
+              </div>
+            </div>
+
+            {/* Pink wave from right */}
+            <div className="absolute top-0 right-0 w-full h-full">
+              <div className="w-full h-full bg-gradient-to-l from-[#FD5E76]/30 via-[#FD5E76]/20 to-transparent opacity-80"
+                style={{
+                  animation: 'flowingWaveRight 3s ease-in-out infinite'
+                }}>
+              </div>
+            </div>
+
+            {/* Center collision effect */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-4">
+              <div className="absolute inset-0 bg-gradient-to-r from-[#d4ae36] to-[#FD5E76] rounded-full opacity-60"
+                style={{
+                  animation: 'sparkleBurst 3s ease-in-out infinite'
+                }}>
+              </div>
+              <div className="absolute top-0 left-0 w-2 h-2 bg-[#d4ae36] rounded-full opacity-70"
+                style={{
+                  animation: 'sparkle1 3s ease-in-out infinite'
+                }}>
+              </div>
+              <div className="absolute top-0 right-0 w-2 h-2 bg-[#FD5E76] rounded-full opacity-70"
+                style={{
+                  animation: 'sparkle2 3s ease-in-out infinite'
+                }}>
+              </div>
+              <div className="absolute bottom-0 left-0 w-2 h-2 bg-[#d4ae36] rounded-full opacity-70"
+                style={{
+                  animation: 'sparkle3 3s ease-in-out infinite'
+                }}>
+              </div>
+              <div className="absolute bottom-0 right-0 w-2 h-2 bg-[#FD5E76] rounded-full opacity-70"
+                style={{
+                  animation: 'sparkle4 3s ease-in-out infinite'
+                }}>
+              </div>
+            </div>
+          </div>
+
+          <span className="relative z-20 text-white font-bold drop-shadow-lg flex items-center justify-center">
+            <Lock className="w-4 h-4 mr-2" />
+            Pay ${selectedPackage.price} Now
+          </span>
+        </button>
       </div>
 
       {/* Mobile Payment Modal */}

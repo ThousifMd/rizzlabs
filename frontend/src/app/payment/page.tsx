@@ -345,7 +345,7 @@ function PaymentContent() {
         if (selectedPackage) {
             trackPurchase(selectedPackage.salePrice, 'USD', selectedPackage.name);
         }
-        
+
         // Redirect to success page with submission ID
         router.push(`/onboarding/success?submissionId=${submissionId}`);
     };
@@ -396,6 +396,16 @@ function PaymentContent() {
                                     </div>
                                 </CardContent>
                             </Card>
+
+                            {/* First Impression Message */}
+                            <div className="bg-gradient-to-r from-[#d4ae36] to-[#FD5E76] p-6 rounded-lg text-center shadow-lg">
+                                <p className="text-xl text-white italic mb-3 font-bold">
+                                    "You never get a second chance to make a first impression"
+                                </p>
+                                <p className="text-lg text-white/90 font-semibold">
+                                    We make sure your first impression counts.
+                                </p>
+                            </div>
 
                             <Card>
                                 <CardHeader>

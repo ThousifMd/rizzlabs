@@ -306,7 +306,7 @@ color utility to any element that depends on these defaults.
         }
     }
 
-    @keyframes sparkleBurst {
+    @keyframes waterSplash {
 
         0%,
         45% {
@@ -316,12 +316,12 @@ color utility to any element that depends on these defaults.
 
         50% {
             opacity: 1;
-            transform: scale(1);
+            transform: scale(1.8);
         }
 
-        55% {
+        60% {
             opacity: 0;
-            transform: scale(1.5);
+            transform: scale(0.6);
         }
 
         100% {
@@ -330,7 +330,7 @@ color utility to any element that depends on these defaults.
         }
     }
 
-    @keyframes sparkle1 {
+    @keyframes droplet1 {
 
         0%,
         45% {
@@ -340,21 +340,21 @@ color utility to any element that depends on these defaults.
 
         50% {
             opacity: 1;
-            transform: translate(-8px, -8px) scale(1);
+            transform: translate(-15px, -20px) scale(1);
         }
 
         60% {
             opacity: 0;
-            transform: translate(-12px, -12px) scale(0.5);
+            transform: translate(-22px, -30px) scale(0.2);
         }
 
         100% {
             opacity: 0;
-            transform: translate(-12px, -12px) scale(0);
+            transform: translate(-25px, -35px) scale(0);
         }
     }
 
-    @keyframes sparkle2 {
+    @keyframes droplet2 {
 
         0%,
         45% {
@@ -364,21 +364,21 @@ color utility to any element that depends on these defaults.
 
         50% {
             opacity: 1;
-            transform: translate(8px, -8px) scale(1);
+            transform: translate(18px, -15px) scale(1);
         }
 
         60% {
             opacity: 0;
-            transform: translate(12px, -12px) scale(0.5);
+            transform: translate(28px, -22px) scale(0.2);
         }
 
         100% {
             opacity: 0;
-            transform: translate(12px, -12px) scale(0);
+            transform: translate(32px, -25px) scale(0);
         }
     }
 
-    @keyframes sparkle3 {
+    @keyframes droplet3 {
 
         0%,
         45% {
@@ -388,21 +388,21 @@ color utility to any element that depends on these defaults.
 
         50% {
             opacity: 1;
-            transform: translate(-8px, 8px) scale(1);
+            transform: translate(-12px, 12px) scale(1);
         }
 
         60% {
             opacity: 0;
-            transform: translate(-12px, 12px) scale(0.5);
+            transform: translate(-18px, 18px) scale(0.3);
         }
 
         100% {
             opacity: 0;
-            transform: translate(-12px, 12px) scale(0);
+            transform: translate(-18px, 18px) scale(0);
         }
     }
 
-    @keyframes sparkle4 {
+    @keyframes droplet4 {
 
         0%,
         45% {
@@ -412,21 +412,21 @@ color utility to any element that depends on these defaults.
 
         50% {
             opacity: 1;
-            transform: translate(8px, 8px) scale(1);
+            transform: translate(12px, 12px) scale(1);
         }
 
         60% {
             opacity: 0;
-            transform: translate(12px, 12px) scale(0.5);
+            transform: translate(18px, 18px) scale(0.3);
         }
 
         100% {
             opacity: 0;
-            transform: translate(12px, 12px) scale(0);
+            transform: translate(18px, 18px) scale(0);
         }
     }
 
-    @keyframes sparkle5 {
+    @keyframes droplet5 {
 
         0%,
         45% {
@@ -436,21 +436,21 @@ color utility to any element that depends on these defaults.
 
         50% {
             opacity: 1;
-            transform: translate(-6px, 0) scale(1);
+            transform: translate(-16px, 0) scale(1);
         }
 
         60% {
             opacity: 0;
-            transform: translate(-10px, 0) scale(0.5);
+            transform: translate(-24px, 0) scale(0.3);
         }
 
         100% {
             opacity: 0;
-            transform: translate(-10px, 0) scale(0);
+            transform: translate(-24px, 0) scale(0);
         }
     }
 
-    @keyframes sparkle6 {
+    @keyframes droplet6 {
 
         0%,
         45% {
@@ -460,21 +460,21 @@ color utility to any element that depends on these defaults.
 
         50% {
             opacity: 1;
-            transform: translate(6px, 0) scale(1);
+            transform: translate(16px, 0) scale(1);
         }
 
         60% {
             opacity: 0;
-            transform: translate(10px, 0) scale(0.5);
+            transform: translate(24px, 0) scale(0.3);
         }
 
         100% {
             opacity: 0;
-            transform: translate(10px, 0) scale(0);
+            transform: translate(24px, 0) scale(0);
         }
     }
 
-    @keyframes sparkle7 {
+    @keyframes droplet7 {
 
         0%,
         45% {
@@ -484,21 +484,21 @@ color utility to any element that depends on these defaults.
 
         50% {
             opacity: 1;
-            transform: translate(0, -6px) scale(1);
+            transform: translate(0, -16px) scale(1);
         }
 
         60% {
             opacity: 0;
-            transform: translate(0, -10px) scale(0.5);
+            transform: translate(0, -24px) scale(0.3);
         }
 
         100% {
             opacity: 0;
-            transform: translate(0, -10px) scale(0);
+            transform: translate(0, -24px) scale(0);
         }
     }
 
-    @keyframes sparkle8 {
+    @keyframes droplet8 {
 
         0%,
         45% {
@@ -508,17 +508,305 @@ color utility to any element that depends on these defaults.
 
         50% {
             opacity: 1;
-            transform: translate(0, 6px) scale(1);
+            transform: translate(0, 16px) scale(1);
         }
 
         60% {
             opacity: 0;
-            transform: translate(0, 10px) scale(0.5);
+            transform: translate(0, 24px) scale(0.3);
         }
 
         100% {
             opacity: 0;
-            transform: translate(0, 10px) scale(0);
+            transform: translate(0, 24px) scale(0);
+        }
+    }
+
+    @keyframes droplet9 {
+
+        0%,
+        45% {
+            opacity: 0;
+            transform: translate(0, 0) scale(0);
+        }
+
+        50% {
+            opacity: 1;
+            transform: translate(-8px, -16px) scale(1);
+        }
+
+        60% {
+            opacity: 0;
+            transform: translate(-12px, -24px) scale(0.3);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translate(-12px, -24px) scale(0);
+        }
+    }
+
+    @keyframes droplet10 {
+
+        0%,
+        45% {
+            opacity: 0;
+            transform: translate(0, 0) scale(0);
+        }
+
+        50% {
+            opacity: 1;
+            transform: translate(8px, -16px) scale(1);
+        }
+
+        60% {
+            opacity: 0;
+            transform: translate(12px, -24px) scale(0.3);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translate(12px, -24px) scale(0);
+        }
+    }
+
+    @keyframes droplet11 {
+
+        0%,
+        45% {
+            opacity: 0;
+            transform: translate(0, 0) scale(0);
+        }
+
+        50% {
+            opacity: 1;
+            transform: translate(-8px, 16px) scale(1);
+        }
+
+        60% {
+            opacity: 0;
+            transform: translate(-12px, 24px) scale(0.3);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translate(-12px, 24px) scale(0);
+        }
+    }
+
+    @keyframes droplet12 {
+
+        0%,
+        45% {
+            opacity: 0;
+            transform: translate(0, 0) scale(0);
+        }
+
+        50% {
+            opacity: 1;
+            transform: translate(8px, 16px) scale(1);
+        }
+
+        60% {
+            opacity: 0;
+            transform: translate(12px, 24px) scale(0.3);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translate(12px, 24px) scale(0);
+        }
+    }
+
+    @keyframes droplet13 {
+
+        0%,
+        45% {
+            opacity: 0;
+            transform: translate(0, 0) scale(0);
+        }
+
+        50% {
+            opacity: 1;
+            transform: translate(-16px, -8px) scale(1);
+        }
+
+        60% {
+            opacity: 0;
+            transform: translate(-24px, -12px) scale(0.3);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translate(-24px, -12px) scale(0);
+        }
+    }
+
+    @keyframes droplet14 {
+
+        0%,
+        45% {
+            opacity: 0;
+            transform: translate(0, 0) scale(0);
+        }
+
+        50% {
+            opacity: 1;
+            transform: translate(16px, -8px) scale(1);
+        }
+
+        60% {
+            opacity: 0;
+            transform: translate(24px, -12px) scale(0.3);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translate(24px, -12px) scale(0);
+        }
+    }
+
+    @keyframes droplet15 {
+
+        0%,
+        45% {
+            opacity: 0;
+            transform: translate(0, 0) scale(0);
+        }
+
+        50% {
+            opacity: 1;
+            transform: translate(-16px, 8px) scale(1);
+        }
+
+        60% {
+            opacity: 0;
+            transform: translate(-24px, 12px) scale(0.3);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translate(-24px, 12px) scale(0);
+        }
+    }
+
+    @keyframes droplet16 {
+
+        0%,
+        45% {
+            opacity: 0;
+            transform: translate(0, 0) scale(0);
+        }
+
+        50% {
+            opacity: 1;
+            transform: translate(16px, 8px) scale(1);
+        }
+
+        60% {
+            opacity: 0;
+            transform: translate(24px, 12px) scale(0.3);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translate(24px, 12px) scale(0);
+        }
+    }
+
+    @keyframes droplet17 {
+
+        0%,
+        45% {
+            opacity: 0;
+            transform: translate(0, 0) scale(0);
+        }
+
+        50% {
+            opacity: 1;
+            transform: translate(-12px, -8px) scale(1);
+        }
+
+        60% {
+            opacity: 0;
+            transform: translate(-18px, -12px) scale(0.2);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translate(-20px, -15px) scale(0);
+        }
+    }
+
+    @keyframes droplet18 {
+
+        0%,
+        45% {
+            opacity: 0;
+            transform: translate(0, 0) scale(0);
+        }
+
+        50% {
+            opacity: 1;
+            transform: translate(12px, -8px) scale(1);
+        }
+
+        60% {
+            opacity: 0;
+            transform: translate(18px, -12px) scale(0.2);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translate(20px, -15px) scale(0);
+        }
+    }
+
+    @keyframes droplet19 {
+
+        0%,
+        45% {
+            opacity: 0;
+            transform: translate(0, 0) scale(0);
+        }
+
+        50% {
+            opacity: 1;
+            transform: translate(-8px, 12px) scale(1);
+        }
+
+        60% {
+            opacity: 0;
+            transform: translate(-12px, 18px) scale(0.2);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translate(-15px, 20px) scale(0);
+        }
+    }
+
+    @keyframes droplet20 {
+
+        0%,
+        45% {
+            opacity: 0;
+            transform: translate(0, 0) scale(0);
+        }
+
+        50% {
+            opacity: 1;
+            transform: translate(8px, 12px) scale(1);
+        }
+
+        60% {
+            opacity: 0;
+            transform: translate(12px, 18px) scale(0.2);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translate(15px, 20px) scale(0);
         }
     }
 
@@ -534,8 +822,16 @@ color utility to any element that depends on these defaults.
     }
 
     .animate-scroll {
-        animation: scroll 50s linear infinite;
+        animation: scroll 30s linear infinite;
         will-change: transform;
+        transform: translateZ(0);
+        backface-visibility: hidden;
+        perspective: 1000px;
+        -webkit-transform: translateZ(0);
+        -webkit-backface-visibility: hidden;
+        -webkit-perspective: 1000px;
+        animation-fill-mode: both;
+        animation-timing-function: linear;
     }
 
     /* Slow scrolling animation for testimonials */

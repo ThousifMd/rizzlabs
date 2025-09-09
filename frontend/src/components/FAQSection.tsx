@@ -11,16 +11,44 @@ interface FAQItem {
 
 const faqData: FAQItem[] = [
     {
-        question: "Is this private?",
-        answer: "Yes, absolutely. We keep all your photos and information completely private and secure. No public sharing or social media posting."
+        question: "How long until I see results?",
+        answer: "Photos delivered in 24 hours. Most users report increased matches within 48 hours of updating their profile. Average increase: 3-5x matches in first week."
     },
     {
-        question: "Which apps does this work for?",
-        answer: "Our optimized photos and profiles work on all major dating apps including Tinder, Bumble, Hinge, Coffee Meets Bagel, and more."
+        question: "What if I don't have good photos?",
+        answer: "That's exactly why you need this. Upload any 10-20 selfies - even bad ones. We transform them into profile-worthy shots."
     },
     {
-        question: "How long does it take?",
-        answer: "It depends on the plan you choose - if it's basic then it's going to be 48 hours and premium then up to 24 hours."
+        question: "Will people know my photos are enhanced?",
+        answer: "No. We keep enhancements natural and realistic. No one can tell they're optimized - they just know you look good."
+    },
+    {
+        question: "What exactly do I get?",
+        answer: "25-100 enhanced photos (depending on package), optimized bio tailored to your goals, profile strategy guide, and first message templates."
+    },
+    {
+        question: "Is my data safe?",
+        answer: "Your photos are encrypted, processed, and deleted after delivery. We never share or sell your data. Ever."
+    },
+    {
+        question: "Who actually does the optimization?",
+        answer: "AI handles initial enhancements. Human experts review and perfect everything before delivery."
+    },
+    {
+        question: "Does this work for [Tinder/Bumble/Hinge]?",
+        answer: "Yes. We optimize for all major dating apps. Each has slightly different strategies we account for."
+    },
+    {
+        question: "I'm not photogenic. Will this work?",
+        answer: "Being 'not photogenic' usually means bad angles and lighting. We fix both. Everyone looks good with the right optimization."
+    },
+    {
+        question: "What if women find out?",
+        answer: "Find out what? That you put effort into your dating profile? That's attractive, not embarrassing. No one can ever find out that photos are AI generated (This is our secret sauce)."
+    },
+    {
+        question: "Why can't I just use a headshot generator and ChatGPT for my bio?",
+        answer: "You absolutely can - if you want to look exactly like every other guy using AI tools. Here's the difference: Generic AI creates that obvious 'AI look' that women spot instantly. Matchlens provides real photo enhancement that looks natural, plus bio optimization based on what actually works in your specific city/age/app. HeadshotPro gives everyone the same corporate headshot style. ChatGPT writes the same generic 'loves adventures and tacos' bio. We analyze what's working NOW on dating apps and customize specifically for you. Plus, everything's done in 24 hours instead of you spending days trying different tools. Short version: DIY = 5 hours and obvious AI results. Us = 24 hours and results that actually convert to dates."
     }
 ];
 

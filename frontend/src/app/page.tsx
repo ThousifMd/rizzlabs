@@ -6,6 +6,7 @@ import DatingPlatformsSection from "@/components/DatingPlatformsSection";
 import { DatingAppContext } from "@/components/DatingAppContext";
 import { StatsSection } from "@/components/StatsSection";
 import { FAQSection } from "@/components/FAQSection";
+import { FinalCTASection } from "@/components/FinalCTASection";
 import { SimpleProcessSection } from "@/components/SimpleProcessSection";
 import { PricingSection } from "@/components/PricingSection";
 import CompaniesSection from "@/components/CompaniesSection";
@@ -57,10 +58,13 @@ export default function HomePage() {
 
         {/* FAQ Section */}
         <FAQSection />
+
+        {/* Final CTA Section */}
+        <FinalCTASection />
       </main>
 
       <Footer
-        customersCount={2847}
+        customersCount={11847}
         rating={4.9}
         trustCopy="GDPR‑compliant • Secure checkout"
       />

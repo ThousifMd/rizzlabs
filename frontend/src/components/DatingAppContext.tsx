@@ -142,7 +142,7 @@ export const DatingAppContext: React.FC = () => {
                     The Swipe Revolution
                 </h2>
                 <p className="text-xl text-white max-w-2xl mx-auto">
-                    See how profiles transform inside <span className="text-[#d4ae36] font-semibold">Tinder/Bumble/Hinge-style cards</span> (names blurred).
+                    <span className="text-gray-400">Look average</span> → <span className="text-red-400">get ignored</span>. <span className="text-[#d4ae36]">Look like high-status</span> → <span className="text-green-400">get matches</span>. <span className="text-white/80">Same person, different results.</span>
                 </p>
             </div>
 

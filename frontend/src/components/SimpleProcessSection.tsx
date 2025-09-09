@@ -20,7 +20,7 @@ const processSteps = [
         icon: <Zap className="w-5 h-5" />,
         number: "03",
         title: "AI + Expert Optimization",
-        description: "Professional photo enhancement and strategic bio optimization."
+        description: "We create ultra realistic AI photos of you and enhance your profile that 3x your matches."
     },
     {
         icon: <Clock className="w-5 h-5" />,
@@ -51,7 +51,7 @@ export const SimpleProcessSection: React.FC = () => {
                 {processSteps.map((step, index) => (
                     <div key={index} className="relative">
                         {/* Step Card */}
-                        <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-2xl hover:bg-white/8 hover:border-[#d4ae36]/40 hover:shadow-[#d4ae36]/20 transition-all duration-300 hover:scale-105">
+                        <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-2xl hover:bg-white/8 hover:border-[#d4ae36]/40 hover:shadow-[#d4ae36]/20 transition-all duration-300 hover:scale-105 h-full flex flex-col">
                             {/* Icon Circle */}
                             <div className="w-12 h-12 bg-white/10 backdrop-blur-sm border border-[#d4ae36]/40 rounded-full flex items-center justify-center mx-auto mb-4 relative z-10 shadow-lg shadow-[#d4ae36]/20">
                                 <div className="text-[#d4ae36]">
@@ -70,7 +70,7 @@ export const SimpleProcessSection: React.FC = () => {
                             </h3>
 
                             {/* Description */}
-                            <p className="text-white/80 text-center leading-relaxed">
+                            <p className="text-white/80 text-center leading-relaxed flex-grow">
                                 {step.description}
                             </p>
                         </div>

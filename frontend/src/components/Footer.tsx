@@ -17,7 +17,7 @@ export default function Footer({
   className,
   containerClassName,
   year,
-  customersCount = 2847,
+  customersCount = 11847,
   rating = 4.9,
   trustCopy = "GDPR‑compliant • Secure checkout",
 }: FooterProps) {
@@ -52,18 +52,70 @@ export default function Footer({
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-6">
             {/* Brand */}
             <div className="flex items-center gap-3">
-              <span
-                aria-hidden="true"
-                className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#d4ae36] to-[#c19d2f] text-black font-heading text-sm font-bold"
-              >
-                M
-              </span>
+              <div className="w-8 h-8 flex items-center justify-center relative">
+                {/* Sharp 3D Shadow Layer */}
+                <svg
+                  viewBox="0 0 24 24"
+                  className="absolute w-8 h-8 fill-none stroke-[2.5]"
+                  style={{
+                    stroke: '#000000',
+                    transform: 'translate(1px, 1px)',
+                    opacity: 0.4
+                  }}
+                >
+                  <path
+                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M16 8l-4 4-4-4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+
+                {/* Main Sharp 3D Icon */}
+                <svg
+                  viewBox="0 0 24 24"
+                  className="relative w-8 h-8 fill-none stroke-[2.5]"
+                  style={{
+                    stroke: 'url(#sharpLogoGradient)',
+                    filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
+                    transform: 'perspective(200px) rotateX(10deg) rotateY(-3deg)'
+                  }}
+                >
+                  <defs>
+                    <linearGradient id="sharpLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#d4ae36" />
+                      <stop offset="50%" stopColor="#ffffff" />
+                      <stop offset="100%" stopColor="#FD5E76" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M16 8l-4 4-4-4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+
+                {/* Sharp Highlight */}
+                <div className="absolute top-0.5 left-0.5 w-1.5 h-1.5 bg-white/60 rounded-full"></div>
+              </div>
               <div>
-                <p className="m-0 text-lg text-white font-semibold">
+                <span className="font-heading text-lg font-semibold tracking-tight bg-gradient-to-r from-[#d4ae36] via-white to-[#FD5E76] bg-clip-text text-transparent drop-shadow-lg"
+                  style={{
+                    textShadow: '0 0 20px rgba(212, 174, 54, 0.3), 0 0 40px rgba(253, 94, 118, 0.2)'
+                  }}>
                   Matchlens AI
-                </p>
+                </span>
                 <p className="m-0 text-sm text-white/60">
-                  Dating photo optimization
+                  The lens between ignored and irresistible
                 </p>
               </div>
             </div>
@@ -73,16 +125,13 @@ export default function Footer({
               {socialLinks.map((social) => {
                 const IconComponent = social.icon
                 return (
-                  <Link
+                  <div
                     key={social.name}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`group p-2.5 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 hover:border-[#d4ae36]/30 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg hover:shadow-[#d4ae36]/20`}
-                    aria-label={`Follow us on ${social.name}`}
+                    className={`group p-2.5 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 hover:border-[#d4ae36]/30 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg hover:shadow-[#d4ae36]/20 cursor-default`}
+                    aria-label={`${social.name} icon`}
                   >
                     <IconComponent className={`w-4 h-4 text-white/70 group-hover:text-[#d4ae36] transition-colors duration-300 ${social.color}`} />
-                  </Link>
+                  </div>
                 )
               })}
             </div>

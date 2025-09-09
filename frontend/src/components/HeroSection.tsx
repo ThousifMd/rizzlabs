@@ -10,7 +10,7 @@ interface HeroSectionProps {
 
 export default function HeroSection({ ctaHref, className }: HeroSectionProps) {
   const handleCTA = () => {
-    trackCTAClick("Level Up My Man Game", "Hero Section");
+    trackCTAClick("Make Me A Match Magnet", "Hero Section");
     window.location.href = "/onboarding";
   };
 
@@ -31,7 +31,7 @@ export default function HeroSection({ ctaHref, className }: HeroSectionProps) {
         </h1>
 
         <p className="text-xl text-white max-w-3xl mb-8">
-          Your photos and profile are holding you back — not you. We transform both into a swipe-magnet that gets you noticed instantly.
+          Your photos and profile are holding you back - not you. we create ai photos of you that look ultra realistic and optimized profile bio to transform into a swipe magnet that gets you noticed instantly .
         </p>
 
         {/* CTA Button */}
@@ -39,86 +39,43 @@ export default function HeroSection({ ctaHref, className }: HeroSectionProps) {
           <button
             type="button"
             onClick={handleCTA}
-            className="relative h-auto min-h-[48px] px-8 py-3 rounded-lg font-semibold text-lg bg-gradient-to-br from-white/10 via-white/5 to-white/10 backdrop-blur-md border-2 border-transparent bg-clip-border hover:bg-white/15 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#FFD700]/20 overflow-hidden group"
-            style={{
-              backgroundImage: 'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05), rgba(255,255,255,0.1)), linear-gradient(135deg, #FFD700, #FFA500, #FFD700)',
-              backgroundOrigin: 'border-box',
-              backgroundClip: 'padding-box, border-box'
-            }}
+            className="relative h-auto min-h-[48px] px-8 py-3 rounded-lg font-semibold text-lg bg-white/5 backdrop-blur-md border border-white/20 hover:bg-white/10 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#FFD700]/20 overflow-hidden group"
             aria-label="Make me a match magnet"
           >
-            {/* Flowing wave collision animation */}
+            {/* Glass morphism background with flowing colors */}
             <div className="absolute inset-0 rounded-lg overflow-hidden">
-              {/* Left flowing wave */}
+              {/* Gold wave from left */}
               <div className="absolute top-0 left-0 w-full h-full">
-                <div className="w-full h-full bg-gradient-to-r from-transparent via-[#d4ae36]/50 to-transparent opacity-0"
+                <div className="w-full h-full bg-gradient-to-r from-[#FFD700]/60 via-[#FFD700]/40 to-transparent opacity-90"
                   style={{
-                    animation: 'flowingWaveLeft 2s ease-in-out infinite'
+                    animation: 'flowingWaveLeft 3s ease-in-out infinite'
                   }}>
                 </div>
               </div>
 
-              {/* Right flowing wave */}
+              {/* Pink wave from right */}
               <div className="absolute top-0 right-0 w-full h-full">
-                <div className="w-full h-full bg-gradient-to-l from-transparent via-[#FD5E76]/50 to-transparent opacity-0"
+                <div className="w-full h-full bg-gradient-to-l from-[#FF69B4]/60 via-[#FF69B4]/40 to-transparent opacity-90"
                   style={{
-                    animation: 'flowingWaveRight 2s ease-in-out infinite'
+                    animation: 'flowingWaveRight 3s ease-in-out infinite'
                   }}>
                 </div>
               </div>
 
-              {/* Collision sparkles */}
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2">
-                <div className="absolute inset-0 bg-[#FFD700] rounded-full opacity-0"
-                  style={{
-                    animation: 'sparkleBurst 2s ease-in-out infinite'
-                  }}>
-                </div>
-                <div className="absolute top-0 left-0 w-1 h-1 bg-[#FFD700] rounded-full opacity-0"
-                  style={{
-                    animation: 'sparkle1 2s ease-in-out infinite'
-                  }}>
-                </div>
-                <div className="absolute top-0 right-0 w-1 h-1 bg-[#FD5E76] rounded-full opacity-0"
-                  style={{
-                    animation: 'sparkle2 2s ease-in-out infinite'
-                  }}>
-                </div>
-                <div className="absolute bottom-0 left-0 w-1 h-1 bg-[#FFD700] rounded-full opacity-0"
-                  style={{
-                    animation: 'sparkle3 2s ease-in-out infinite'
-                  }}>
-                </div>
-                <div className="absolute bottom-0 right-0 w-1 h-1 bg-[#FD5E76] rounded-full opacity-0"
-                  style={{
-                    animation: 'sparkle4 2s ease-in-out infinite'
-                  }}>
-                </div>
-                <div className="absolute top-1/2 left-0 w-0.5 h-0.5 bg-[#FFD700] rounded-full opacity-0"
-                  style={{
-                    animation: 'sparkle5 2s ease-in-out infinite'
-                  }}>
-                </div>
-                <div className="absolute top-1/2 right-0 w-0.5 h-0.5 bg-[#FD5E76] rounded-full opacity-0"
-                  style={{
-                    animation: 'sparkle6 2s ease-in-out infinite'
-                  }}>
-                </div>
-                <div className="absolute top-0 left-1/2 w-0.5 h-0.5 bg-[#FFD700] rounded-full opacity-0"
-                  style={{
-                    animation: 'sparkle7 2s ease-in-out infinite'
-                  }}>
-                </div>
-                <div className="absolute bottom-0 left-1/2 w-0.5 h-0.5 bg-[#FD5E76] rounded-full opacity-0"
-                  style={{
-                    animation: 'sparkle8 2s ease-in-out infinite'
-                  }}>
-                </div>
-              </div>
             </div>
 
-            <span className="relative z-20 text-white font-bold drop-shadow-lg">Level Up My Man Game →</span>
+            <span className="relative z-20 text-white font-bold drop-shadow-lg">Make me a match magnet</span>
           </button>
+        </div>
+
+        {/* First Impression Text */}
+        <div className="mb-6">
+          <p className="text-lg text-white/80 italic mb-2">
+            "You never get a second chance to make a first impression"
+          </p>
+          <p className="text-base text-white/70">
+            We make sure your first impression counts.
+          </p>
         </div>
 
         {/* Supporting Text */}

@@ -1,5 +1,7 @@
 "use client";
 
+import Image from 'next/image';
+
 export default function CompaniesSection() {
     const companies = [
         {
@@ -71,110 +73,66 @@ export default function CompaniesSection() {
             )
         },
         {
-            name: "Amazon",
-            logo: (
-                <span className="text-white font-bold text-lg">
-                    amazon®
-                </span>
-            )
-        },
-        {
-            name: "LinkedIn",
-            logo: (
-                <div className="w-8 h-8 bg-white rounded flex items-center justify-center">
-                    <span className="text-black font-bold text-sm">in</span>
-                </div>
-            )
-        },
-        {
-            name: "Meta",
-            logo: (
-                <div className="flex flex-col items-center">
-                    <div className="w-6 h-6 mb-1">
-                        <svg viewBox="0 0 24 24" className="w-full h-full fill-white">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
-                            <path d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z" />
-                        </svg>
-                    </div>
-                    <span className="text-white font-bold text-sm">Meta</span>
-                </div>
-            )
-        },
-        {
-            name: "Microsoft",
-            logo: (
-                <div className="flex flex-col items-center">
-                    <div className="w-6 h-6 mb-1 grid grid-cols-2 gap-0.5">
-                        <div className="bg-white"></div>
-                        <div className="bg-white"></div>
-                        <div className="bg-white"></div>
-                        <div className="bg-white"></div>
-                    </div>
-                    <span className="text-white font-bold text-sm">Microsoft</span>
-                </div>
-            )
-        },
-        {
-            name: "Google",
-            logo: (
-                <span className="text-white font-bold text-2xl">
-                    G
-                </span>
-            )
-        },
-        {
-            name: "Apple",
-            logo: (
-                <span className="text-white font-bold text-lg">
-                    Apple
-                </span>
-            )
-        },
-        {
-            name: "Netflix",
-            logo: (
-                <span className="text-red-500 font-bold text-lg">
-                    Netflix
-                </span>
-            )
-        },
-        {
-            name: "Uber",
-            logo: (
-                <span className="text-white font-bold text-lg">
-                    Uber
-                </span>
-            )
-        },
-        {
-            name: "Tesla",
-            logo: (
-                <span className="text-white font-bold text-lg">
-                    Tesla
-                </span>
-            )
-        },
-        {
-            name: "Spotify",
+            name: "TechCrunch",
             logo: (
                 <span className="text-green-500 font-bold text-lg">
-                    Spotify
+                    TechCrunch
                 </span>
             )
         },
         {
-            name: "Notion",
+            name: "Forbes",
             logo: (
                 <span className="text-white font-bold text-lg">
-                    Notion
+                    FORBES
                 </span>
             )
         },
         {
-            name: "Figma",
+            name: "Bloomberg",
+            logo: (
+                <span className="text-orange-500 font-bold text-lg">
+                    Bloomberg
+                </span>
+            )
+        },
+        {
+            name: "Wired",
             logo: (
                 <span className="text-white font-bold text-lg">
-                    Figma
+                    WIRED
+                </span>
+            )
+        },
+        {
+            name: "The Verge",
+            logo: (
+                <span className="text-purple-400 font-bold text-lg">
+                    The Verge
+                </span>
+            )
+        },
+        {
+            name: "Fast Company",
+            logo: (
+                <span className="text-red-500 font-bold text-lg">
+                    Fast Company
+                </span>
+            )
+        },
+        {
+            name: "Inc.",
+            logo: (
+                <span className="text-white font-bold text-lg">
+                    Inc.
+                </span>
+            )
+        },
+        {
+            name: "Entrepreneur",
+            logo: (
+                <span className="text-yellow-500 font-bold text-lg">
+                    Entrepreneur
                 </span>
             )
         },
@@ -189,12 +147,17 @@ export default function CompaniesSection() {
 
                 <div className="relative overflow-hidden">
                     {/* Scrolling container */}
-                    <div className="flex animate-scroll space-x-16 items-center">
+                    <div className="flex animate-scroll space-x-16 items-center" style={{
+                        willChange: 'transform',
+                        transform: 'translateZ(0)',
+                        backfaceVisibility: 'hidden'
+                    }}>
                         {/* First set of companies */}
                         {companies.map((company, index) => (
                             <div
                                 key={`first-${index}`}
                                 className="flex-shrink-0 flex items-center hover:opacity-80 transition-opacity duration-300"
+                                style={{ transform: 'translateZ(0)' }}
                             >
                                 {company.logo}
                             </div>
@@ -205,6 +168,7 @@ export default function CompaniesSection() {
                             <div
                                 key={`second-${index}`}
                                 className="flex-shrink-0 flex items-center hover:opacity-80 transition-opacity duration-300"
+                                style={{ transform: 'translateZ(0)' }}
                             >
                                 {company.logo}
                             </div>
@@ -215,6 +179,7 @@ export default function CompaniesSection() {
                             <div
                                 key={`third-${index}`}
                                 className="flex-shrink-0 flex items-center hover:opacity-80 transition-opacity duration-300"
+                                style={{ transform: 'translateZ(0)' }}
                             >
                                 {company.logo}
                             </div>
@@ -225,6 +190,7 @@ export default function CompaniesSection() {
                             <div
                                 key={`fourth-${index}`}
                                 className="flex-shrink-0 flex items-center hover:opacity-80 transition-opacity duration-300"
+                                style={{ transform: 'translateZ(0)' }}
                             >
                                 {company.logo}
                             </div>

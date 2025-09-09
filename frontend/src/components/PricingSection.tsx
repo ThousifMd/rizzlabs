@@ -16,13 +16,15 @@ const pricingTiers = [
     originalPrice: 99,
     discount: "Save 62%",
     description: "Perfect for getting started",
+    benefit: "Quick upgrade to make your profile stand out instantly.",
     features: [
       "5 enhanced photos",
       "3 style variations",
       "Basic bio tips",
+      "Private and secure",
       "24-hour delivery"
     ],
-    buttonText: "Get Started",
+    buttonText: "Make me a match magnet",
     popular: false,
     mobileOrder: 1
   },
@@ -33,14 +35,16 @@ const pricingTiers = [
     originalPrice: 199,
     discount: "Most Popular",
     description: "Most popular choice",
+    benefit: "Our proven package that triples your matches fast.",
     features: [
       "10 enhanced photos",
       "6 style variations",
       "Bio optimization",
       "Profile strategy guide",
+      "Private and secure",
       "12-hour delivery"
     ],
-    buttonText: "Get Started",
+    buttonText: "Make me a match magnet",
     popular: true,
     mobileOrder: 2
   },
@@ -51,14 +55,16 @@ const pricingTiers = [
     originalPrice: 199,
     discount: "Save 51%",
     description: "For serious results",
+    benefit: "Full profile makeover so you're ready for real dates, not just swipes.",
     features: [
       "20 enhanced photos",
       "10 style variations",
       "Complete profile makeover",
       "Message templates",
+      "Private and secure",
       "Priority 6-hour delivery"
     ],
-    buttonText: "Get Started",
+    buttonText: "Make me a match magnet",
     popular: false,
     mobileOrder: 3
   },
@@ -69,14 +75,16 @@ const pricingTiers = [
     originalPrice: 399,
     discount: "Save 50%",
     description: "Ultimate transformation",
+    benefit: "Complete transformation with personal coaching for maximum dating success.",
     features: [
       "30 enhanced photos",
       "All styles",
       "1-on-1 consultation",
       "Weekly updates for 1 month",
+      "Private and secure",
       "2-hour rush delivery"
     ],
-    buttonText: "Get Started",
+    buttonText: "Make me a match magnet",
     popular: false,
     mobileOrder: 4
   }
@@ -113,16 +121,37 @@ export const PricingSection = () => {
         {/* Main Container with Glass Morphism */}
         <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl">
           {/* Header */}
-          <div className="text-center mb-12 lg:mb-16">
-            <h2
-              id="pricing-title"
-              className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-white mb-4"
-            >
-              Pricing
-            </h2>
-            <p className="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto">
-              Choose your transformation level. Most users see 3x more matches with our proven approach.
-            </p>
+          <div className="text-center mb-12 lg:mb-16 relative">
+            {/* Background decoration */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#FFD700]/5 via-transparent to-[#FFD700]/5 rounded-3xl blur-3xl"></div>
+
+            <div className="relative z-10">
+
+
+              <h2
+                id="pricing-title"
+                className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-white mb-6 bg-gradient-to-r from-white via-white to-[#FFD700] bg-clip-text text-transparent"
+              >
+                Pricing
+              </h2>
+
+              <div className="max-w-3xl mx-auto">
+                <p className="text-xl sm:text-2xl text-gray-200 leading-relaxed mb-4">
+                  Why spend <span className="text-red-400 font-bold line-through">$400+</span> on headshots and bio coaching?
+                </p>
+                <p className="text-lg sm:text-xl text-gray-300 leading-relaxed mb-6">
+                  For a fraction of that, we'll transform your profile into a <span className="text-[#FFD700] font-bold">swipe-magnet</span>.
+                </p>
+                <div className="inline-flex items-center gap-3 bg-gradient-to-r from-[#FFD700]/10 to-[#FFA500]/10 backdrop-blur-sm border border-[#FFD700]/30 rounded-2xl px-6 py-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-white font-semibold">Most users see</span>
+                  </div>
+                  <span className="text-2xl font-bold text-[#FFD700]">3x more matches</span>
+                  <span className="text-gray-300">in 7 days</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Pricing Grid */}
@@ -167,6 +196,11 @@ export const PricingSection = () => {
                         <div className="line-through">Was ${tier.originalPrice}</div>
                       </div>
                     </div>
+                    <div className="mt-4 border-l-2 border-[#d4ae36] pl-4">
+                      <p className="text-sm text-gray-300 italic">
+                        "{tier.benefit}"
+                      </p>
+                    </div>
                   </CardHeader>
 
                   <CardContent className="pt-4 flex flex-col flex-grow">
@@ -195,26 +229,37 @@ export const PricingSection = () => {
                           e.stopPropagation();
                           window.location.href = "/onboarding";
                         }}
-                        className="relative w-full h-auto min-h-[48px] px-8 py-3 rounded-lg font-semibold text-lg bg-gradient-to-br from-white/10 via-white/5 to-white/10 backdrop-blur-md border-2 border-transparent bg-clip-border hover:bg-white/15 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#FFD700]/20 overflow-hidden group mt-auto flex items-center justify-center"
-                        style={{
-                          backgroundImage: 'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05), rgba(255,255,255,0.1)), linear-gradient(135deg, #FFD700, #FFA500, #FFD700)',
-                          backgroundOrigin: 'border-box',
-                          backgroundClip: 'padding-box, border-box'
-                        }}
+                        className="relative w-full h-auto min-h-[48px] px-8 py-3 rounded-lg font-semibold text-lg bg-white/5 backdrop-blur-md border border-white/20 hover:bg-white/10 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#FFD700]/20 overflow-hidden group mt-auto flex items-center justify-center"
                         aria-label="Make me a match magnet"
                       >
+                        {/* Glass morphism background with flowing colors */}
+                        <div className="absolute inset-0 rounded-lg overflow-hidden">
+                          {/* Gold wave from left */}
+                          <div className="absolute top-0 left-0 w-full h-full">
+                            <div className="w-full h-full bg-gradient-to-r from-[#FFD700]/60 via-[#FFD700]/40 to-transparent opacity-90"
+                              style={{
+                                animation: 'flowingWaveLeft 3s ease-in-out infinite'
+                              }}>
+                            </div>
+                          </div>
 
-                        <span className="relative z-20 text-white font-black drop-shadow-lg text-sm whitespace-nowrap">Level Up My Man Game</span>
+                          {/* Pink wave from right */}
+                          <div className="absolute top-0 right-0 w-full h-full">
+                            <div className="w-full h-full bg-gradient-to-l from-[#FF69B4]/60 via-[#FF69B4]/40 to-transparent opacity-90"
+                              style={{
+                                animation: 'flowingWaveRight 3s ease-in-out infinite'
+                              }}>
+                            </div>
+                          </div>
+                        </div>
+
+                        <span className="relative z-20 text-white font-bold drop-shadow-lg text-sm whitespace-nowrap">Make me a match magnet</span>
                       </button>
                     ) : (
                       <Button
                         onClick={(e) => {
                           e.stopPropagation();
-                          if (localSelectedPackage === tier.id) {
-                            handleGetStarted(tier.id);
-                          } else {
-                            handlePackageSelect(tier.id);
-                          }
+                          handleGetStarted(tier.id);
                         }}
                         className={`w-full transition-all duration-300 mt-auto ${localSelectedPackage === tier.id
                           ? "bg-gradient-to-r from-[#FFD700] to-[#FFA500] hover:from-[#FFA500] hover:to-[#FF8C00] text-black shadow-lg shadow-[#FFD700]/30"
@@ -222,7 +267,7 @@ export const PricingSection = () => {
                           }`}
                         size="lg"
                       >
-                        {localSelectedPackage === tier.id ? "Get Started" : "Get Selected"}
+                        Make me a match magnet
                       </Button>
                     )}
                   </CardContent>
