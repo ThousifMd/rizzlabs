@@ -360,11 +360,18 @@ export const TestimonialsSection: React.FC = () => {
             <section className="py-20 px-4 max-w-7xl mx-auto">
                 {/* Section Header */}
                 <div className="text-center mb-16">
-                    <h2 className="text-4xl md:text-5xl font-heading font-bold text-white mb-4">
-                        Real Stories from{" "}
-                        <span className="bg-gradient-to-r from-[#d4ae36] to-[#c19d2f] bg-clip-text text-transparent underline decoration-[#d4ae36]">
-                            Real People
+                    <h2 className="text-4xl md:text-6xl font-heading font-bold text-white mb-6 relative">
+                        <span className="relative z-10">
+                            Real Stories from{" "}
+                            <span className="relative inline-block">
+                                <span className="bg-gradient-to-r from-[#FFD700] via-[#FFA500] to-[#FFD700] bg-clip-text text-transparent font-extrabold">
+                                    Real People
+                                </span>
+                            </span>
                         </span>
+                        {/* Background decorative elements */}
+                        <div className="absolute -top-4 -left-4 w-8 h-8 bg-[#FFD700]/20 rounded-full blur-sm"></div>
+                        <div className="absolute -bottom-4 -right-4 w-6 h-6 bg-[#FFA500]/30 rounded-full blur-sm"></div>
                     </h2>
                     <p className="text-xl text-white/80 max-w-3xl mx-auto">
                         Discover how our AI-powered profile optimization helped these men transform their dating success
@@ -396,11 +403,18 @@ export const TestimonialsSection: React.FC = () => {
         <section className="py-20 px-4 max-w-7xl mx-auto">
             {/* Section Header */}
             <div className="text-center mb-16">
-                <h2 className="text-4xl md:text-5xl font-heading font-bold text-white mb-4">
-                    Real Stories from{" "}
-                    <span className="bg-gradient-to-r from-[#d4ae36] to-[#c19d2f] bg-clip-text text-transparent underline decoration-[#d4ae36]">
-                        Real People
+                <h2 className="text-4xl md:text-6xl font-heading font-bold text-white mb-6 relative">
+                    <span className="relative z-10">
+                        Real Stories from{" "}
+                        <span className="relative inline-block">
+                            <span className="bg-gradient-to-r from-[#FFD700] via-[#FFA500] to-[#FFD700] bg-clip-text text-transparent font-extrabold">
+                                Real People
+                            </span>
+                        </span>
                     </span>
+                    {/* Background decorative elements */}
+                    <div className="absolute -top-4 -left-4 w-8 h-8 bg-[#FFD700]/20 rounded-full blur-sm"></div>
+                    <div className="absolute -bottom-4 -right-4 w-6 h-6 bg-[#FFA500]/30 rounded-full blur-sm"></div>
                 </h2>
                 <p className="text-xl text-white/80 max-w-3xl mx-auto">
                     Discover how our AI-powered profile optimization helped these men transform their dating success

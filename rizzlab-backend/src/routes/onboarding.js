@@ -55,11 +55,11 @@ router.post("/submit", async (req, res) => {
     // Validate required fields
     const { name, gender, age, datingGoal, currentMatches, anchorQuestion, bodyType, stylePreference, email, interests } = formData;
 
-    if (!name || !age || !datingGoal || !currentMatches || !anchorQuestion || !bodyType || !stylePreference || !email) {
+    if (!name || !age || !datingGoal || !currentMatches || !bodyType || !stylePreference || !email) {
       return res.status(400).json({
         success: false,
         error: "Missing required fields",
-        required: ["name", "age", "datingGoal", "currentMatches", "anchorQuestion", "bodyType", "stylePreference", "email"]
+        required: ["name", "age", "datingGoal", "currentMatches", "bodyType", "stylePreference", "email"]
       });
     }
 
@@ -141,16 +141,20 @@ router.post("/submit", async (req, res) => {
       age,
       datingGoal,
       currentMatches,
-      anchorQuestion,
+      anchorQuestion: anchorQuestion || 'What makes you unique?',
       bodyType,
       stylePreference,
       email,
+      confirmEmail: formData.confirmEmail || '',
       interests: JSON.parse(interests || '[]'),
       originalPhotos: photoUrls,
       screenshotPhotos: screenshotUrls,
       currentBio: formData.currentBio || '',
       phone: formData.phone || '',
-      weeklyTips: formData.weeklyTips === 'true'
+      weeklyTips: formData.weeklyTips === 'true',
+      vibe: formData.vibe || '',
+      wantMore: formData.wantMore || '',
+      oneLiner: formData.oneLiner || ''
     };
 
     const submission = await OnboardingSubmission.create(submissionData);

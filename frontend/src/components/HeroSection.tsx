@@ -83,30 +83,35 @@ export default function HeroSection({ ctaHref, className }: HeroSectionProps) {
         </div>
 
         {/* Supporting Text */}
-        <div className="flex items-center justify-center md:justify-start gap-2 text-xs md:text-sm text-white">
-          <span className="md:hidden flex items-center gap-1">
+        <div className="flex items-center justify-center md:justify-start gap-2 text-xs md:text-sm text-white mb-4">
+          <div className="flex items-center gap-1">
             <span className="w-3 h-3 bg-green-500 rounded-full flex items-center justify-center">
               <span className="text-white text-xs">✓</span>
             </span>
             <span>Private</span>
-          </span>
-          <span className="hidden md:inline">Private</span>
+          </div>
           <span>•</span>
-          <span className="md:hidden flex items-center gap-1">
+          <div className="flex items-center gap-1">
             <span className="w-3 h-3 bg-green-500 rounded-full flex items-center justify-center">
               <span className="text-white text-xs">✓</span>
             </span>
             <span>Secure</span>
-          </span>
-          <span className="hidden md:inline">Secure</span>
+          </div>
           <span>•</span>
-          <span className="md:hidden flex items-center gap-1">
+          <div className="flex items-center gap-1">
             <span className="w-3 h-3 bg-green-500 rounded-full flex items-center justify-center">
               <span className="text-white text-xs">✓</span>
             </span>
             <span>24h delivery</span>
-          </span>
-          <span className="hidden md:inline">24h delivery</span>
+          </div>
+        </div>
+
+        {/* Customer Rating */}
+        <div className="flex items-center justify-center md:justify-start gap-2 text-sm md:text-base text-white">
+          <div className="flex items-center gap-1">
+            <span className="text-[#FFD700] text-lg">★★★★★</span>
+          </div>
+          <span className="font-semibold">11,847 Happy Customers</span>
         </div>
       </div>
     </section>

@@ -447,6 +447,18 @@ function CheckoutContent() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 py-8">
 
+        {/* Back Button */}
+        <div className="mb-6">
+          <Button
+            variant="ghost"
+            onClick={() => router.push('/onboarding?step=5')}
+            className="text-white hover:text-white flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Onboarding
+          </Button>
+        </div>
+
         {/* First Impression Header */}
         <div className="mb-6 md:mb-8">
           <div className="relative overflow-hidden bg-black/40 backdrop-blur-sm border-2 border-[#d4ae36]/30 rounded-xl p-4 md:p-8 text-center shadow-2xl">

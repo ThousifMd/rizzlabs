@@ -128,9 +128,9 @@ export default function SimplePayPalCheckout({ selectedPackage, showNotification
                     const onboardingData = {
                         name: onboardingFormData.name || '',
                         gender: onboardingFormData.gender || 'not_specified',
-                        age: onboardingFormData.age || 0,
+                        age: onboardingFormData.age || '',
                         datingGoal: onboardingFormData.datingGoal || '',
-                        currentMatches: onboardingFormData.currentMatches || 0,
+                        currentMatches: onboardingFormData.currentMatches || '',
                         anchorQuestion: onboardingFormData.anchorQuestion || '',
                         bodyType: onboardingFormData.bodyType || '',
                         stylePreference: onboardingFormData.stylePreference || '',
@@ -138,8 +138,12 @@ export default function SimplePayPalCheckout({ selectedPackage, showNotification
                         interests: JSON.stringify(onboardingFormData.interests || []),
                         currentBio: onboardingFormData.currentBio || '',
                         email: onboardingFormData.email || '',
+                        confirmEmail: onboardingFormData.confirmEmail || '',
                         phone: onboardingFormData.phone || '',
                         weeklyTips: onboardingFormData.weeklyTips ? onboardingFormData.weeklyTips.toString() : 'false',
+                        vibe: onboardingFormData.vibe || '',
+                        wantMore: onboardingFormData.wantMore || '',
+                        oneLiner: onboardingFormData.oneLiner || '',
                         originalPhotos: JSON.stringify(photoDataUrls || []),
                         screenshotPhotos: JSON.stringify(screenshotDataUrls || [])
                     };

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import { Progress } from "@/components/ui/progress";
 
 import { CheckCircle2, User, Users, Dumbbell, Plane, UtensilsCrossed, Camera, Music, BookOpen, Gamepad2, Heart, Coffee, Mountain, Upload, X, Check, Smartphone, FileText, TrendingUp, Mail, Phone, Clock } from "lucide-react";
 import { trackInitiateCheckout, trackCompleteRegistration, trackFormStep } from "@/lib/metaPixel";
+import PhotoGuidelinesModal from "@/components/PhotoGuidelinesModal";
 
 interface OnboardingData {
   name: string;
@@ -26,6 +27,7 @@ interface OnboardingData {
   screenshots: File[];
   currentBio: string;
   email: string;
+  confirmEmail: string;
   phone: string;
   // New fields for step 5
   vibe: string;
@@ -110,42 +112,45 @@ const interestOptions = [
 
 const goodExamples = [
   {
-    src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/project-uploads/49e44d8b-77c8-42bb-baaa-b51976a9a14a/generated_images/close-up-selfie-of-a-young-woman-with-bl-709fdc88-20250821192757.jpg",
+    src: "/images/selfie_1.jpg",
     alt: "Clear face selfie"
   },
   {
-    src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/project-uploads/49e44d8b-77c8-42bb-baaa-b51976a9a14a/generated_images/close-up-selfie-of-a-young-man-with-dark-243cb629-20250821192820.jpg",
+    src: "/images/selfie_2.jpg",
     alt: "Different angle selfie"
   },
   {
-    src: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&h=400&fit=crop&crop=face",
+    src: "/images/selfie_3.jpg",
     alt: "Good selfie example"
   }
 ];
 
 const badExamples = [
   {
-    src: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=400&fit=crop&crop=face",
+    src: "/images/group_selfie.avif",
     alt: "Group photos"
   },
   {
-    src: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face&blur=2",
+    src: "/images/bad_pic1.jpg",
     alt: "Blurry photos"
   },
   {
-    src: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
+    src: "/images/bad_pic2.jpg",
     alt: "Covered faces"
   }
 ];
 
 export default function OnboardingPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [currentStep, setCurrentStep] = useState(1);
   const [isCompleted, setIsCompleted] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [screenshotDragActive, setScreenshotDragActive] = useState(false);
   const [emailError, setEmailError] = useState("");
+  const [confirmEmailError, setConfirmEmailError] = useState("");
   const [phoneError, setPhoneError] = useState("");
+  const [showGuidelines, setShowGuidelines] = useState(false);
   const [formData, setFormData] = useState<OnboardingData>({
     name: "",
     age: "",
@@ -159,6 +164,7 @@ export default function OnboardingPage() {
     screenshots: [],
     currentBio: "",
     email: "",
+    confirmEmail: "",
     phone: "",
     vibe: "",
     wantMore: "",
@@ -167,11 +173,27 @@ export default function OnboardingPage() {
 
   // Clear any stored form data on page load to start fresh
   useEffect(() => {
-    localStorage.removeItem('onboardingFormData');
-    setCurrentStep(1);
+    // Check if we're coming from checkout (step=5 parameter)
+    const stepParam = searchParams.get('step');
+    if (stepParam === '5') {
+      setCurrentStep(5);
+      // Load stored form data when coming from checkout
+      const storedFormData = localStorage.getItem('onboardingFormData');
+      if (storedFormData) {
+        try {
+          const parsedData = JSON.parse(storedFormData);
+          setFormData(parsedData);
+        } catch (error) {
+          console.error('Error parsing stored form data:', error);
+        }
+      }
+    } else {
+      localStorage.removeItem('onboardingFormData');
+      setCurrentStep(1);
+    }
     // Track form initiation
     trackInitiateCheckout("Onboarding Form");
-  }, []);
+  }, [searchParams]);
 
   const totalSteps = 5;
   const progress = (currentStep / totalSteps) * 100;
@@ -213,6 +235,19 @@ export default function OnboardingPage() {
     return true;
   };
 
+  const validateConfirmEmail = (confirmEmail: string) => {
+    if (confirmEmail.trim() === "") {
+      setConfirmEmailError("Please confirm your email address");
+      return false;
+    }
+    if (confirmEmail !== formData.email) {
+      setConfirmEmailError("Email addresses do not match");
+      return false;
+    }
+    setConfirmEmailError("");
+    return true;
+  };
+
   const validatePhone = (phone: string) => {
     if (phone.trim() === "") {
       setPhoneError("");
@@ -228,6 +263,8 @@ export default function OnboardingPage() {
 
   const isStep5Valid = formData.email.trim() !== "" &&
     isValidEmail(formData.email) &&
+    formData.confirmEmail.trim() !== "" &&
+    formData.confirmEmail === formData.email &&
     (formData.phone.trim() === "" || isValidPhone(formData.phone)) &&
     formData.vibe !== "" &&
     formData.wantMore !== "";
@@ -462,6 +499,7 @@ export default function OnboardingPage() {
       <div className="w-full bg-black/20 backdrop-blur-md border-b border-white/10 shadow-lg relative z-10">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-2">
+            {/* Left side - Step Navigation */}
             <div className="flex items-center gap-2">
               {currentStep > 1 && (
                 <Button
@@ -477,21 +515,88 @@ export default function OnboardingPage() {
                 Step {currentStep} of {totalSteps}
               </span>
             </div>
-            {currentStep === 4 && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleSkipStep4}
-                className="text-white hover:text-white"
-              >
-                Skip
-              </Button>
-            )}
-            {currentStep !== 4 && (
-              <Button variant="ghost" size="sm" disabled className="text-gray-500">
-                Skip
-              </Button>
-            )}
+
+            {/* Center - Logo */}
+            <div className="flex items-center gap-4">
+              {/* Heart/Lens Icon with Sharp 3D effects */}
+              <div className="w-12 h-12 flex items-center justify-center relative">
+                {/* Sharp 3D Shadow Layer */}
+                <svg
+                  viewBox="0 0 24 24"
+                  className="absolute w-12 h-12 fill-none stroke-[3]"
+                  style={{
+                    stroke: '#000000',
+                    transform: 'translate(1px, 1px)',
+                    opacity: 0.4
+                  }}
+                >
+                  <path
+                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M16 8l-4 4-4-4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+
+                {/* Main Sharp 3D Icon */}
+                <svg
+                  viewBox="0 0 24 24"
+                  className="relative w-12 h-12 fill-none stroke-[3]"
+                  style={{
+                    stroke: 'url(#onboardingSharpLogoGradient)',
+                    filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
+                    transform: 'perspective(200px) rotateX(10deg) rotateY(-3deg)'
+                  }}
+                >
+                  <defs>
+                    <linearGradient id="onboardingSharpLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#d4ae36" />
+                      <stop offset="50%" stopColor="#ffffff" />
+                      <stop offset="100%" stopColor="#FD5E76" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M16 8l-4 4-4-4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+
+                {/* Sharp Highlight */}
+                <div className="absolute top-1 left-1 w-2 h-2 bg-white/60 rounded-full"></div>
+              </div>
+
+              {/* Main Text - Bigger and bolder */}
+              <span className="font-heading text-2xl md:text-3xl font-bold tracking-tight bg-gradient-to-r from-[#d4ae36] via-white to-[#FD5E76] bg-clip-text text-transparent drop-shadow-lg"
+                style={{
+                  textShadow: '0 0 25px rgba(212, 174, 54, 0.4), 0 0 50px rgba(253, 94, 118, 0.3)'
+                }}>
+                Matchlens AI
+              </span>
+            </div>
+
+            {/* Right side - Skip button space */}
+            <div className="w-20">
+              {currentStep === 4 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleSkipStep4}
+                  className="text-white hover:text-white"
+                >
+                  Skip
+                </Button>
+              )}
+            </div>
           </div>
           <Progress value={progress} className="h-2" />
         </div>
@@ -582,6 +687,10 @@ export default function OnboardingPage() {
                   onChange={(e) => {
                     setFormData(prev => ({ ...prev, email: e.target.value }));
                     validateEmail(e.target.value);
+                    // Also validate confirm email if it's already filled
+                    if (formData.confirmEmail) {
+                      validateConfirmEmail(formData.confirmEmail);
+                    }
                   }}
                   onBlur={(e) => validateEmail(e.target.value)}
                   className={`h-12 bg-white/5 backdrop-blur-sm border border-white/20 text-white placeholder-gray-400 focus:border-[#FFD700] focus:ring-2 focus:ring-[#FFD700]/30 focus:bg-white/10 transition-all duration-300 ease-out ${emailError ? "border-red-500 focus:border-red-500" : ""}`}
@@ -591,6 +700,32 @@ export default function OnboardingPage() {
                 ) : (
                   <p className="text-sm text-gray-400">
                     Pre-filled from your payment information if available
+                  </p>
+                )}
+              </div>
+
+              {/* Confirm Email Input */}
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-white flex items-center gap-2">
+                  <Mail className="h-4 w-4" />
+                  Confirm Email Address
+                </label>
+                <Input
+                  type="email"
+                  placeholder="your.email@example.com"
+                  value={formData.confirmEmail}
+                  onChange={(e) => {
+                    setFormData(prev => ({ ...prev, confirmEmail: e.target.value }));
+                    validateConfirmEmail(e.target.value);
+                  }}
+                  onBlur={(e) => validateConfirmEmail(e.target.value)}
+                  className={`h-12 bg-white/5 backdrop-blur-sm border border-white/20 text-white placeholder-gray-400 focus:border-[#FFD700] focus:ring-2 focus:ring-[#FFD700]/30 focus:bg-white/10 transition-all duration-300 ease-out ${confirmEmailError ? "border-red-500 focus:border-red-500" : ""}`}
+                />
+                {confirmEmailError ? (
+                  <p className="text-sm text-red-600">{confirmEmailError}</p>
+                ) : (
+                  <p className="text-sm text-gray-400">
+                    Please re-enter your email to confirm it's correct
                   </p>
                 )}
               </div>
@@ -644,8 +779,9 @@ export default function OnboardingPage() {
                 >
                   {isStep5Valid ? "➡️ Next → Build My Profile" :
                     emailError ? "Please fix email errors" :
-                      phoneError ? "Please fix phone number errors" :
-                        "Please select your vibe and what you want more of"
+                      confirmEmailError ? "Please fix email confirmation errors" :
+                        phoneError ? "Please fix phone number errors" :
+                          "Please select your vibe and what you want more of"
                   }
                 </Button>
               </div>
@@ -879,6 +1015,23 @@ export default function OnboardingPage() {
             {/* Upload Zone */}
             <Card className="w-full">
               <CardContent className="p-6">
+                {/* Photo Guidelines Button */}
+                <div className="mb-6 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      console.log('Photo guidelines button clicked!');
+                      setShowGuidelines(true);
+                    }}
+                    className="w-full h-14 bg-[#FFD700] text-black hover:bg-[#FFD700]/90 font-bold text-lg border-2 border-[#FFD700] shadow-lg"
+                  >
+                    📸 PHOTO QUALITY TIPS - CLICK HERE!
+                  </Button>
+                  <p className="text-center text-sm text-yellow-300 mt-2">
+                    Get expert tips for better photos before uploading
+                  </p>
+                </div>
+
                 {/* Upload Area */}
                 <div
                   className={`border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 ${dragActive
@@ -1238,6 +1391,54 @@ export default function OnboardingPage() {
           </Card>
         )}
       </div>
+
+      {/* Photo Guidelines Modal */}
+      {showGuidelines && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white text-black p-6 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <h2 className="text-2xl font-bold mb-4">📸 Photo Quality Guidelines</h2>
+            <div className="space-y-4">
+              <div className="bg-green-100 p-4 rounded">
+                <h3 className="font-bold text-green-800">✅ What Makes Great Photos:</h3>
+                <ul className="text-green-700 mt-2">
+                  <li>• Clear, well-lit face (natural lighting is best)</li>
+                  <li>• Single person in photo (no group shots)</li>
+                  <li>• Good resolution (not blurry or pixelated)</li>
+                  <li>• Natural expression and genuine smile</li>
+                  <li>• No sunglasses or hats covering your face</li>
+                </ul>
+              </div>
+              <div className="bg-red-100 p-4 rounded">
+                <h3 className="font-bold text-red-800">❌ Avoid These:</h3>
+                <ul className="text-red-700 mt-2">
+                  <li>• Group photos with other people</li>
+                  <li>• Dark, blurry, or low-quality images</li>
+                  <li>• Sunglasses, hats, or anything covering your face</li>
+                  <li>• Heavy filters or over-edited photos</li>
+                  <li>• Screenshots or photos of photos</li>
+                </ul>
+              </div>
+            </div>
+            <div className="flex gap-4 mt-6">
+              <button
+                onClick={() => setShowGuidelines(false)}
+                className="flex-1 bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => {
+                  setShowGuidelines(false);
+                  console.log('Modal closed, ready to upload!');
+                }}
+                className="flex-1 bg-[#FFD700] text-black py-2 px-4 rounded hover:bg-[#FFD700]/90 font-bold"
+              >
+                Got it, let's upload!
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
