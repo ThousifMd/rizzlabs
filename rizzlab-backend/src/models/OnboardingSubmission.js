@@ -1,5 +1,5 @@
 const pool = require("../config/database");
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require('uuid/dist/v4');
 
 class OnboardingSubmission {
   static async create(submissionData) {
