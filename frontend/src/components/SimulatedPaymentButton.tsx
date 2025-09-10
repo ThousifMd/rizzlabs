@@ -159,7 +159,7 @@ export default function SimulatedPaymentButton({ selectedPackage, onPaymentSucce
                 <Button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 text-lg"
+                    className="w-full bg-[#d4ae36] hover:bg-[#c19d2f] text-black font-semibold py-3 text-lg"
                 >
                     {isLoading ? (
                         <>
@@ -190,7 +190,7 @@ export default function SimulatedPaymentButton({ selectedPackage, onPaymentSucce
         <div className="w-full space-y-4">
             <Button
                 onClick={handleStartPayment}
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 text-lg"
+                className="w-full bg-[#d4ae36] hover:bg-[#c19d2f] text-black font-semibold py-3 text-lg"
             >
                 <CreditCard className="w-4 h-4 mr-2" />
                 Pay ${selectedPackage.price} Now

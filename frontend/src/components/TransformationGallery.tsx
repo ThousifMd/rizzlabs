@@ -1,278 +1,105 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import { Card } from "@/components/ui/card";
 
-import { Badge } from "@/components/ui/badge";
-
-interface TransformationData {
-  id: string;
-  category: string;
+interface TransformationCardProps {
+  title: string;
   beforeImage: string;
   afterImage: string;
   alt: string;
 }
 
-interface TransformationCardProps {
-  data: TransformationData;
-  isVisible: boolean;
-  index: number;
-}
-
-const transformationsData: TransformationData[] = [
-  {
-    id: 'transformation-1',
-    category: 'Professional',
-    beforeImage: '/images/1.1.png',
-    afterImage: '/images/1.2.png',
-    alt: 'Professional transformation'
-  },
-  {
-    id: 'transformation-2',
-    category: 'Casual',
-    beforeImage: '/images/2.1.png',
-    afterImage: '/images/2.2.png',
-    alt: 'Casual style transformation'
-  },
-  {
-    id: 'transformation-3',
-    category: 'Lifestyle',
-    beforeImage: '/images/4.1.png',
-    afterImage: '/images/4.2.png',
-    alt: 'Lifestyle transformation'
-  }
-];
-
-const TransformationCard: React.FC<TransformationCardProps> = ({ data, isVisible, index }) => {
-  const [sliderPosition, setSliderPosition] = useState(50);
-  const [isDragging, setIsDragging] = useState(false);
-  const cardRef = useRef<HTMLDivElement>(null);
-  const sliderRef = useRef<HTMLDivElement>(null);
-
-  const handleSliderMove = useCallback((clientX: number) => {
-    if (!cardRef.current) return;
-
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = clientX - rect.left;
-    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
-    setSliderPosition(percentage);
-  }, []);
-
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-    handleSliderMove(e.clientX);
-  }, [handleSliderMove]);
-
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-    handleSliderMove(e.touches[0].clientX);
-  }, [handleSliderMove]);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (isDragging) {
-        handleSliderMove(e.clientX);
-      }
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      if (isDragging) {
-        e.preventDefault();
-        handleSliderMove(e.touches[0].clientX);
-      }
-    };
-
-    const handleEnd = () => {
-      setIsDragging(false);
-    };
-
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleEnd);
-      document.addEventListener('touchmove', handleTouchMove, { passive: false });
-      document.addEventListener('touchend', handleEnd);
-    }
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleEnd);
-      document.removeEventListener('touchmove', handleTouchMove);
-      document.removeEventListener('touchend', handleEnd);
-    };
-  }, [isDragging, handleSliderMove]);
+const TransformationCard: React.FC<TransformationCardProps> = ({ title, beforeImage, afterImage, alt }) => {
+  const [showAfter, setShowAfter] = useState(true);
 
   return (
-    <Card
-      ref={cardRef}
-      className={`relative overflow-hidden group cursor-grab active:cursor-grabbing transition-all duration-700 ease-out transform ${isVisible
-        ? 'opacity-100 translate-y-0'
-        : 'opacity-0 translate-y-8'
-        } hover:shadow-2xl hover:scale-[1.02] shadow-lg`}
-      style={{
-        transitionDelay: isVisible ? `${index * 100}ms` : '0ms'
-      }}
-    >
-      <div className="relative h-80 sm:h-96 overflow-hidden">
-        {/* Before Image */}
-        <div
-          className="absolute inset-0"
-          style={{
-            clipPath: `inset(0 ${100 - sliderPosition}% 0 0)`
-          }}
+    <Card className="bg-black border border-[#d4ae36]/20 overflow-hidden">
+      {/* Card Header with Tabs */}
+      <div className="flex border-b border-[#d4ae36]/20">
+        <button
+          onClick={() => setShowAfter(false)}
+          className={`flex-1 py-3 px-4 text-sm font-medium transition-colors ${!showAfter
+            ? 'bg-[#EDC967] text-black'
+            : 'text-white hover:text-[#EDC967]'
+            }`}
         >
-          <img
-            src={data.beforeImage}
-            alt={`Before - ${data.alt}`}
-            className="w-full h-full object-cover"
-            style={{ objectPosition: 'center center' }}
-            loading="lazy"
-          />
-          <div className="absolute inset-0 bg-black/10" />
-        </div>
-
-        {/* After Image */}
-        <div
-          className="absolute inset-0"
-          style={{
-            clipPath: `inset(0 0 0 ${sliderPosition}%)`
-          }}
-        >
-          <img
-            src={data.afterImage}
-            alt={`After - ${data.alt}`}
-            className="w-full h-full object-cover"
-            style={{ objectPosition: 'center 20%' }}
-            loading="lazy"
-          />
-        </div>
-
-        {/* Category Badge */}
-        <Badge
-          variant="secondary"
-          className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-foreground shadow-lg z-20"
-        >
-          {data.category}
-        </Badge>
-
-        {/* Slider Handle */}
-        <div
-          ref={sliderRef}
-          className="absolute top-0 bottom-0 w-1 bg-white shadow-lg cursor-grab active:cursor-grabbing z-30"
-          style={{ left: `${sliderPosition}%` }}
-          onMouseDown={handleMouseDown}
-          onTouchStart={handleTouchStart}
-          role="slider"
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-valuenow={sliderPosition}
-          aria-label={`Transformation slider for ${data.category}`}
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'ArrowLeft') {
-              setSliderPosition(Math.max(0, sliderPosition - 5));
-            } else if (e.key === 'ArrowRight') {
-              setSliderPosition(Math.min(100, sliderPosition + 5));
-            }
-          }}
-        >
-          {/* Handle Circle */}
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full shadow-lg border-2 border-primary flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95">
-            <div className="w-2 h-2 bg-primary rounded-full" />
-          </div>
-        </div>
-
-        {/* Before/After Labels */}
-        <div className="absolute bottom-4 left-4 text-white text-sm font-medium bg-black/50 backdrop-blur-sm px-2 py-1 rounded">
           Before
-        </div>
-        <div className="absolute bottom-4 right-4 text-white text-sm font-medium bg-black/50 backdrop-blur-sm px-2 py-1 rounded">
+        </button>
+        <button
+          onClick={() => setShowAfter(true)}
+          className={`flex-1 py-3 px-4 text-sm font-medium transition-colors ${showAfter
+            ? 'bg-[#EDC967] text-black'
+            : 'text-white hover:text-[#EDC967]'
+            }`}
+        >
           After
-        </div>
+        </button>
+      </div>
+
+      {/* Card Title */}
+      <div className="p-4 border-b border-[#d4ae36]/20">
+        <h3 className="text-white font-semibold text-lg">{title}</h3>
+      </div>
+
+      {/* Image Container */}
+      <div className="relative h-80 overflow-hidden">
+        <img
+          src={showAfter ? afterImage : beforeImage}
+          alt={`${showAfter ? 'After' : 'Before'} - ${alt}`}
+          className="w-full h-full object-cover"
+          style={{ objectPosition: 'center center' }}
+        />
+
+        {/* Slider Handle (only visible when showing after) */}
+        {showAfter && (
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full shadow-lg border-2 border-[#d4ae36] flex items-center justify-center">
+            <div className="w-2 h-2 bg-gradient-to-br from-[#d4ae36] to-[#c19d2f] rounded-full" />
+          </div>
+        )}
       </div>
     </Card>
   );
 };
 
 export const TransformationGallery: React.FC = () => {
-  const [visibleCards, setVisibleCards] = useState<boolean[]>(new Array(3).fill(false));
-  const observerRef = useRef<IntersectionObserver | null>(null);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  useEffect(() => {
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const index = parseInt(entry.target.getAttribute('data-index') || '0');
-            setVisibleCards(prev => {
-              const newVisible = [...prev];
-              newVisible[index] = true;
-              return newVisible;
-            });
-          }
-        });
-      },
-      {
-        threshold: 0.1,
-        rootMargin: '50px'
-      }
-    );
-
-    cardRefs.current.forEach((ref) => {
-      if (ref && observerRef.current) {
-        observerRef.current.observe(ref);
-      }
-    });
-
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-    };
-  }, []);
-
   return (
-    <section className="py-20 px-4 max-w-7xl mx-auto">
-      {/* Title */}
-      <div className="text-center mb-16">
-        <h2 className="text-4xl md:text-5xl font-heading font-bold text-foreground mb-4">
-          Your Transformation Awaits
-        </h2>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          See how our AI transforms ordinary photos into extraordinary profile pictures
+    <section className="py-16 px-4 max-w-7xl mx-auto">
+      {/* Problem Framing Above Cards */}
+      <div className="text-center mb-12">
+        <p className="text-2xl font-semibold text-white">
+          Look average → get ignored. Look like high-status → get matches.
+        </p>
+        <p className="text-lg text-white mt-2">
+          Same person, different results.
         </p>
       </div>
 
-      {/* Transformation Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-        {transformationsData.map((transformation, index) => (
-          <div
-            key={transformation.id}
-            ref={(el) => { cardRefs.current[index] = el; }}
-            data-index={index}
-          >
-            <TransformationCard
-              data={transformation}
-              isVisible={visibleCards[index]}
-              index={index}
-            />
-          </div>
-        ))}
+      {/* Transformation Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        <TransformationCard
+          title="Urban Confidence"
+          beforeImage="/images/frat_before.jpeg"
+          afterImage="/images/3.3.png"
+          alt="Urban confidence transformation"
+        />
+        <TransformationCard
+          title="Fitness Edge"
+          beforeImage="/images/tedx_before.jpeg"
+          afterImage="/images/4.2.png"
+          alt="Fitness edge transformation"
+        />
       </div>
 
       {/* Caption */}
-      <div className="text-center mb-12">
-        <p className="text-2xl font-semibold text-foreground">
+      <div className="text-center">
+        <p className="text-2xl font-semibold text-white">
           Same person, 10x more matches
         </p>
-        <p className="text-lg text-muted-foreground mt-2">
+        <p className="text-lg text-white mt-2">
           Professional quality photos that get results
         </p>
       </div>
-
-
     </section>
   );
 };

@@ -30,6 +30,7 @@ import {
     Mail,
 } from "lucide-react";
 import Link from "next/link";
+import { trackPurchase } from "@/lib/metaPixel";
 
 const stripePromise = loadStripe(
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ||
@@ -210,7 +211,7 @@ function PaymentForm({ selectedPackage, onPaymentSuccess, submissionId }: Paymen
             <Button
                 type="submit"
                 disabled={!stripe || isLoading}
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 text-lg"
+                className="w-full bg-[#d4ae36] hover:bg-[#c19d2f] text-black font-semibold py-3 text-lg"
             >
                 {isLoading ? (
                     <>
@@ -259,28 +260,28 @@ function TrustBadges() {
         <div className="space-y-4">
             <div className="flex items-center justify-center space-x-6 text-sm text-muted-foreground">
                 <div className="flex items-center space-x-2">
-                    <Shield className="w-4 h-4 text-emerald-600" />
+                    <Shield className="w-4 h-4 text-[#d4ae36]" />
                     <span>SSL Secured</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                    <RotateCcw className="w-4 h-4 text-emerald-600" />
+                    <RotateCcw className="w-4 h-4 text-[#d4ae36]" />
                     <span>Money Back Guarantee</span>
                 </div>
             </div>
 
             <div className="text-center">
-                <div className="flex items-center justify-center space-x-2 text-emerald-600">
+                <div className="flex items-center justify-center space-x-2 text-[#d4ae36]">
                     <Users className="w-4 h-4" />
                     <span className="text-sm font-medium">2,847 customers served</span>
                 </div>
             </div>
 
             <div className="flex justify-center space-x-4">
-                <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 border-emerald-200">
+                <Badge variant="secondary" className="bg-[#d4ae36]/10 text-[#d4ae36] border-[#d4ae36]/20">
                     <CheckCircle className="w-3 h-3 mr-1" />
                     Secure Payment
                 </Badge>
-                <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 border-emerald-200">
+                <Badge variant="secondary" className="bg-[#d4ae36]/10 text-[#d4ae36] border-[#d4ae36]/20">
                     <Lock className="w-3 h-3 mr-1" />
                     256-bit SSL
                 </Badge>
@@ -340,6 +341,11 @@ function PaymentContent() {
     }, [searchParams]);
 
     const handlePaymentSuccess = (submissionId: string) => {
+        // Track successful purchase
+        if (selectedPackage) {
+            trackPurchase(selectedPackage.salePrice, 'USD', selectedPackage.name);
+        }
+
         // Redirect to success page with submission ID
         router.push(`/onboarding/success?submissionId=${submissionId}`);
     };
@@ -347,7 +353,7 @@ function PaymentContent() {
     if (!selectedPackage) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-background">
-                <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
+                <Loader2 className="w-8 h-8 animate-spin text-[#d4ae36]" />
             </div>
         );
     }
@@ -377,26 +383,36 @@ function PaymentContent() {
                         {/* Order Details - Left Column */}
                         <div className="xl:col-span-2 space-y-6">
                             {/* Success Message */}
-                            <Card className="border-emerald-200 bg-emerald-50">
+                            <Card className="border-[#d4ae36]/20 bg-[#d4ae36]/5">
                                 <CardContent className="p-6">
                                     <div className="flex items-center space-x-3">
-                                        <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center">
+                                        <div className="w-10 h-10 bg-[#d4ae36] rounded-full flex items-center justify-center">
                                             <Check className="w-5 h-5 text-white" />
                                         </div>
                                         <div>
-                                            <h3 className="font-semibold text-emerald-800">Questionnaire Completed!</h3>
-                                            <p className="text-sm text-emerald-700">Your profile information has been saved. Now let's get your photos enhanced!</p>
+                                            <h3 className="font-semibold text-[#d4ae36]">Questionnaire Completed!</h3>
+                                            <p className="text-sm text-[#d4ae36]/80">Your profile information has been saved. Now let's get your photos enhanced!</p>
                                         </div>
                                     </div>
                                 </CardContent>
                             </Card>
+
+                            {/* First Impression Message */}
+                            <div className="bg-gradient-to-r from-[#d4ae36] to-[#FD5E76] p-6 rounded-lg text-center shadow-lg">
+                                <p className="text-xl text-white italic mb-3 font-bold">
+                                    "You never get a second chance to make a first impression"
+                                </p>
+                                <p className="text-lg text-[#d4ae36] font-semibold">
+                                    We make sure your first impression counts.
+                                </p>
+                            </div>
 
                             <Card>
                                 <CardHeader>
                                     <CardTitle className="flex items-center justify-between">
                                         <span>Order Summary</span>
                                         {selectedPackage.popular && (
-                                            <Badge className="bg-emerald-600">Most Popular</Badge>
+                                            <Badge className="bg-[#d4ae36] text-black">Most Popular</Badge>
                                         )}
                                     </CardTitle>
                                 </CardHeader>
@@ -407,7 +423,7 @@ function PaymentContent() {
                                             <ul className="text-sm text-muted-foreground mt-2 space-y-1">
                                                 {selectedPackage.features.map((feature, index) => (
                                                     <li key={index} className="flex items-center">
-                                                        <CheckCircle className="w-4 h-4 text-emerald-600 mr-2 flex-shrink-0" />
+                                                        <CheckCircle className="w-4 h-4 text-[#d4ae36] mr-2 flex-shrink-0" />
                                                         {feature}
                                                     </li>
                                                 ))}
@@ -426,13 +442,13 @@ function PaymentContent() {
                                         </div>
                                         <div className="flex items-center justify-between text-sm">
                                             <span className="text-muted-foreground">Today's Price</span>
-                                            <span className="text-emerald-600 font-semibold">
+                                            <span className="text-[#d4ae36] font-semibold">
                                                 ${selectedPackage.salePrice}
                                             </span>
                                         </div>
                                         <div className="flex items-center justify-between text-sm font-medium">
-                                            <span className="text-emerald-600">You Save</span>
-                                            <span className="text-emerald-600">${savings}</span>
+                                            <span className="text-[#d4ae36]">You Save</span>
+                                            <span className="text-[#d4ae36]">${savings}</span>
                                         </div>
                                     </div>
 
@@ -440,7 +456,7 @@ function PaymentContent() {
 
                                     <div className="flex items-center justify-between text-lg font-bold">
                                         <span>Total</span>
-                                        <span className="text-emerald-600">${selectedPackage.salePrice}</span>
+                                        <span className="text-[#d4ae36]">${selectedPackage.salePrice}</span>
                                     </div>
                                 </CardContent>
                             </Card>
@@ -483,7 +499,7 @@ function PaymentContent() {
                 <div className="xl:hidden fixed bottom-0 left-0 right-0 bg-background border-t border-border p-4 z-50">
                     <Button
                         onClick={() => setShowMobilePayment(true)}
-                        className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-4 text-lg"
+                        className="w-full bg-[#d4ae36] hover:bg-[#c19d2f] text-black font-semibold py-4 text-lg"
                     >
                         <Lock className="w-4 h-4 mr-2" />
                         Pay ${selectedPackage.salePrice} Now
@@ -524,7 +540,7 @@ export default function PaymentPage() {
     return (
         <Suspense fallback={
             <div className="min-h-screen flex items-center justify-center bg-background">
-                <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
+                <Loader2 className="w-8 h-8 animate-spin text-[#d4ae36]" />
             </div>
         }>
             <PaymentContent />

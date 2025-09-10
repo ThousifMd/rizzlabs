@@ -1,354 +1,117 @@
 "use client";
 
 import * as React from "react";
-import { useEffect, useRef, useState, useCallback } from "react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Star, GripVertical } from "lucide-react";
-
-import { usePackage } from "@/contexts/PackageContext";
-
-type Milliseconds = number;
+import { trackCTAClick } from "@/lib/metaPixel";
 
 interface HeroSectionProps {
   ctaHref: string;
   className?: string;
 }
 
-function clamp(n: number, min = 0, max = 100) {
-  return Math.max(min, Math.min(max, n));
-}
-
-function pad(n: number) {
-  return n.toString().padStart(2, "0");
-}
-
-
-
 export default function HeroSection({ ctaHref, className }: HeroSectionProps) {
-  const { selectedPackage } = usePackage();
-
-
-
-  // Slider progressive image loading
-  const [shouldLoadHiRes, setShouldLoadHiRes] = useState(false);
-  const [ariaSliderPos, setAriaSliderPos] = useState<number>(50);
-  const sliderRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (!sliderRef.current) return;
-    const el = sliderRef.current;
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries[0]?.isIntersecting) {
-          setShouldLoadHiRes(true);
-          io.disconnect();
-        }
-      },
-      { threshold: 0.25 }
-    );
-    io.observe(el);
-    const idle = (window as any).requestIdleCallback
-      ? (window as any).requestIdleCallback(() => setShouldLoadHiRes(true))
-      : setTimeout(() => setShouldLoadHiRes(true), 1200);
-    return () => {
-      io.disconnect();
-      typeof idle === "number" ? clearTimeout(idle) : (window as any).cancelIdleCallback?.(idle);
-    };
-  }, []);
-
-
-
-
-
-  const onSliderKeyDown = (e: React.KeyboardEvent) => {
-    const step = e.shiftKey ? 10 : 1;
-    if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-      e.preventDefault();
-      const next = clamp(ariaSliderPos + (e.key === "ArrowRight" ? step : -step));
-      setAriaSliderPos(next);
-      setShouldLoadHiRes(true);
-    }
-    if (e.key === "Home") {
-      setAriaSliderPos(0);
-    }
-    if (e.key === "End") {
-      setAriaSliderPos(100);
-    }
-  };
-
   const handleCTA = () => {
-    localStorage.setItem('selectedPackage', 'professional');
+    trackCTAClick("Make Me A Match Magnet", "Hero Section");
     window.location.href = "/onboarding";
   };
-
-  // Slider event handlers
-  const [isDragging, setIsDragging] = useState(false);
-
-  const handleSliderMove = useCallback((clientX: number) => {
-    const el = sliderRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const x = clientX - rect.left;
-    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
-    setAriaSliderPos(percentage); // Remove Math.round for smoother movement
-  }, []);
-
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(true);
-    handleSliderMove(e.clientX);
-  }, [handleSliderMove]);
-
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(true);
-    handleSliderMove(e.touches[0].clientX);
-  }, [handleSliderMove]);
-
-  const handleContainerClick = useCallback((e: React.MouseEvent) => {
-    if (!isDragging) {
-      handleSliderMove(e.clientX);
-    }
-  }, [handleSliderMove, isDragging]);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (isDragging) {
-        e.preventDefault();
-        e.stopPropagation();
-        handleSliderMove(e.clientX);
-      }
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      if (isDragging) {
-        e.preventDefault();
-        e.stopPropagation();
-        handleSliderMove(e.touches[0].clientX);
-      }
-    };
-
-    const handleEnd = () => {
-      setIsDragging(false);
-    };
-
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove, { passive: false });
-      document.addEventListener('mouseup', handleEnd);
-      document.addEventListener('touchmove', handleTouchMove, { passive: false });
-      document.addEventListener('touchend', handleEnd);
-      document.addEventListener('touchcancel', handleEnd);
-    }
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleEnd);
-      document.removeEventListener('touchmove', handleTouchMove);
-      document.removeEventListener('touchend', handleEnd);
-      document.removeEventListener('touchcancel', handleEnd);
-    };
-  }, [isDragging, handleSliderMove]);
-
-  // Before/After transformation images
-  // Before: Image 3.1 - Casual look
-  // After: Image 3.3 - Professional transformation
-  const beforeLow = "/images/3.1.png";
-  const afterLow = "/images/3.3.png";
-
-  const beforeHi = "/images/3.1.png";
-  const afterHi = "/images/3.3.png";
-
-  const beforeSrc = shouldLoadHiRes ? beforeHi : beforeLow;
-  const afterSrc = shouldLoadHiRes ? afterHi : afterLow;
 
   return (
     <section
       className={[
-        "container max-w-[1200px]",
+        "container",
         "py-10 md:py-16",
         className || "",
       ].join(" ")}
       aria-label="Matchlens hero section"
     >
-      <div className="relative rounded-2xl bg-card shadow-sm ring-1 ring-border">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 p-6 sm:p-8 md:p-12">
-          {/* Left column */}
-          <div className="flex flex-col justify-center">
-            <div className="mb-4">
-              <Badge
-                variant="secondary"
-                className="rounded-full bg-secondary text-secondary-foreground border border-border"
-              >
-                AI + Human Edits
-              </Badge>
-            </div>
+      {/* Hero Content */}
+      <div className="text-center md:text-left mb-8 md:mb-12">
+        <h1 className="font-heading font-extrabold tracking-tight text-[28px] leading-[1.1] md:text-[36px] lg:text-[56px] md:leading-[1.05] text-white mb-4 md:mb-6">
+          Do you know that <span className="text-[#FFD700] text-[32px] md:text-[42px] lg:text-[68px]">85%</span> of women swipe<br />
+          right on only <span className="text-[#FFD700] text-[32px] md:text-[42px] lg:text-[68px]">5%</span> of men?
+        </h1>
 
-            <h1 className="font-heading font-extrabold tracking-tight text-[48px] leading-[1.05] md:text-[72px] md:leading-[1.05]">
-              From 2 Matches to 50+ in 7 Days
-            </h1>
+        <p className="text-lg md:text-xl text-white max-w-3xl mb-8 md:mb-8 leading-relaxed mx-auto md:mx-0 px-4 md:px-0">
+          <span className="md:hidden block space-y-4">
+            <span className="block text-[#d4ae36] font-bold">Your photos and profile are holding you back - <span className="font-semibold">not you</span>.</span>
+            <span className="block">We're your <span className="font-semibold">AI + human concierge service</span> that creates <span className="font-semibold">stunning photos</span> and <span className="font-semibold">optimized bios</span> to transform you into a <span className="font-semibold">swipe magnet</span>.</span>
+          </span>
+          <span className="hidden md:inline">Your photos and profile are holding you back - not you. we create ai photos of you that look ultra realistic and optimized profile bio to transform into a swipe magnet that gets you noticed instantly .</span>
+        </p>
 
-            <p className="mt-4 text-base md:text-lg text-muted-foreground">
-              AI-powered photos that get you 3x more matches on dating apps - guaranteed
-            </p>
-            <p className="mt-2 text-sm text-muted-foreground">
-              <em>3x more matches or your money back</em>
-            </p>
-
-            {/* CTA row */}
-            <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-              <Button
-                type="button"
-                onClick={handleCTA}
-                className={[
-                  "h-auto min-h-[44px] px-6 md:px-7 py-4",
-                  "rounded-full font-semibold text-white",
-                  "bg-[#10B981] hover:bg-[#0FAE78]",
-                  "shadow-[0_6px_16px_rgba(16,185,129,0.25)] hover:shadow-[0_8px_20px_rgba(16,185,129,0.35)]",
-                  "transition-all duration-200 ease-out hover:-translate-y-0.5",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#10B981] focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-                  "w-full sm:w-auto",
-                ].join(" ")}
-                aria-label={selectedPackage ? `Get ${selectedPackage.name} package` : "Get your photos now"}
-              >
-                {selectedPackage
-                  ? `Get ${selectedPackage.name} Package →`
-                  : "Get Your Photos Now →"
-                }
-              </Button>
-
-              <div className="flex items-center gap-2">
-                <div
-                  className="flex items-center gap-1.5"
-                  aria-label="Rated 5 out of 5 stars by 2,847 customers"
-                >
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} aria-hidden="true" className="size-4 text-[#10B981] fill-[#10B981]" />
-                  ))}
-                </div>
-                <span className="text-sm font-semibold">2,847 Happy Customers</span>
-              </div>
-            </div>
-
-
-
-            {/* Dynamic Pricing Display */}
-            {selectedPackage && (
-              <div className="mt-4 p-4 rounded-lg border border-emerald-200 bg-emerald-50/50">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-emerald-800">
-                      Selected: {selectedPackage.name}
-                    </p>
-                    <p className="text-xs text-emerald-600">
-                      {selectedPackage.features[0]} • {selectedPackage.features[1]}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-lg font-bold text-emerald-800">
-                      ${selectedPackage.price}
-                    </p>
-                    <p className="text-xs text-emerald-600 line-through">
-                      ${selectedPackage.originalPrice}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Right column: Before/After placeholder slider */}
-          <div className="flex items-center">
-            <div className="w-full">
-              <div
-                ref={sliderRef}
-                className={[
-                  "relative group",
-                  "rounded-xl border border-border bg-card overflow-hidden",
-                  "shadow-sm cursor-grab active:cursor-grabbing",
-                  "aspect-[4/5] md:aspect-[4/3]",
-                ].join(" ")}
-                style={{ ["--pos" as any]: "50%" }}
-                aria-label="Before and after image comparison of a Matchlens photo edit"
-                onClick={handleContainerClick}
-              >
-                {/* Before Image */}
-                <div
-                  className="absolute inset-0"
+        {/* CTA Button */}
+        <div className="mb-4 flex justify-center md:justify-start">
+          <button
+            type="button"
+            onClick={handleCTA}
+            className="relative h-auto min-h-[52px] md:min-h-[48px] px-6 md:px-8 py-4 md:py-3 rounded-lg font-semibold text-base md:text-lg bg-white/5 backdrop-blur-md border border-white/20 hover:bg-white/10 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#FFD700]/20 overflow-hidden group touch-manipulation w-full md:w-auto"
+            aria-label="Make me a match magnet"
+          >
+            {/* Glass morphism background with flowing colors */}
+            <div className="absolute inset-0 rounded-lg overflow-hidden">
+              {/* Gold wave from left */}
+              <div className="absolute top-0 left-0 w-full h-full">
+                <div className="w-full h-full bg-gradient-to-r from-[#FFD700]/60 via-[#FFD700]/40 to-transparent opacity-90"
                   style={{
-                    clipPath: `inset(0 ${100 - ariaSliderPos}% 0 0)`
-                  }}
-                >
-                  <img
-                    src={beforeSrc}
-                    alt="Before edit example portrait"
-                    width={1200}
-                    height={900}
-                    decoding="async"
-                    loading={shouldLoadHiRes ? "eager" : "lazy"}
-                    className="absolute inset-0 size-full object-cover select-none"
-                    draggable={false}
-                  />
-                  <div className="absolute inset-0 bg-black/10" />
-                </div>
-
-                {/* After Image */}
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    clipPath: `inset(0 0 0 ${ariaSliderPos}%)`
-                  }}
-                >
-                  <img
-                    src={afterSrc}
-                    alt="After edit example portrait"
-                    width={1200}
-                    height={900}
-                    decoding="async"
-                    loading={shouldLoadHiRes ? "eager" : "lazy"}
-                    className="absolute inset-0 size-full object-cover select-none"
-                    style={{ objectPosition: 'center 30%' }}
-                    draggable={false}
-                  />
-                </div>
-
-                {/* Soft edge gradient mask */}
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/10" />
-
-
-
-                {/* Slider Handle */}
-                <div
-                  className="absolute top-0 bottom-0 w-3 bg-white shadow-lg cursor-grab active:cursor-grabbing z-30 transition-all duration-200 ease-out"
-                  style={{ left: `${ariaSliderPos}%`, transform: 'translateX(-50%)' }}
-                  onMouseDown={handleMouseDown}
-                  onTouchStart={handleTouchStart}
-                  role="slider"
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  aria-valuenow={ariaSliderPos}
-                  aria-label="Drag to reveal before and after"
-                  tabIndex={0}
-                  onKeyDown={onSliderKeyDown}
-                >
-                  {/* Handle Circle */}
-                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg border-2 border-[#10B981] flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95">
-                    <div className="w-2.5 h-2.5 bg-[#10B981] rounded-full" />
-                  </div>
-                </div>
-
-                {/* Before/After Labels */}
-                <div className="absolute bottom-4 left-4 text-white text-sm font-medium bg-black/50 backdrop-blur-sm px-2 py-1 rounded">
-                  Before
-                </div>
-                <div className="absolute bottom-4 right-4 text-white text-sm font-medium bg-black/50 backdrop-blur-sm px-2 py-1 rounded">
-                  After
+                    animation: 'flowingWaveLeft 3s ease-in-out infinite'
+                  }}>
                 </div>
               </div>
+
+              {/* Pink wave from right */}
+              <div className="absolute top-0 right-0 w-full h-full">
+                <div className="w-full h-full bg-gradient-to-l from-[#FF69B4]/60 via-[#FF69B4]/40 to-transparent opacity-90"
+                  style={{
+                    animation: 'flowingWaveRight 3s ease-in-out infinite'
+                  }}>
+                </div>
+              </div>
+
             </div>
+
+            <span className="relative z-20 text-white font-bold drop-shadow-lg">Make me a match magnet</span>
+          </button>
+        </div>
+
+        {/* First Impression Text */}
+        <div className="mb-4 md:mb-6 text-center md:text-left">
+          <p className="text-base md:text-lg text-white/80 italic mb-2">
+            "You never get a second chance to make a first impression"
+          </p>
+          <p className="hidden md:block text-sm md:text-base text-[#d4ae36] font-semibold">
+            We make sure your first impression counts.
+          </p>
+        </div>
+
+        {/* Supporting Text */}
+        <div className="flex items-center justify-center md:justify-start gap-2 text-xs md:text-sm text-white mb-4">
+          <div className="flex items-center gap-1">
+            <span className="w-3 h-3 bg-green-500 rounded-full flex items-center justify-center">
+              <span className="text-white text-xs">✓</span>
+            </span>
+            <span>Private</span>
           </div>
+          <span>•</span>
+          <div className="flex items-center gap-1">
+            <span className="w-3 h-3 bg-green-500 rounded-full flex items-center justify-center">
+              <span className="text-white text-xs">✓</span>
+            </span>
+            <span>Secure</span>
+          </div>
+          <span>•</span>
+          <div className="flex items-center gap-1">
+            <span className="w-3 h-3 bg-green-500 rounded-full flex items-center justify-center">
+              <span className="text-white text-xs">✓</span>
+            </span>
+            <span>24h delivery</span>
+          </div>
+        </div>
+
+        {/* Customer Rating */}
+        <div className="flex items-center justify-center md:justify-start gap-2 text-sm md:text-base text-white">
+          <div className="flex items-center gap-1">
+            <span className="text-[#FFD700] text-lg">★★★★★</span>
+          </div>
+          <span className="font-semibold">2,847 Happy Customers</span>
         </div>
       </div>
     </section>

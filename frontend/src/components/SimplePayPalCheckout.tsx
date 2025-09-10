@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 // Custom styles for PayPal buttons
@@ -13,13 +13,22 @@ const paypalStyles = `
   
   .paypal-button-container > div {
     width: 100% !important;
-    border-radius: 8px !important;
+    border-radius: 12px !important;
     overflow: hidden !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
   }
   
   .paypal-button-container button {
-    border-radius: 8px !important;
+    border-radius: 12px !important;
     margin: 0 !important;
+    height: 48px !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+  }
+  
+  .paypal-button-container button:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2) !important;
   }
 `;
 
@@ -29,20 +38,22 @@ interface SimplePayPalCheckoutProps {
         name: string;
         price: number;
     };
+    showNotification?: (type: 'success' | 'error' | 'info', message: string) => void;
+    onPaymentSuccess?: () => void;
 }
 
-export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCheckoutProps) {
+export default function SimplePayPalCheckout({ selectedPackage, showNotification, onPaymentSuccess }: SimplePayPalCheckoutProps) {
     const [showForm, setShowForm] = useState(false);
-    const [formData, setFormData] = useState({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: ""
-    });
+    const [formData, setFormData] = useState({});
+    const handleNotification = (type: 'success' | 'error' | 'info', message: string) => {
+        if (showNotification) {
+            showNotification(type, message);
+        }
+    };
 
     const storePaymentAndOnboarding = async (paymentDetails: any) => {
         try {
-            // Always use $1.00 for testing regardless of package
+            // Hardcoded to $1.00 for testing
             const actualAmountPaid = "1.00";
 
             // STEP 1: Store payment data
@@ -53,13 +64,13 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
                 currency: 'USD',
                 packageId: selectedPackage?.id,
                 packageName: selectedPackage?.name || 'Payment',
-                customerEmail: formData.email,
-                customerName: `${formData.firstName} ${formData.lastName}`,
+                customerEmail: localStorage.getItem('onboardingEmail') || '',
+                customerName: localStorage.getItem('onboardingName') || '',
                 status: 'completed',
                 onboardingData: {
-                    name: `${formData.firstName} ${formData.lastName}`,
-                    email: formData.email,
-                    phone: formData.phone,
+                    name: localStorage.getItem('onboardingName') || '',
+                    email: localStorage.getItem('onboardingEmail') || '',
+                    phone: localStorage.getItem('onboardingPhone') || '',
                     packageSelected: selectedPackage,
                     paymentDetails: {
                         orderId: paymentDetails.id,
@@ -116,26 +127,32 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
 
                     // Create onboarding submission data
                     const onboardingData = {
-                        name: onboardingFormData.name,
+                        name: onboardingFormData.name || '',
                         gender: onboardingFormData.gender || 'not_specified',
-                        age: onboardingFormData.age,
-                        datingGoal: onboardingFormData.datingGoal,
-                        currentMatches: onboardingFormData.currentMatches,
-                        bodyType: onboardingFormData.bodyType,
-                        stylePreference: onboardingFormData.stylePreference,
-                        ethnicity: onboardingFormData.ethnicity,
-                        interests: JSON.stringify(onboardingFormData.interests),
-                        currentBio: onboardingFormData.currentBio,
-                        email: onboardingFormData.email,
-                        phone: onboardingFormData.phone,
-                        weeklyTips: onboardingFormData.weeklyTips.toString(),
-                        originalPhotos: JSON.stringify(photoDataUrls),
-                        screenshotPhotos: JSON.stringify(screenshotDataUrls)
+                        age: onboardingFormData.age || '',
+                        datingGoal: onboardingFormData.datingGoal || '',
+                        currentMatches: onboardingFormData.currentMatches || '',
+                        anchorQuestion: onboardingFormData.anchorQuestion || '',
+                        bodyType: onboardingFormData.bodyType || '',
+                        stylePreference: onboardingFormData.stylePreference || '',
+                        ethnicity: onboardingFormData.ethnicity || '',
+                        interests: JSON.stringify(onboardingFormData.interests || []),
+                        currentBio: onboardingFormData.currentBio || '',
+                        email: onboardingFormData.email || '',
+                        confirmEmail: onboardingFormData.confirmEmail || '',
+                        phone: onboardingFormData.phone || '',
+                        weeklyTips: onboardingFormData.weeklyTips ? onboardingFormData.weeklyTips.toString() : 'false',
+                        vibe: onboardingFormData.vibe || '',
+                        wantMore: onboardingFormData.wantMore || '',
+                        oneLiner: onboardingFormData.oneLiner || '',
+                        originalPhotos: JSON.stringify(photoDataUrls || []),
+                        screenshotPhotos: JSON.stringify(screenshotDataUrls || [])
                     };
 
                     console.log("Submitting onboarding data:", onboardingData);
 
-                    const onboardingResponse = await fetch('http://localhost:5001/api/onboarding/submit', {
+                    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+                    const onboardingResponse = await fetch(`${API_BASE_URL}/api/onboarding/submit`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -165,10 +182,10 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
                 // Don't fail the entire process if onboarding submission fails
             }
 
-            alert("Payment successful! Your data has been saved to the database.");
+            handleNotification("success", "Payment successful! Your data has been saved to the database.");
         } catch (error) {
             console.error("Error storing payment:", error);
-            alert("Payment successful but failed to save data. Please contact support.");
+            handleNotification("error", "Payment successful but failed to save data. Please contact support.");
         }
     };
 
@@ -178,80 +195,29 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
         setShowForm(true);
     };
 
-    const handleFormSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        // Form is ready, PayPal button will handle the payment
-    };
 
-    if (!showForm) {
-        return (
-            <div className="w-full max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-                <h2 className="text-xl font-bold mb-4 text-center">Ready to Start?</h2>
-                <p className="text-gray-600 mb-6 text-center">
-                    {selectedPackage ? `${selectedPackage.name}: $1.00 (Testing)` : 'Test payment: $1.00'}
-                </p>
-                <button
-                    onClick={handleStartPayment}
-                    className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                    Start Payment Process
-                </button>
-            </div>
-        );
-    }
+    // Auto-start payment process to reduce friction
+    useEffect(() => {
+        if (!showForm) {
+            handleStartPayment();
+        }
+    }, [showForm]);
 
     return (
-        <div className="w-full max-w-2xl mx-auto p-8 bg-white rounded-xl shadow-lg border border-gray-100">
-            <h2 className="text-2xl font-bold mb-2 text-center text-gray-800">Complete Your Order</h2>
-            <p className="text-gray-600 mb-6 text-center">
-                {selectedPackage ? `${selectedPackage.name}: $1.00 (Testing)` : 'Test payment: $1.00'}
+        <div className="w-full max-w-2xl mx-auto p-6">
+            <h2 className="text-2xl font-bold mb-2 text-center text-white">Complete Your Order</h2>
+            <p className="text-white/70 mb-6 text-center">
+                {selectedPackage ? `${selectedPackage.name}: $1.00 (Testing)` : 'Payment: $1.00 (Testing)'}
             </p>
 
-            <form onSubmit={handleFormSubmit} className="space-y-4 mb-6">
-                <div className="grid grid-cols-2 gap-4">
-                    <input
-                        type="text"
-                        placeholder="First Name"
-                        value={formData.firstName}
-                        onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                        className="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                        required
-                    />
-                    <input
-                        type="text"
-                        placeholder="Last Name"
-                        value={formData.lastName}
-                        onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                        className="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                        required
-                    />
-                </div>
-
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                    required
-                />
-
-                <input
-                    type="tel"
-                    placeholder="Phone"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                    required
-                />
-            </form>
-
             {/* PayPal Integration */}
-            <div className="mt-6 p-8 bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-200 rounded-xl shadow-lg">
-                <h3 className="text-xl font-bold text-blue-900 mb-3 text-center">💳 Complete Payment</h3>
-                <p className="text-blue-700 mb-6 text-center text-sm">Secure payment powered by PayPal</p>
+            <div className="mt-6 p-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl shadow-2xl">
+                <div className="text-center mb-4">
+                    <h3 className="text-xl font-bold text-white">Complete Payment</h3>
+                </div>
+                <p className="text-white/70 mb-6 text-center text-sm">Secure payment powered by PayPal</p>
 
-                <div className="bg-white rounded-lg p-6 border border-blue-100 shadow-sm">
+                <div className="space-y-3">
                     <style dangerouslySetInnerHTML={{ __html: paypalStyles }} />
                     <div className="paypal-button-container">
                         <PayPalScriptProvider
@@ -268,7 +234,7 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
                                         console.log('📦 Package data:', { selectedPackage, amount: "1.00" });
 
                                         const orderData = {
-                                            amount: "1.00", // Hardcoded to $1 for testing
+                                            amount: "1.00",
                                             description: selectedPackage?.name || "Test Payment",
                                             packageId: selectedPackage?.id,
                                             packageName: selectedPackage?.name
@@ -333,22 +299,30 @@ export default function SimplePayPalCheckout({ selectedPackage }: SimplePayPalCh
                                             // Store payment details AND onboarding data in database
                                             await storePaymentAndOnboarding(details);
 
-                                            alert("Payment successful! Order ID: " + details.id);
+                                            handleNotification("success", "Payment successful! Order ID: " + details.id);
+
+                                            // Call the payment success callback
+                                            if (onPaymentSuccess) {
+                                                console.log('🚀 Calling onPaymentSuccess callback!');
+                                                onPaymentSuccess();
+                                            } else {
+                                                console.log('❌ onPaymentSuccess callback not provided!');
+                                            }
                                         } else {
                                             throw new Error("PayPal order actions not available");
                                         }
                                     } catch (error) {
                                         console.error("❌ Payment capture failed:", error);
-                                        alert("Payment capture failed: " + (error instanceof Error ? error.message : "Unknown error"));
+                                        handleNotification("error", "Payment capture failed: " + (error instanceof Error ? error.message : "Unknown error"));
                                     }
                                 }}
                                 onError={(err) => {
                                     console.error("PayPal error:", err);
-                                    alert("PayPal error: " + JSON.stringify(err));
+                                    handleNotification("error", "PayPal error: " + JSON.stringify(err));
                                 }}
                                 onCancel={(data) => {
                                     console.log("Payment cancelled:", data);
-                                    alert("Payment was cancelled");
+                                    handleNotification("info", "Payment was cancelled");
                                 }}
                             />
                         </PayPalScriptProvider>

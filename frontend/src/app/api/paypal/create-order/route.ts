@@ -67,8 +67,8 @@ export async function POST(req: NextRequest) {
             application_context: {
                 shipping_preference: "NO_SHIPPING",
                 user_action: "PAY_NOW",
-                return_url: `${process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3001'}/onboarding/success`,
-                cancel_url: `${process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3001'}/checkout`,
+                return_url: `${process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3000'}/onboarding/success`,
+                cancel_url: `${process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3000'}/checkout`,
             },
         };
 

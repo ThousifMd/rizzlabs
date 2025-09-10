@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/database');
 const OnboardingSubmission = require('../models/OnboardingSubmission');
+const { v4: uuidv4 } = require('uuid');
 
 // CORS test endpoint
 router.get('/test-cors', (req, res) => {
@@ -61,13 +62,13 @@ router.post('/store', async (req, res) => {
 
         onboardingSubmission = await OnboardingSubmission.create({
           name: onboardingData.name || customerName || 'Unknown',
-          gender: 'not_specified',
-          age: 'not_specified',
-          datingGoal: 'not_specified',
-          currentMatches: 'not_specified',
-          bodyType: 'not_specified',
-          stylePreference: 'not_specified',
-          ethnicity: 'not_specified',
+          gender: 'other',
+          age: '25',
+          datingGoal: 'relationship',
+          currentMatches: '0-2',
+          bodyType: 'average',
+          stylePreference: 'casual',
+          ethnicity: 'other',
           interests: [],
           currentBio: '',
           email: onboardingData.email || customerEmail || 'unknown@example.com',
@@ -78,18 +79,22 @@ router.post('/store', async (req, res) => {
           expectedDelivery: expectedDelivery
         });
 
-        console.log('Onboarding submission created:', onboardingSubmission.id);
+        console.log('Onboarding submission created:', onboardingSubmission.user_id);
       } catch (onboardingError) {
         console.error('Error creating onboarding submission:', onboardingError);
         // Continue with payment even if onboarding fails
       }
     }
 
+    // Generate UUID for payment
+    const paymentUuid = uuidv4();
+
     // Insert payment record into database
     const result = await pool.query(`
       INSERT INTO payments (
-        order_id,
         payment_id,
+        user_id,
+        order_id,
         amount,
         currency,
         package_id,
@@ -98,13 +103,13 @@ router.post('/store', async (req, res) => {
         customer_name,
         status,
         onboarding_data,
-        onboarding_submission_id,
         created_at
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NOW())
-      RETURNING id, order_id, payment_id, amount, created_at;
+      RETURNING payment_id, order_id, amount, created_at;
     `, [
+      paymentUuid,
+      onboardingSubmission ? onboardingSubmission.user_id : null,
       orderId,
-      paymentId,
       amount,
       currency || 'USD',
       packageId || null,
@@ -112,8 +117,7 @@ router.post('/store', async (req, res) => {
       customerEmail || null,
       customerName || null,
       status,
-      JSON.stringify(onboardingData),
-      onboardingSubmission ? onboardingSubmission.id : null
+      JSON.stringify(onboardingData)
     ]);
 
     console.log("Payment and onboarding data stored successfully:", result.rows[0]);
@@ -122,7 +126,7 @@ router.post('/store', async (req, res) => {
       success: true,
       payment: result.rows[0],
       onboardingSubmission: onboardingSubmission ? {
-        id: onboardingSubmission.id,
+        user_id: onboardingSubmission.user_id,
         name: onboardingSubmission.name,
         email: onboardingSubmission.email
       } : null
@@ -139,9 +143,9 @@ router.get('/list', async (req, res) => {
   try {
     const result = await pool.query(`
       SELECT 
-        id,
-        order_id,
         payment_id,
+        user_id,
+        order_id,
         amount,
         currency,
         package_id,
