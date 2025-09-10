@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import { X, Heart, Info } from 'lucide-react';
 
 interface DatingAppCardProps {
     appName: string;
@@ -92,7 +93,7 @@ const DatingAppCard: React.FC<DatingAppCardProps> = ({
                         <div className="absolute bottom-0 left-0 right-0">
                             <div className="bg-black/60 backdrop-blur-md rounded-t-[3rem] p-4 pb-6 shadow-lg">
                                 {/* Profile Info */}
-                                <div className="mb-3">
+                                <div className="mb-4">
                                     <h4 className="text-white font-semibold text-base">
                                         {name}, {age}
                                     </h4>
@@ -102,27 +103,33 @@ const DatingAppCard: React.FC<DatingAppCardProps> = ({
                                     </p>
                                 </div>
 
-                                {/* Action Buttons */}
-                                <div className="flex items-center justify-center gap-3">
-                                    {/* Reject Button */}
-                                    <button className="w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center hover:bg-gray-500 transition-all">
-                                        <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                                        </svg>
+                                {/* Swipe Action Buttons */}
+                                <div className="flex justify-center items-center gap-4">
+                                    {/* Pass Button */}
+                                    <button
+                                        className="w-12 h-12 bg-gray-600 hover:bg-gray-700 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 shadow-lg"
+                                        onClick={() => console.log('Pass on', name)}
+                                        aria-label={`Pass on ${name}`}
+                                    >
+                                        <X className="w-6 h-6 text-white" />
                                     </button>
 
                                     {/* Like Button */}
-                                    <button className="w-10 h-10 bg-[#FFD447] rounded-full flex items-center justify-center hover:bg-[#FFE066] transition-all">
-                                        <svg className="w-5 h-5 text-black" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                                        </svg>
+                                    <button
+                                        className="w-12 h-12 bg-[#FFD700] hover:bg-[#FFA500] rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 shadow-lg"
+                                        onClick={() => console.log('Like', name)}
+                                        aria-label={`Like ${name}`}
+                                    >
+                                        <Heart className="w-6 h-6 text-black fill-current" />
                                     </button>
 
                                     {/* Info Button */}
-                                    <button className="w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center hover:bg-gray-500 transition-all">
-                                        <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                                        </svg>
+                                    <button
+                                        className="w-12 h-12 bg-gray-600 hover:bg-gray-700 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 shadow-lg"
+                                        onClick={() => console.log('More info about', name)}
+                                        aria-label={`More info about ${name}`}
+                                    >
+                                        <Info className="w-6 h-6 text-white" />
                                     </button>
                                 </div>
                             </div>
@@ -136,55 +143,57 @@ const DatingAppCard: React.FC<DatingAppCardProps> = ({
 
 export const DatingAppContext: React.FC = () => {
     return (
-        <section className="py-20 px-4 max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-                <h2 className="text-4xl md:text-5xl font-heading font-bold text-white mb-4">
-                    The Swipe Revolution
-                </h2>
-                <p className="text-xl text-white max-w-2xl mx-auto">
-                    <span className="text-gray-400">Look average</span> → <span className="text-red-400">get ignored</span>. <span className="text-[#d4ae36]">Look like high-status</span> → <span className="text-green-400">get matches</span>. <span className="text-white/80">Same person, different results.</span>
-                </p>
-            </div>
+        <section className="py-20">
+            <div className="container">
+                <div className="text-center mb-16">
+                    <h2 className="text-4xl md:text-5xl font-heading font-bold text-white mb-4">
+                        The Swipe Revolution
+                    </h2>
+                    <p className="text-xl text-white max-w-2xl mx-auto">
+                        <span className="text-gray-400">Look average</span> → <span className="text-red-400">get ignored</span>. <span className="text-[#d4ae36]">Look like high-status</span> → <span className="text-green-400">get matches</span>. <span className="text-white/80">Same person, different results.</span>
+                    </p>
+                </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-                <DatingAppCard
-                    appName="Tinder-style"
-                    beforeImage="/images/frat_before.jpeg"
-                    afterImage="/images/3.3.png"
-                    upgradedImage="/images/3.3.png"
-                    name="Alex"
-                    age={29}
-                    distance="3 mi"
-                    beforeBio="Adventure seeker & coffee enthusiast. Love hiking, photography, and trying new restaurants. Let's explore the city together!"
-                    afterBio="Traveled to 47 countries. Climbed Kilimanjaro last month. Still can't cook pasta without burning it 😅 Looking for my adventure partner"
-                    appStyle="tinder"
-                />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+                    <DatingAppCard
+                        appName="Tinder-style"
+                        beforeImage="/images/1_before.jpeg"
+                        afterImage="/images/1_after.jpeg"
+                        upgradedImage="/images/1_after.jpeg"
+                        name="Alex"
+                        age={29}
+                        distance="3 mi"
+                        beforeBio="Adventure seeker & coffee enthusiast. Love hiking, photography, and trying new restaurants. Let's explore the city together!"
+                        afterBio="Traveled to 47 countries. Climbed Kilimanjaro last month. Still can't cook pasta without burning it 😅 Looking for my adventure partner"
+                        appStyle="tinder"
+                    />
 
-                <DatingAppCard
-                    appName="Bumble-style"
-                    beforeImage="/images/2.1.png"
-                    afterImage="/images/2.2.png"
-                    upgradedImage="/images/2.2.png"
-                    name="Roman"
-                    age={31}
-                    distance="12 mi"
-                    beforeBio="Software engineer who enjoys hiking and playing guitar. Family and friends mean everything to me."
-                    afterBio="Scaled an app to 1M users by day, hiking California peaks by weekend. If I'm not coding, I'm playing John Mayer on guitar for my niece. Swipe if you want real adventures."
-                    appStyle="bumble"
-                />
+                    <DatingAppCard
+                        appName="Bumble-style"
+                        beforeImage="/images/2_before.jpg"
+                        afterImage="/images/2_after.jpeg"
+                        upgradedImage="/images/2_after.jpeg"
+                        name="Roman"
+                        age={31}
+                        distance="12 mi"
+                        beforeBio="Software engineer who enjoys hiking and playing guitar. Family and friends mean everything to me."
+                        afterBio="Scaled an app to 1M users by day, hiking California peaks by weekend. If I'm not coding, I'm playing John Mayer on guitar for my niece. Swipe if you want real adventures."
+                        appStyle="bumble"
+                    />
 
-                <DatingAppCard
-                    appName="Hinge-style"
-                    beforeImage="/images/tedx_before.jpeg"
-                    afterImage="/images/4.2.png"
-                    upgradedImage="/images/4.3.png"
-                    name="Noah"
-                    age={27}
-                    distance="1 mi"
-                    beforeBio="Creative soul who loves music, art galleries, and weekend brunches. Always up for a spontaneous road trip or cozy night in."
-                    afterBio="Published author & TEDx speaker. Still get nervous on first dates 😊 Looking for someone who loves deep conversations"
-                    appStyle="hinge"
-                />
+                    <DatingAppCard
+                        appName="Hinge-style"
+                        beforeImage="/images/3_before.jpeg"
+                        afterImage="/images/3_after.jpeg"
+                        upgradedImage="/images/3_after.jpeg"
+                        name="Noah"
+                        age={27}
+                        distance="1 mi"
+                        beforeBio="Creative soul who loves music, art galleries, and weekend brunches. Always up for a spontaneous road trip or cozy night in."
+                        afterBio="Published author & TEDx speaker. Still get nervous on first dates 😊 Looking for someone who loves deep conversations"
+                        appStyle="hinge"
+                    />
+                </div>
             </div>
         </section>
     );

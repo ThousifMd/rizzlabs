@@ -640,7 +640,7 @@ export default function OnboardingPage() {
                 <Button
                   onClick={handleContinue}
                   disabled={!isStep5Valid}
-                  className="w-full h-12 bg-[#FFD700] hover:bg-[#FFA500] disabled:bg-gray-700 disabled:text-gray-400 text-black text-lg font-medium transition-all duration-200"
+                  className="w-full h-12 bg-[#FFD700] hover:bg-[#d4ae36] disabled:bg-gray-700 disabled:text-gray-400 text-black text-lg font-medium transition-all duration-200"
                 >
                   {isStep5Valid ? "➡️ Next → Build My Profile" :
                     emailError ? "Please fix email errors" :

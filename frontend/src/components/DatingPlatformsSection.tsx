@@ -14,7 +14,7 @@ export default function DatingPlatformsSection() {
 
     return (
         <div className="py-16 bg-black/50 backdrop-blur-sm border-y border-white/10">
-            <div className="max-w-7xl mx-auto px-4">
+            <div className="container">
                 <h3 className="text-center text-2xl font-bold text-white mb-8 tracking-wider">
                     SUCCESSFULLY TESTED AND APPROVED ON
                 </h3>

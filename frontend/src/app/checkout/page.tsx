@@ -92,19 +92,19 @@ const packages: Package[] = [
 const testimonials = [
   {
     name: "Alex M.",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=face",
+    image: "/images/s7.jpg",
     quote: "Got 10x more matches in the first week! The AI enhancement made my photos look naturally perfect.",
     rating: 5,
   },
   {
     name: "Mike R.",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=64&h=64&fit=crop&crop=face",
+    image: "/images/s8.jpg",
     quote: "Amazing results! The professional package transformed my dating profile completely.",
     rating: 5,
   },
   {
     name: "David L.",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=64&h=64&fit=crop&crop=face",
+    image: "/images/s9.jpg",
     quote: "Worth every penny. The enhanced photos looked so natural, nobody could tell they were AI-optimized.",
     rating: 5,
   },
@@ -113,9 +113,10 @@ const testimonials = [
 interface PaymentFormProps {
   selectedPackage: Package;
   onPaymentSuccess: () => void;
+  showNotification: (type: 'success' | 'error' | 'info', message: string) => void;
 }
 
-function PaymentForm({ selectedPackage, onPaymentSuccess }: PaymentFormProps) {
+function PaymentForm({ selectedPackage, onPaymentSuccess, showNotification }: PaymentFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [cardNumber, setCardNumber] = useState("");
@@ -210,6 +211,7 @@ function PaymentForm({ selectedPackage, onPaymentSuccess }: PaymentFormProps) {
     <div className="space-y-6">
       <SimplePayPalCheckout
         selectedPackage={selectedPackage}
+        showNotification={showNotification}
       />
 
       {error && (
@@ -238,7 +240,7 @@ function TrustBadges() {
       <div className="text-center">
         <div className="flex items-center justify-center space-x-2 text-[#d4ae36]">
           <Users className="w-4 h-4" />
-          <span className="text-sm font-medium">2,847 customers served</span>
+          <span className="text-sm font-medium">11,847 customers served</span>
         </div>
       </div>
 
@@ -258,7 +260,7 @@ function TrustBadges() {
 
 function TestimonialSidebar() {
   return (
-    <div className="hidden xl:block space-y-6 sticky top-8">
+    <div className="block space-y-6 lg:sticky lg:top-8">
       <h3 className="font-heading text-lg font-semibold text-white">
         What Our Customers Say
       </h3>
@@ -295,6 +297,12 @@ function CheckoutContent() {
   const { selectedPackage: contextPackage, setSelectedPackage } = usePackage();
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [showMobilePayment, setShowMobilePayment] = useState(false);
+  const [notification, setNotification] = useState<{ type: 'success' | 'error' | 'info', message: string } | null>(null);
+
+  const showNotification = (type: 'success' | 'error' | 'info', message: string) => {
+    setNotification({ type, message });
+    setTimeout(() => setNotification(null), 4000); // Auto-hide after 4 seconds
+  };
 
   // Use package from context or fallback to localStorage (client-side only)
   const [selectedPackage, setSelectedPackageState] = useState<Package | null>(null);
@@ -415,41 +423,57 @@ function CheckoutContent() {
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#d4ae36]/5 via-transparent to-transparent"></div>
       <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-[#d4ae36]/3 via-transparent to-transparent"></div>
 
+      {/* Simple Animated Line - Below Browser Address Bar */}
+      {notification && (
+        <div className="fixed top-0 left-0 right-0 z-50 h-1 overflow-hidden">
+          <div className={`h-full animate-line-progress-fast ${notification.type === 'success'
+            ? 'bg-gradient-to-r from-green-400 to-green-500'
+            : 'bg-gradient-to-r from-red-400 to-red-500'
+            }`}></div>
+        </div>
+      )}
+
+      {/* Payment Status Text - Shows during line animation */}
+      {notification && (
+        <div className="fixed top-3 right-3 md:top-2 md:right-4 z-50">
+          <div className={`text-sm md:text-sm font-semibold animate-fade-in-out px-3 py-1 rounded-lg backdrop-blur-sm ${notification.type === 'success'
+            ? 'text-green-300 bg-green-500/10 border border-green-500/20'
+            : 'text-red-300 bg-red-500/10 border border-red-500/20'
+            }`}>
+            {notification.type === 'success' ? 'Payment Success' : 'Payment Failed'}
+          </div>
+        </div>
+      )}
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 py-8">
+
         {/* First Impression Header */}
-        <div className="mb-8">
-          <div className="relative overflow-hidden bg-black/40 backdrop-blur-sm border-2 border-[#d4ae36]/30 rounded-xl p-8 text-center shadow-2xl">
+        <div className="mb-6 md:mb-8">
+          <div className="relative overflow-hidden bg-black/40 backdrop-blur-sm border-2 border-[#d4ae36]/30 rounded-xl p-4 md:p-8 text-center shadow-2xl">
             {/* Animated background gradient */}
             <div className="absolute inset-0 bg-gradient-to-r from-[#d4ae36]/20 via-[#FD5E76]/20 to-[#d4ae36]/20 animate-pulse"></div>
 
-            {/* Quote icon */}
-            <div className="relative z-10 mb-4">
-              <div className="w-12 h-12 mx-auto bg-gradient-to-r from-[#d4ae36] to-[#FD5E76] rounded-full flex items-center justify-center mb-4">
-                <span className="text-white text-2xl font-bold">"</span>
-              </div>
-            </div>
 
             {/* Quote text */}
             <div className="relative z-10">
-              <p className="text-2xl text-white italic mb-4 font-bold leading-relaxed">
+              <p className="text-lg md:text-2xl text-white italic mb-3 md:mb-4 font-bold leading-relaxed">
                 You never get a second chance to make a first impression
               </p>
-              <div className="w-16 h-1 bg-gradient-to-r from-[#d4ae36] to-[#FD5E76] mx-auto mb-4 rounded-full"></div>
-              <p className="text-lg text-[#d4ae36] font-semibold">
+              <div className="w-12 md:w-16 h-1 bg-gradient-to-r from-[#d4ae36] to-[#FD5E76] mx-auto mb-3 md:mb-4 rounded-full"></div>
+              <p className="text-base md:text-lg text-[#d4ae36] font-semibold">
                 We make sure your first impression counts.
               </p>
             </div>
 
             {/* Decorative elements */}
-            <div className="absolute top-2 right-2 w-3 h-3 bg-[#d4ae36] rounded-full opacity-60"></div>
-            <div className="absolute bottom-2 left-2 w-2 h-2 bg-[#FD5E76] rounded-full opacity-60"></div>
+            <div className="absolute top-2 right-2 w-2 h-2 md:w-3 md:h-3 bg-[#d4ae36] rounded-full opacity-60"></div>
+            <div className="absolute bottom-2 left-2 w-1.5 h-1.5 md:w-2 md:h-2 bg-[#FD5E76] rounded-full opacity-60"></div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
           {/* Order Details - Left Column */}
-          <div className="xl:col-span-1 space-y-6">
+          <div className="lg:col-span-1 space-y-4 md:space-y-6 order-1 lg:order-1">
             <Card className="bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl hover:bg-white/8 hover:border-white/20 transition-all duration-300 ease-out">
               <CardHeader>
                 <CardTitle className="flex items-center justify-between text-white">
@@ -513,7 +537,7 @@ function CheckoutContent() {
           </div>
 
           {/* Payment Form - Center Column */}
-          <div className="xl:col-span-2">
+          <div className="lg:col-span-2 order-2 lg:order-2">
             <Card className="sticky top-8 bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl hover:bg-white/8 hover:border-white/20 transition-all duration-300 ease-out">
               <CardHeader>
                 <CardTitle className="flex items-center text-white">
@@ -525,24 +549,25 @@ function CheckoutContent() {
                 <PaymentForm
                   selectedPackage={selectedPackage}
                   onPaymentSuccess={handlePaymentSuccess}
+                  showNotification={showNotification}
                 />
               </CardContent>
             </Card>
           </div>
 
           {/* Testimonials - Right Column */}
-          <div className="xl:col-span-1 space-y-6">
+          <div className="lg:col-span-1 space-y-4 md:space-y-6 order-3 lg:order-3">
             <TestimonialSidebar />
           </div>
         </div>
       </div>
 
       {/* Mobile Fixed Payment Button */}
-      <div className="xl:hidden fixed bottom-0 left-0 right-0 bg-black/20 backdrop-blur-md border-t border-white/10 p-4 z-50">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-black/30 backdrop-blur-xl border-t border-white/20 p-4 z-50">
         <button
           type="button"
           onClick={() => setShowMobilePayment(true)}
-          className="relative w-full h-auto min-h-[56px] px-8 py-4 rounded-xl font-semibold text-lg bg-white/5 backdrop-blur-md border border-white/20 hover:bg-white/10 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#FFD700]/20 overflow-hidden group"
+          className="relative w-full h-auto min-h-[60px] px-6 py-4 rounded-xl font-semibold text-lg bg-white/10 backdrop-blur-md border-2 border-white/30 hover:bg-white/15 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#FFD700]/20 overflow-hidden group touch-manipulation"
         >
           {/* Glass morphism background with flowing colors */}
           <div className="absolute inset-0 rounded-xl overflow-hidden">
@@ -603,8 +628,8 @@ function CheckoutContent() {
 
       {/* Mobile Payment Modal */}
       {showMobilePayment && (
-        <div className="xl:hidden fixed inset-0 bg-black/50 z-50 flex items-end">
-          <div className="w-full bg-black/20 backdrop-blur-md border border-white/10 rounded-t-xl p-6 max-h-[80vh] overflow-y-auto">
+        <div className="lg:hidden fixed inset-0 bg-black/60 z-50 flex items-end">
+          <div className="w-full bg-black/30 backdrop-blur-xl border-t border-white/20 rounded-t-xl p-6 max-h-[85vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-white">Complete Payment</h2>
               <Button
@@ -619,13 +644,14 @@ function CheckoutContent() {
             <PaymentForm
               selectedPackage={selectedPackage}
               onPaymentSuccess={handlePaymentSuccess}
+              showNotification={showNotification}
             />
           </div>
         </div>
       )}
 
       {/* Mobile Padding for Fixed Button */}
-      <div className="xl:hidden h-20" />
+      <div className="lg:hidden h-24" />
     </div>
   );
 }

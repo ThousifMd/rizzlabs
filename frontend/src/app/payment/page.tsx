@@ -402,7 +402,7 @@ function PaymentContent() {
                                 <p className="text-xl text-white italic mb-3 font-bold">
                                     "You never get a second chance to make a first impression"
                                 </p>
-                                <p className="text-lg text-white/90 font-semibold">
+                                <p className="text-lg text-[#d4ae36] font-semibold">
                                     We make sure your first impression counts.
                                 </p>
                             </div>

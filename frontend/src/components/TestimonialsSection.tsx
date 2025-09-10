@@ -1,8 +1,7 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Star, Quote } from 'lucide-react';
-import Image from 'next/image';
 
 interface Testimonial {
     id: number;
@@ -29,7 +28,7 @@ const testimonials: Testimonial[] = [
         beforeMatches: "2-3/week",
         afterMatches: "15+/week",
         avatar: "👨‍💼",
-        profileImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+        profileImage: "/images/s1.jpg",
         date: "7/15/2025"
     },
     {
@@ -42,7 +41,7 @@ const testimonials: Testimonial[] = [
         beforeMatches: "1-2/week",
         afterMatches: "12+/week",
         avatar: "👨‍🎨",
-        profileImage: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+        profileImage: "/images/s2.jpg",
         date: "7/18/2025"
     },
     {
@@ -55,7 +54,7 @@ const testimonials: Testimonial[] = [
         beforeMatches: "0-1/week",
         afterMatches: "8+/week",
         avatar: "👨‍💻",
-        profileImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+        profileImage: "/images/s3.jpg",
         date: "7/22/2025"
     },
     {
@@ -68,7 +67,7 @@ const testimonials: Testimonial[] = [
         beforeMatches: "3-4/week",
         afterMatches: "20+/week",
         avatar: "👨‍🏫",
-        profileImage: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=150&h=150&fit=crop&crop=face",
+        profileImage: "/images/s4.jpg",
         date: "7/25/2025"
     },
     {
@@ -81,7 +80,7 @@ const testimonials: Testimonial[] = [
         beforeMatches: "1-2/week",
         afterMatches: "10+/week",
         avatar: "👨‍🔬",
-        profileImage: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop&crop=face",
+        profileImage: "/images/s5.jpg",
         date: "7/28/2025"
     },
     {
@@ -94,7 +93,7 @@ const testimonials: Testimonial[] = [
         beforeMatches: "0-1/week",
         afterMatches: "6+/week",
         avatar: "👨‍🚀",
-        profileImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+        profileImage: "/images/s6.jpg",
         date: "8/2/2025"
     },
     {
@@ -313,12 +312,14 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial }> = ({ testimonial }
             {/* Profile Image and User Info */}
             <div className="flex items-center gap-3 mb-4">
                 <div className="relative">
-                    <Image
+                    <img
                         src={testimonial.profileImage}
                         alt={testimonial.name}
-                        width={48}
-                        height={48}
                         className="w-12 h-12 rounded-full object-cover"
+                        onError={(e) => {
+                            console.log('Image failed to load:', testimonial.profileImage);
+                            e.currentTarget.src = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face';
+                        }}
                     />
                 </div>
                 <div className="flex-1">
@@ -345,8 +346,51 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial }> = ({ testimonial }
 };
 
 export const TestimonialsSection: React.FC = () => {
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
     // Create four sets of testimonials for perfect seamless infinite scroll
     const quadrupledTestimonials = [...testimonials, ...testimonials, ...testimonials, ...testimonials];
+
+    if (!isMounted) {
+        return (
+            <section className="py-20 px-4 max-w-7xl mx-auto">
+                {/* Section Header */}
+                <div className="text-center mb-16">
+                    <h2 className="text-4xl md:text-5xl font-heading font-bold text-white mb-4">
+                        Real Stories from{" "}
+                        <span className="bg-gradient-to-r from-[#d4ae36] to-[#c19d2f] bg-clip-text text-transparent underline decoration-[#d4ae36]">
+                            Real People
+                        </span>
+                    </h2>
+                    <p className="text-xl text-white/80 max-w-3xl mx-auto">
+                        Discover how our AI-powered profile optimization helped these men transform their dating success
+                    </p>
+                </div>
+                {/* Loading state */}
+                <div className="flex gap-6">
+                    {[...Array(4)].map((_, index) => (
+                        <div key={index} className="bg-white rounded-2xl p-4 shadow-lg flex-shrink-0 w-80 animate-pulse">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-12 h-12 bg-gray-200 rounded-full"></div>
+                                <div className="flex-1">
+                                    <div className="h-4 bg-gray-200 rounded w-24 mb-1"></div>
+                                    <div className="h-3 bg-gray-200 rounded w-16"></div>
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <div className="h-3 bg-gray-200 rounded"></div>
+                                <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </section>
+        );
+    }
 
     return (
         <section className="py-20 px-4 max-w-7xl mx-auto">

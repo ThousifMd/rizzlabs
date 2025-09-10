@@ -80,19 +80,19 @@ const packages: Package[] = [
 const testimonials = [
     {
         name: "Alex M.",
-        image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=face",
+        image: "/images/s7.jpg",
         quote: "Got 10x more matches in the first week! The AI enhancement made my photos look naturally perfect.",
         rating: 5,
     },
     {
         name: "Mike R.",
-        image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=64&h=64&fit=crop&crop=face",
+        image: "/images/s8.jpg",
         quote: "Amazing results! The professional package transformed my dating profile completely.",
         rating: 5,
     },
     {
         name: "David L.",
-        image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=64&h=64&fit=crop&crop=face",
+        image: "/images/s9.jpg",
         quote: "Worth every penny. The enhanced photos looked so natural, nobody could tell they were AI-optimized.",
         rating: 5,
     },
@@ -113,8 +113,8 @@ export default function PricingPage() {
     const handleContinueToCheckout = () => {
         // Store selected package in localStorage
         localStorage.setItem('selectedPackage', selectedPackage);
-        // Redirect to checkout
-        router.push('/checkout');
+        // Redirect to onboarding questionnaire first
+        router.push('/onboarding');
     };
 
     return (

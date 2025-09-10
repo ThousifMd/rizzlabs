@@ -15,23 +15,26 @@ export const MobileStickyCTA: React.FC<MobileStickyCTAProps> = ({
     return (
         <>
             {/* Mobile Sticky CTA - Only visible on mobile */}
-            <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
-                <div className="bg-gradient-to-r from-[#d4ae36] to-[#c19d2f] p-4 shadow-2xl border-t border-[#d4ae36]/20">
+            <div className="fixed bottom-0 left-2 right-2 z-50 md:hidden">
+                <div className="relative bg-black/90 backdrop-blur-lg p-6 shadow-2xl rounded-t-2xl overflow-hidden">
+                    {/* Animated Border */}
+                    <div className="absolute inset-0 rounded-t-2xl bg-gradient-to-r from-[#d4ae36] via-[#FD5E76] to-[#d4ae36] p-[2px] animate-gradient-x">
+                        <div className="w-full h-full bg-black/90 backdrop-blur-lg rounded-t-2xl"></div>
+                    </div>
+
                     <a
                         href={href}
-                        className="block w-full"
+                        className="relative block w-full z-10"
                     >
-                        <div className="flex items-center justify-between">
-                            <div className="flex-1">
-                                <div className="text-black font-bold text-sm mb-1">
-                                    Get My Photos Now →
-                                </div>
-                                <div className="text-black/80 text-xs">
-                                    Join {customersCount.toLocaleString()} men who upgraded their profiles.
-                                </div>
+                        <div className="flex flex-col items-center justify-center text-center">
+                            <div className="font-bold text-lg mb-1 bg-gradient-to-r from-[#d4ae36] via-white to-[#FD5E76] bg-clip-text text-transparent"
+                                style={{
+                                    textShadow: '0 0 25px rgba(212, 174, 54, 0.4), 0 0 50px rgba(253, 94, 118, 0.3)'
+                                }}>
+                                Transform your profile now
                             </div>
-                            <div className="ml-3">
-                                <ArrowRight className="w-5 h-5 text-black" />
+                            <div className="text-white/90 text-xs">
+                                Join {customersCount.toLocaleString()} men who upgraded their profiles.
                             </div>
                         </div>
                     </a>
