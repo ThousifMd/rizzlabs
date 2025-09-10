@@ -881,9 +881,14 @@ color utility to any element that depends on these defaults.
             opacity: 1;
         }
 
-        95% {
+        50% {
             transform: translateX(0);
             opacity: 1;
+        }
+
+        60% {
+            transform: translateX(0);
+            opacity: 0;
         }
 
         100% {
@@ -897,7 +902,7 @@ color utility to any element that depends on these defaults.
     }
 
     .animate-line-progress-fast {
-        animation: line-progress 1.5s ease-out;
+        animation: line-progress 1.5s ease-out forwards;
     }
 
     /* Gradient animation */
@@ -937,14 +942,19 @@ color utility to any element that depends on these defaults.
             transform: translateX(20px);
         }
 
-        5% {
+        20% {
             opacity: 1;
             transform: translateX(0);
         }
 
-        95% {
+        60% {
             opacity: 1;
             transform: translateX(0);
+        }
+
+        70% {
+            opacity: 0;
+            transform: translateX(-20px);
         }
 
         100% {
@@ -955,6 +965,43 @@ color utility to any element that depends on these defaults.
 
     .animate-fade-in-out {
         animation: fade-in-out 1.5s ease-in-out forwards;
+    }
+
+    /* Confetti animation */
+    @keyframes confetti-fall {
+        0% {
+            transform: translateY(-100vh) rotate(0deg);
+            opacity: 1;
+        }
+
+        100% {
+            transform: translateY(100vh) rotate(720deg);
+            opacity: 0;
+        }
+    }
+
+    .confetti {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        background: #FFD700;
+        animation: confetti-fall 3s linear infinite;
+        z-index: 1000;
+    }
+
+    .confetti:nth-child(odd) {
+        background: #FD5E76;
+        animation-delay: 0.1s;
+    }
+
+    .confetti:nth-child(3n) {
+        background: #d4ae36;
+        animation-delay: 0.2s;
+    }
+
+    .confetti:nth-child(4n) {
+        background: #ffffff;
+        animation-delay: 0.3s;
     }
 
     /* Hide scrollbar for horizontal scrolling */

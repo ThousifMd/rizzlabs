@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -140,7 +140,7 @@ const badExamples = [
   }
 ];
 
-export default function OnboardingPage() {
+function OnboardingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [currentStep, setCurrentStep] = useState(1);
@@ -497,33 +497,30 @@ export default function OnboardingPage() {
       <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-[#d4ae36]/3 via-transparent to-transparent"></div>
       {/* Progress Bar */}
       <div className="w-full bg-black/20 backdrop-blur-md border-b border-white/10 shadow-lg relative z-10">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between mb-2">
+        <div className="max-w-4xl mx-auto px-4 py-3">
+          <div className="flex items-center justify-between mb-3 w-full">
             {/* Left side - Step Navigation */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3 flex-shrink-0">
               {currentStep > 1 && (
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setCurrentStep(currentStep - 1)}
-                  className="text-white hover:text-white flex items-center gap-1"
+                  className="text-white hover:text-white flex items-center gap-1 text-xs"
                 >
                   Back
                 </Button>
               )}
-              <span className="text-sm font-medium text-white">
-                Step {currentStep} of {totalSteps}
-              </span>
             </div>
 
             {/* Center - Logo */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 flex-1 justify-center">
               {/* Heart/Lens Icon with Sharp 3D effects */}
-              <div className="w-12 h-12 flex items-center justify-center relative">
+              <div className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center relative">
                 {/* Sharp 3D Shadow Layer */}
                 <svg
                   viewBox="0 0 24 24"
-                  className="absolute w-12 h-12 fill-none stroke-[3]"
+                  className="absolute w-8 h-8 md:w-10 md:h-10 fill-none stroke-[2.5] md:stroke-[3]"
                   style={{
                     stroke: '#000000',
                     transform: 'translate(1px, 1px)',
@@ -545,7 +542,7 @@ export default function OnboardingPage() {
                 {/* Main Sharp 3D Icon */}
                 <svg
                   viewBox="0 0 24 24"
-                  className="relative w-12 h-12 fill-none stroke-[3]"
+                  className="relative w-8 h-8 md:w-10 md:h-10 fill-none stroke-[2.5] md:stroke-[3]"
                   style={{
                     stroke: 'url(#onboardingSharpLogoGradient)',
                     filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
@@ -572,11 +569,11 @@ export default function OnboardingPage() {
                 </svg>
 
                 {/* Sharp Highlight */}
-                <div className="absolute top-1 left-1 w-2 h-2 bg-white/60 rounded-full"></div>
+                <div className="absolute top-1 left-1 w-1.5 h-1.5 md:w-2 md:h-2 bg-white/60 rounded-full"></div>
               </div>
 
-              {/* Main Text - Bigger and bolder */}
-              <span className="font-heading text-2xl md:text-3xl font-bold tracking-tight bg-gradient-to-r from-[#d4ae36] via-white to-[#FD5E76] bg-clip-text text-transparent drop-shadow-lg"
+              {/* Main Text - Single line */}
+              <span className="font-heading text-sm md:text-base lg:text-lg font-bold tracking-tight bg-gradient-to-r from-[#d4ae36] via-white to-[#FD5E76] bg-clip-text text-transparent drop-shadow-lg whitespace-nowrap"
                 style={{
                   textShadow: '0 0 25px rgba(212, 174, 54, 0.4), 0 0 50px rgba(253, 94, 118, 0.3)'
                 }}>
@@ -584,28 +581,31 @@ export default function OnboardingPage() {
               </span>
             </div>
 
-            {/* Right side - Skip button space */}
-            <div className="w-20">
+            {/* Right side - Step indicator and Skip button */}
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <span className="text-xs font-medium text-white whitespace-nowrap">
+                Step {currentStep} of {totalSteps}
+              </span>
               {currentStep === 4 && (
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={handleSkipStep4}
-                  className="text-white hover:text-white"
+                  className="text-white hover:text-white text-xs whitespace-nowrap"
                 >
                   Skip
                 </Button>
               )}
             </div>
           </div>
-          <Progress value={progress} className="h-2" />
+          <Progress value={progress} className="h-2 bg-white/10" />
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="flex items-center justify-center min-h-[calc(100vh-100px)] p-4 relative z-10">
+      <div className="flex items-center justify-center min-h-[calc(100vh-120px)] p-4 relative z-10">
         {currentStep === 5 ? (
-          <Card className="w-full max-w-2xl bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl hover:bg-white/8 hover:border-white/20 transition-all duration-300 ease-out">
+          <Card className="w-full max-w-2xl mx-4 bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl hover:bg-white/8 hover:border-white/20 transition-all duration-300 ease-out">
             <CardHeader className="text-center space-y-2 pb-6">
               <CardTitle className="text-3xl font-bold text-white">
                 "What makes you stand out?"
@@ -781,7 +781,7 @@ export default function OnboardingPage() {
                     emailError ? "Please fix email errors" :
                       confirmEmailError ? "Please fix email confirmation errors" :
                         phoneError ? "Please fix phone number errors" :
-                          "Please select your vibe and what you want more of"
+                          "Select your vibe & preferences"
                   }
                 </Button>
               </div>
@@ -793,7 +793,7 @@ export default function OnboardingPage() {
             </CardContent>
           </Card>
         ) : currentStep === 4 ? (
-          <Card className="w-full max-w-4xl bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl hover:bg-white/8 hover:border-white/20 transition-all duration-300 ease-out">
+          <Card className="w-full max-w-4xl mx-4 bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl hover:bg-white/8 hover:border-white/20 transition-all duration-300 ease-out">
             <CardHeader className="text-center space-y-2 pb-6">
               <CardTitle className="text-3xl font-bold text-white">
                 Share Your Current Profile (Optional but Recommended)
@@ -932,10 +932,10 @@ export default function OnboardingPage() {
                 <Button
                   onClick={handleSkipStep4}
                   variant="outline"
-                  className="flex-1 h-12 border-2 border-white/20 hover:border-[#d4ae36] text-white hover:text-white text-lg font-medium transition-all duration-200"
+                  className="flex-1 h-12 border-2 border-white/20 hover:border-[#d4ae36] text-white hover:text-white text-sm font-medium transition-all duration-200"
                 >
                   <div className="text-center">
-                    <div className="text-white">Skip and use generic optimization</div>
+                    <div className="text-white text-sm">Skip and use generic optimization</div>
                   </div>
                 </Button>
               </div>
@@ -947,7 +947,7 @@ export default function OnboardingPage() {
             </CardContent>
           </Card>
         ) : currentStep === 3 ? (
-          <div className="w-full max-w-6xl">
+          <div className="w-full max-w-6xl mx-4">
             <div className="text-center space-y-2 mb-8">
               <h1 className="text-3xl font-bold text-white">
                 Upload Your Best Selfies
@@ -958,7 +958,7 @@ export default function OnboardingPage() {
             </div>
 
             {/* Desktop: Two columns, Mobile: Stacked */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 mb-8">
               {/* Good Examples */}
               <Card className="border-2 border-[#d4ae36]/20">
                 <CardHeader className="pb-4">
@@ -1016,25 +1016,25 @@ export default function OnboardingPage() {
             <Card className="w-full">
               <CardContent className="p-6">
                 {/* Photo Guidelines Button */}
-                <div className="mb-6 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                <div className="mb-6 p-4 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl shadow-lg">
                   <Button
                     variant="outline"
                     onClick={() => {
                       console.log('Photo guidelines button clicked!');
                       setShowGuidelines(true);
                     }}
-                    className="w-full h-14 bg-[#FFD700] text-black hover:bg-[#FFD700]/90 font-bold text-lg border-2 border-[#FFD700] shadow-lg"
+                    className="w-full h-12 bg-[#FFD700] text-black hover:bg-[#FFA500] font-semibold text-sm border-0 shadow-lg transition-all duration-200 hover:scale-105"
                   >
-                    📸 PHOTO QUALITY TIPS - CLICK HERE!
+                    📸 Photo Quality Tips
                   </Button>
-                  <p className="text-center text-sm text-yellow-300 mt-2">
+                  <p className="text-center text-xs text-white/70 mt-2">
                     Get expert tips for better photos before uploading
                   </p>
                 </div>
 
                 {/* Upload Area */}
                 <div
-                  className={`border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 ${dragActive
+                  className={`border-2 border-dashed rounded-lg p-6 md:p-8 text-center transition-all duration-200 ${dragActive
                     ? "border-[#d4ae36] bg-[#d4ae36]/10"
                     : "border-white/20 hover:border-[#d4ae36] hover:bg-white/5"
                     }`}
@@ -1116,7 +1116,7 @@ export default function OnboardingPage() {
             </Card>
           </div>
         ) : currentStep === 2 ? (
-          <Card className="w-full max-w-2xl bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl hover:bg-white/8 hover:border-white/20 transition-all duration-300 ease-out">
+          <Card className="w-full max-w-2xl mx-4 bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl hover:bg-white/8 hover:border-white/20 transition-all duration-300 ease-out">
             <CardHeader className="text-center space-y-2">
               <CardTitle className="text-3xl font-bold text-white">
                 What vibe do you want?
@@ -1250,7 +1250,7 @@ export default function OnboardingPage() {
             </CardContent>
           </Card>
         ) : (
-          <Card className="w-full max-w-2xl bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl hover:bg-white/8 hover:border-white/20 transition-all duration-300 ease-out">
+          <Card className="w-full max-w-2xl mx-4 bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl hover:bg-white/8 hover:border-white/20 transition-all duration-300 ease-out">
             <CardHeader className="text-center space-y-2">
               <CardTitle className="text-3xl font-bold text-white">
                 Let's get to know you better
@@ -1440,5 +1440,15 @@ export default function OnboardingPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function OnboardingPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="text-white">Loading...</div>
+    </div>}>
+      <OnboardingContent />
+    </Suspense>
   );
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from 'react';
-import { X, Heart, Info } from 'lucide-react';
 
 interface DatingAppCardProps {
     appName: string;
@@ -103,35 +102,6 @@ const DatingAppCard: React.FC<DatingAppCardProps> = ({
                                     </p>
                                 </div>
 
-                                {/* Swipe Action Buttons */}
-                                <div className="flex justify-center items-center gap-4">
-                                    {/* Pass Button */}
-                                    <button
-                                        className="w-12 h-12 bg-gray-600 hover:bg-gray-700 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 shadow-lg"
-                                        onClick={() => console.log('Pass on', name)}
-                                        aria-label={`Pass on ${name}`}
-                                    >
-                                        <X className="w-6 h-6 text-white" />
-                                    </button>
-
-                                    {/* Like Button */}
-                                    <button
-                                        className="w-12 h-12 bg-[#FFD700] hover:bg-[#FFA500] rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 shadow-lg"
-                                        onClick={() => console.log('Like', name)}
-                                        aria-label={`Like ${name}`}
-                                    >
-                                        <Heart className="w-6 h-6 text-black fill-current" />
-                                    </button>
-
-                                    {/* Info Button */}
-                                    <button
-                                        className="w-12 h-12 bg-gray-600 hover:bg-gray-700 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 shadow-lg"
-                                        onClick={() => console.log('More info about', name)}
-                                        aria-label={`More info about ${name}`}
-                                    >
-                                        <Info className="w-6 h-6 text-white" />
-                                    </button>
-                                </div>
                             </div>
                         </div>
                     </div>

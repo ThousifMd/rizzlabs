@@ -27,11 +27,12 @@ export const MobileStickyCTA: React.FC<MobileStickyCTAProps> = ({
                         className="relative block w-full z-10"
                     >
                         <div className="flex flex-col items-center justify-center text-center">
-                            <div className="font-bold text-lg mb-1 bg-gradient-to-r from-[#d4ae36] via-white to-[#FD5E76] bg-clip-text text-transparent"
+                            <div className="flex items-center gap-2 font-bold text-lg mb-1 bg-gradient-to-r from-[#d4ae36] via-white to-[#FD5E76] bg-clip-text text-transparent"
                                 style={{
                                     textShadow: '0 0 25px rgba(212, 174, 54, 0.4), 0 0 50px rgba(253, 94, 118, 0.3)'
                                 }}>
-                                Transform your profile now
+                                <span>Transform my profile now</span>
+                                <ArrowRight className="w-5 h-5 text-[#d4ae36]" />
                             </div>
                             <div className="text-white/90 text-xs">
                                 Join {customersCount.toLocaleString()} men who upgraded their profiles.

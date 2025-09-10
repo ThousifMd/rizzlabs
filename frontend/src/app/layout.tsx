@@ -14,15 +14,67 @@ const inter = Inter({
 
 
 export const metadata: Metadata = {
-  title: "Matchlens - Hero Section",
-  description: "Modern hero section with stunning animations and components",
+  title: "Matchlens AI - Transform Your Dating Profile in 24 Hours | Get 10x More Matches",
+  description: "Stop getting ignored on dating apps. Our AI transforms your photos and bio to make you irresistible. Join 2,847+ people who got 10x more matches. 24-hour delivery guaranteed.",
+  keywords: "dating profile optimization, AI photo enhancement, dating app success, get more matches, profile makeover, dating bio optimization, Tinder success, Bumble optimization",
+  authors: [{ name: "Matchlens AI" }],
+  creator: "Matchlens AI",
+  publisher: "Matchlens AI",
+  robots: "index, follow",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://matchlens.ai",
+    siteName: "Matchlens AI",
+    title: "Matchlens AI - Transform Your Dating Profile in 24 Hours | Get 10x More Matches",
+    description: "Stop getting ignored on dating apps. Our AI transforms your photos and bio to make you irresistible. Join 2,847+ people who got 10x more matches. 24-hour delivery guaranteed.",
+    images: [
+      {
+        url: "/logos/matchboost-logo.svg",
+        width: 1200,
+        height: 630,
+        alt: "Matchlens AI - Dating Profile Optimization",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Matchlens AI - Transform Your Dating Profile in 24 Hours | Get 10x More Matches",
+    description: "Stop getting ignored on dating apps. Our AI transforms your photos and bio to make you irresistible. Join 2,847+ people who got 10x more matches.",
+    images: ["/logos/matchboost-logo.svg"],
+    creator: "@matchlensai",
+  },
   icons: {
     icon: [
       {
-        url: '/next.svg',
+        url: '/favicon.svg',
+        type: 'image/svg+xml',
+        sizes: 'any',
+      },
+      {
+        url: '/favicon.svg',
+        type: 'image/svg+xml',
+        sizes: '32x32',
+      },
+      {
+        url: '/favicon.svg',
+        type: 'image/svg+xml',
+        sizes: '16x16',
+      }
+    ],
+    apple: [
+      {
+        url: '/favicon.svg',
+        sizes: '180x180',
         type: 'image/svg+xml',
       }
     ],
+    shortcut: '/favicon.svg',
+  },
+  manifest: '/manifest.json',
+  other: {
+    'msapplication-TileColor': '#d4ae36',
+    'theme-color': '#d4ae36',
   },
 };
 

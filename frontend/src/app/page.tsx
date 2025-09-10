@@ -64,7 +64,7 @@ export default function HomePage() {
       </main>
 
       <Footer
-        customersCount={11847}
+        customersCount={2847}
         rating={4.9}
         trustCopy="GDPR‑compliant • Secure checkout"
       />
@@ -72,7 +72,7 @@ export default function HomePage() {
       {/* Mobile Sticky CTA */}
       <MobileStickyCTA
         href="/onboarding"
-        customersCount={11847}
+        customersCount={2847}
       />
     </div>
   );

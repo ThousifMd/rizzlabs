@@ -39,9 +39,10 @@ interface SimplePayPalCheckoutProps {
         price: number;
     };
     showNotification?: (type: 'success' | 'error' | 'info', message: string) => void;
+    onPaymentSuccess?: () => void;
 }
 
-export default function SimplePayPalCheckout({ selectedPackage, showNotification }: SimplePayPalCheckoutProps) {
+export default function SimplePayPalCheckout({ selectedPackage, showNotification, onPaymentSuccess }: SimplePayPalCheckoutProps) {
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({});
     const handleNotification = (type: 'success' | 'error' | 'info', message: string) => {
@@ -150,7 +151,8 @@ export default function SimplePayPalCheckout({ selectedPackage, showNotification
 
                     console.log("Submitting onboarding data:", onboardingData);
 
-                    const onboardingResponse = await fetch('http://localhost:5001/api/onboarding/submit', {
+                    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+                    const onboardingResponse = await fetch(`${API_BASE_URL}/api/onboarding/submit`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -298,6 +300,14 @@ export default function SimplePayPalCheckout({ selectedPackage, showNotification
                                             await storePaymentAndOnboarding(details);
 
                                             handleNotification("success", "Payment successful! Order ID: " + details.id);
+
+                                            // Call the payment success callback
+                                            if (onPaymentSuccess) {
+                                                console.log('🚀 Calling onPaymentSuccess callback!');
+                                                onPaymentSuccess();
+                                            } else {
+                                                console.log('❌ onPaymentSuccess callback not provided!');
+                                            }
                                         } else {
                                             throw new Error("PayPal order actions not available");
                                         }

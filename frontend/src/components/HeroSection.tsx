@@ -32,7 +32,7 @@ export default function HeroSection({ ctaHref, className }: HeroSectionProps) {
 
         <p className="text-lg md:text-xl text-white max-w-3xl mb-8 md:mb-8 leading-relaxed mx-auto md:mx-0 px-4 md:px-0">
           <span className="md:hidden block space-y-4">
-            <span className="block text-white/90">Your photos and profile are holding you back - <span className="font-semibold">not you</span>.</span>
+            <span className="block text-[#d4ae36] font-bold">Your photos and profile are holding you back - <span className="font-semibold">not you</span>.</span>
             <span className="block">We're your <span className="font-semibold">AI + human concierge service</span> that creates <span className="font-semibold">stunning photos</span> and <span className="font-semibold">optimized bios</span> to transform you into a <span className="font-semibold">swipe magnet</span>.</span>
           </span>
           <span className="hidden md:inline">Your photos and profile are holding you back - not you. we create ai photos of you that look ultra realistic and optimized profile bio to transform into a swipe magnet that gets you noticed instantly .</span>
@@ -77,7 +77,7 @@ export default function HeroSection({ ctaHref, className }: HeroSectionProps) {
           <p className="text-base md:text-lg text-white/80 italic mb-2">
             "You never get a second chance to make a first impression"
           </p>
-          <p className="text-sm md:text-base text-[#d4ae36] font-semibold">
+          <p className="hidden md:block text-sm md:text-base text-[#d4ae36] font-semibold">
             We make sure your first impression counts.
           </p>
         </div>
@@ -111,7 +111,7 @@ export default function HeroSection({ ctaHref, className }: HeroSectionProps) {
           <div className="flex items-center gap-1">
             <span className="text-[#FFD700] text-lg">★★★★★</span>
           </div>
-          <span className="font-semibold">11,847 Happy Customers</span>
+          <span className="font-semibold">2,847 Happy Customers</span>
         </div>
       </div>
     </section>

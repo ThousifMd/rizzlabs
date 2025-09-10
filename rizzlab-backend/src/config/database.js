@@ -5,11 +5,7 @@ const PAYPAL_API_BASE = 'https://api-m.sandbox.paypal.com';
 
 // Create a PostgreSQL connection pool
 const pool = new Pool({
-  host: "db-postgresql-nyc3-89394-do-user-22973333-0.j.db.ondigitalocean.com",
-  port: 25060,
-  database: "defaultdb",
-  user: "doadmin",
-  password: "AVNS_8KyYVsHaIcFCsoAoLI5",
+  connectionString: process.env.DATABASE_URL || "postgresql://doadmin:AVNS_8KyYVsHaIcFCsoAoLI5@db-postgresql-nyc3-89394-do-user-22973333-0.j.db.ondigitalocean.com:25060/defaultdb",
   ssl: {
     rejectUnauthorized: false
   }

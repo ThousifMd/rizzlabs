@@ -25,7 +25,7 @@ const pricingTiers = [
     ],
     buttonText: "Make me a match magnet",
     popular: false,
-    mobileOrder: 1
+    mobileOrder: 2
   },
   {
     id: "most-matches",
@@ -44,7 +44,7 @@ const pricingTiers = [
     ],
     buttonText: "Make me a match magnet",
     popular: true,
-    mobileOrder: 2
+    mobileOrder: 1
   },
   {
     id: "date-ready",
@@ -134,7 +134,7 @@ export const PricingSection = () => {
           </div>
 
           {/* Pricing Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6 mb-8 items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 lg:gap-12 mb-8 items-stretch">
             {pricingTiers
               .map((tier) => (
                 <Card
@@ -142,7 +142,7 @@ export const PricingSection = () => {
                   className={`relative group transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer flex flex-col h-full bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/8 hover:border-[#FFD700]/30 hover:shadow-[#FFD700]/20 ${localSelectedPackage === tier.id
                     ? "border-2 border-[#FFD700] shadow-lg shadow-[#FFD700]/30"
                     : "border border-white/10 shadow-sm"
-                    } ${tier.mobileOrder === 1 ? 'order-1' : tier.mobileOrder === 2 ? 'order-2' : tier.mobileOrder === 3 ? 'order-3' : 'order-4'}`}
+                    } ${tier.mobileOrder === 1 ? 'order-1 md:order-none' : tier.mobileOrder === 2 ? 'order-2 md:order-none' : tier.mobileOrder === 3 ? 'order-3 md:order-none' : 'order-4 md:order-none'}`}
                   role="article"
                   aria-label={`${tier.name} pricing plan`}
                   onClick={() => handlePackageSelect(tier.id)}
