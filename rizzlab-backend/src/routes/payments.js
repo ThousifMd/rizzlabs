@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/database');
 const OnboardingSubmission = require('../models/OnboardingSubmission');
-const { v4: uuidv4 } = require('uuid/dist/v4');
+const { v4: uuidv4 } = require('uuid');
 
 // CORS test endpoint
 router.get('/test-cors', (req, res) => {
