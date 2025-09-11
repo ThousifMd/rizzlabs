@@ -13,7 +13,22 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     try {
-        const { amount = "1.00", description = "Test Payment", packageId, packageName } = await req.json();
+        console.log('🔍 PayPal API Route - Request received');
+
+        let requestBody;
+        try {
+            requestBody = await req.json();
+            console.log('📦 Request body:', requestBody);
+        } catch (jsonError) {
+            console.error('❌ Failed to parse request body:', jsonError);
+            return NextResponse.json({
+                success: false,
+                error: "Invalid JSON in request body",
+                message: "Request body must be valid JSON"
+            }, { status: 400 });
+        }
+
+        const { amount = "1.00", description = "Test Payment", packageId, packageName } = requestBody;
 
         console.log('🔍 Creating PayPal order:', { amount, description, packageId, packageName });
 
