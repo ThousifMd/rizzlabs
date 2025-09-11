@@ -8,7 +8,7 @@ export const FinalCTASection: React.FC = () => {
     const router = useRouter();
 
     const handleCTAClick = () => {
-        router.push('/pricing');
+        router.push('/onboarding');
     };
 
     return (
