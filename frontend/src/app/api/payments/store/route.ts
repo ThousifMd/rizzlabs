@@ -7,6 +7,21 @@ export async function POST(req: NextRequest) {
     console.log('🔄 Proxying payment data to backend:', paymentData);
 
     const apiBase = process.env.BACKEND_BASE_URL || 'http://localhost:5001';
+
+    // Validate backend URL
+    console.log('🔧 Backend Configuration:');
+    console.log('  NODE_ENV:', process.env.NODE_ENV);
+    console.log('  BACKEND_BASE_URL:', apiBase);
+    console.log('  Using default URL:', !process.env.BACKEND_BASE_URL);
+
+    if (process.env.NODE_ENV === 'production' && !process.env.BACKEND_BASE_URL) {
+      console.error('❌ BACKEND_BASE_URL not set in production!');
+      return NextResponse.json({
+        ok: false,
+        error: 'Backend configuration error'
+      }, { status: 500 });
+    }
+
     const upstream = await fetch(`${apiBase}/api/payments/store`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

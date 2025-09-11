@@ -8,11 +8,28 @@ export { PAYPAL_API_BASE };
 
 // Get PayPal access token
 export async function getAccessToken(): Promise<string> {
-    const clientId = process.env.SANDBOX_PAYPAL_CLIENT_ID;
-    const clientSecret = process.env.SANDBOX_PAYPAL_SECRET_KEY;
+    // Use production credentials in production, sandbox in development
+    const clientId = process.env.NODE_ENV === 'production'
+        ? process.env.PAYPAL_CLIENT_ID
+        : process.env.SANDBOX_PAYPAL_CLIENT_ID;
+
+    const clientSecret = process.env.NODE_ENV === 'production'
+        ? process.env.PAYPAL_SECRET_KEY
+        : process.env.SANDBOX_PAYPAL_SECRET_KEY;
+
+    // Debug logging
+    console.log('🔍 PayPal Debug:');
+    console.log('  NODE_ENV:', process.env.NODE_ENV);
+    console.log('  Using credentials for:', process.env.NODE_ENV === 'production' ? 'PRODUCTION' : 'SANDBOX');
+    console.log('  Client ID exists:', !!clientId);
+    console.log('  Client Secret exists:', !!clientSecret);
+    console.log('  API Base:', PAYPAL_API_BASE);
 
     if (!clientId || !clientSecret) {
-        throw new Error('PayPal credentials not found in environment variables');
+        const missingCreds = [];
+        if (!clientId) missingCreds.push(process.env.NODE_ENV === 'production' ? 'PAYPAL_CLIENT_ID' : 'SANDBOX_PAYPAL_CLIENT_ID');
+        if (!clientSecret) missingCreds.push(process.env.NODE_ENV === 'production' ? 'PAYPAL_SECRET_KEY' : 'SANDBOX_PAYPAL_SECRET_KEY');
+        throw new Error(`PayPal credentials not found: ${missingCreds.join(', ')}`);
     }
 
     const auth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');

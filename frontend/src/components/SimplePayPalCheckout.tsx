@@ -46,6 +46,19 @@ interface SimplePayPalCheckoutProps {
 export default function SimplePayPalCheckout({ selectedPackage, showNotification, onPaymentSuccess, onboardingFormData }: SimplePayPalCheckoutProps) {
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({});
+
+    // Debug: Check if PayPal client ID is available
+    useEffect(() => {
+        console.log('🔍 PayPal Frontend Debug:');
+        console.log('  NODE_ENV:', process.env.NODE_ENV);
+        console.log('  PayPal Client ID exists:', !!process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID);
+        console.log('  PayPal Client ID length:', process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID?.length);
+
+        if (!process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID) {
+            console.error('❌ NEXT_PUBLIC_PAYPAL_CLIENT_ID is missing!');
+            handleNotification("error", "PayPal configuration error. Please contact support.");
+        }
+    }, []);
     const handleNotification = (type: 'success' | 'error' | 'info', message: string) => {
         if (showNotification) {
             showNotification(type, message);
@@ -143,112 +156,123 @@ export default function SimplePayPalCheckout({ selectedPackage, showNotification
                 <div className="space-y-3">
                     <style dangerouslySetInnerHTML={{ __html: paypalStyles }} />
                     <div className="paypal-button-container">
-                        <PayPalScriptProvider
-                            options={{
-                                clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
-                                currency: "USD",
-                                intent: "capture"
-                            }}
-                        >
-                            <PayPalButtons
-                                createOrder={async (data, actions) => {
-                                    try {
-                                        console.log('🔄 Creating PayPal order via server...');
-                                        console.log('📦 Package data:', { selectedPackage, amount: "1.00" });
-
-                                        const orderData = {
-                                            amount: "1.00",
-                                            description: selectedPackage?.name || "Test Payment",
-                                            packageId: selectedPackage?.id,
-                                            packageName: selectedPackage?.name
-                                        };
-
-                                        console.log('📡 Sending request to server:', orderData);
-
-                                        const response = await fetch('/api/paypal/create-order', {
-                                            method: 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json',
-                                            },
-                                            body: JSON.stringify(orderData)
-                                        });
-
-                                        console.log('📊 Response status:', response.status);
-                                        console.log('📊 Response headers:', Object.fromEntries(response.headers.entries()));
-
-                                        const responseText = await response.text();
-                                        console.log('📄 Raw response body:', responseText);
-
-                                        if (!response.ok) {
-                                            throw new Error(`HTTP error! status: ${response.status}, body: ${responseText}`);
-                                        }
-
-                                        let result;
+                        {process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ? (
+                            <PayPalScriptProvider
+                                options={{
+                                    clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
+                                    currency: "USD",
+                                    intent: "capture"
+                                }}
+                            >
+                                <PayPalButtons
+                                    createOrder={async (data, actions) => {
                                         try {
-                                            result = JSON.parse(responseText);
-                                        } catch (parseError) {
-                                            console.error('❌ JSON parse error:', parseError);
-                                            throw new Error(`Invalid JSON response: ${responseText}`);
-                                        }
+                                            console.log('🔄 Creating PayPal order via server...');
+                                            console.log('📦 Package data:', { selectedPackage, amount: "1.00" });
 
-                                        console.log('📋 Parsed response:', result);
+                                            const orderData = {
+                                                amount: "1.00",
+                                                description: selectedPackage?.name || "Test Payment",
+                                                packageId: selectedPackage?.id,
+                                                packageName: selectedPackage?.name
+                                            };
 
-                                        if (!result.success) {
-                                            throw new Error(result.message || 'Failed to create order');
-                                        }
+                                            console.log('📡 Sending request to server:', orderData);
 
-                                        if (!result.orderId) {
-                                            console.error('❌ No orderId in response:', result);
-                                            throw new Error('No order ID in response');
-                                        }
+                                            const response = await fetch('/api/paypal/create-order', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                },
+                                                body: JSON.stringify(orderData)
+                                            });
 
-                                        console.log('✅ Server-side order created:', result.orderId);
-                                        return result.orderId;
-                                    } catch (error) {
-                                        console.error('❌ Error creating order:', error);
-                                        throw error;
-                                    }
-                                }}
-                                onApprove={async (data, actions) => {
-                                    console.log("✅ Order approved:", data.orderID);
-                                    console.log("🔄 Starting payment capture...");
+                                            console.log('📊 Response status:', response.status);
+                                            console.log('📊 Response headers:', Object.fromEntries(response.headers.entries()));
 
-                                    try {
-                                        // Use PayPal's recommended approach
-                                        if (actions.order) {
-                                            const details = await actions.order.capture();
-                                            console.log("✅ Payment captured successfully:", details);
+                                            const responseText = await response.text();
+                                            console.log('📄 Raw response body:', responseText);
 
-                                            // Store payment details AND onboarding data in database
-                                            await storePaymentAndOnboarding(details);
-
-                                            handleNotification("success", "Payment successful! Order ID: " + details.id);
-
-                                            // Call the payment success callback
-                                            if (onPaymentSuccess) {
-                                                console.log('🚀 Calling onPaymentSuccess callback!');
-                                                onPaymentSuccess();
-                                            } else {
-                                                console.log('❌ onPaymentSuccess callback not provided!');
+                                            if (!response.ok) {
+                                                throw new Error(`HTTP error! status: ${response.status}, body: ${responseText}`);
                                             }
-                                        } else {
-                                            throw new Error("PayPal order actions not available");
+
+                                            let result;
+                                            try {
+                                                result = JSON.parse(responseText);
+                                            } catch (parseError) {
+                                                console.error('❌ JSON parse error:', parseError);
+                                                throw new Error(`Invalid JSON response: ${responseText}`);
+                                            }
+
+                                            console.log('📋 Parsed response:', result);
+
+                                            if (!result.success) {
+                                                throw new Error(result.message || 'Failed to create order');
+                                            }
+
+                                            if (!result.orderId) {
+                                                console.error('❌ No orderId in response:', result);
+                                                throw new Error('No order ID in response');
+                                            }
+
+                                            console.log('✅ Server-side order created:', result.orderId);
+                                            return result.orderId;
+                                        } catch (error) {
+                                            console.error('❌ Error creating order:', error);
+                                            throw error;
                                         }
-                                    } catch (error) {
-                                        console.error("❌ Payment capture failed:", error);
-                                        handleNotification("error", "Payment capture failed: " + (error instanceof Error ? error.message : "Unknown error"));
-                                    }
-                                }}
-                                onError={(err) => {
-                                    console.error("PayPal error:", err);
-                                    handleNotification("error", "PayPal error: " + JSON.stringify(err));
-                                }}
-                                onCancel={(data) => {
-                                    console.log("Payment cancelled:", data);
-                                    handleNotification("info", "Payment was cancelled");
-                                }}
-                            />
-                        </PayPalScriptProvider>
+                                    }}
+                                    onApprove={async (data, actions) => {
+                                        console.log("✅ Order approved:", data.orderID);
+                                        console.log("🔄 Starting payment capture...");
+
+                                        try {
+                                            // Use PayPal's recommended approach
+                                            if (actions.order) {
+                                                const details = await actions.order.capture();
+                                                console.log("✅ Payment captured successfully:", details);
+
+                                                // Store payment details AND onboarding data in database
+                                                await storePaymentAndOnboarding(details);
+
+                                                handleNotification("success", "Payment successful! Order ID: " + details.id);
+
+                                                // Call the payment success callback
+                                                if (onPaymentSuccess) {
+                                                    console.log('🚀 Calling onPaymentSuccess callback!');
+                                                    onPaymentSuccess();
+                                                } else {
+                                                    console.log('❌ onPaymentSuccess callback not provided!');
+                                                }
+                                            } else {
+                                                throw new Error("PayPal order actions not available");
+                                            }
+                                        } catch (error) {
+                                            console.error("❌ Payment capture failed:", error);
+                                            handleNotification("error", "Payment capture failed: " + (error instanceof Error ? error.message : "Unknown error"));
+                                        }
+                                    }}
+                                    onError={(err) => {
+                                        console.error("PayPal error:", err);
+                                        handleNotification("error", "PayPal error: " + JSON.stringify(err));
+                                    }}
+                                    onCancel={(data) => {
+                                        console.log("Payment cancelled:", data);
+                                        handleNotification("info", "Payment was cancelled");
+                                    }}
+                                />
+                            </PayPalScriptProvider>
+                        ) : (
+                            <div className="text-center p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
+                                <p className="text-red-400 text-sm">
+                                    PayPal configuration error. Please check environment variables.
+                                </p>
+                                <p className="text-red-300 text-xs mt-1">
+                                    Client ID: {process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ? 'Present' : 'Missing'}
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
