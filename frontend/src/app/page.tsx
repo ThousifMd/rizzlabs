@@ -71,7 +71,7 @@ export default function HomePage() {
 
       {/* Mobile Sticky CTA */}
       <MobileStickyCTA
-        href="/onboarding"
+        href="/pricing"
         customersCount={2847}
       />
     </div>

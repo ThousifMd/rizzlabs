@@ -61,7 +61,7 @@ export default function Navbar({ ctaHref, className }: NavbarProps) {
 
           {/* CTA Button */}
           <Link
-            href={ctaHref}
+            href="/pricing"
             className="hidden md:inline-flex items-center px-5 py-2 bg-transparent backdrop-blur-sm border border-[#FFD700]/40 rounded-lg font-medium hover:border-[#FFD700]/60 hover:bg-transparent transition-all duration-300"
             onClick={() => trackCTAClick("Join the Top 5%", "Navbar Desktop")}
           >
