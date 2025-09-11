@@ -48,7 +48,9 @@ export default function HomePage() {
         <DatingPlatformsSection />
 
         {/* Pricing Section */}
-        <PricingSection />
+        <div id="pricing-section">
+          <PricingSection />
+        </div>
 
         {/* Testimonials Section */}
         <TestimonialsSection />
@@ -71,7 +73,7 @@ export default function HomePage() {
 
       {/* Mobile Sticky CTA */}
       <MobileStickyCTA
-        href="/onboarding"
+        href="#pricing-section"
         customersCount={2847}
       />
     </div>
