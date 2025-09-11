@@ -12,13 +12,13 @@ export async function POST(req: NextRequest) {
         // Debug environment variables
         console.log('🔧 Environment check:');
         console.log('  NODE_ENV:', process.env.NODE_ENV);
-        console.log('  PAYPAL_CLIENT_ID exists:', !!process.env.PAYPAL_CLIENT_ID);
-        console.log('  PAYPAL_CLIENT_SECRET exists:', !!process.env.PAYPAL_CLIENT_SECRET);
-        console.log('  PAYPAL_CLIENT_ID length:', process.env.PAYPAL_CLIENT_ID?.length);
-        console.log('  PAYPAL_CLIENT_SECRET length:', process.env.PAYPAL_CLIENT_SECRET?.length);
+        console.log('  SANDBOX_PAYPAL_CLIENT_ID exists:', !!process.env.SANDBOX_PAYPAL_CLIENT_ID);
+        console.log('  SANDBOX_PAYPAL_SECRET_KEY exists:', !!process.env.SANDBOX_PAYPAL_SECRET_KEY);
+        console.log('  SANDBOX_PAYPAL_CLIENT_ID length:', process.env.SANDBOX_PAYPAL_CLIENT_ID?.length);
+        console.log('  SANDBOX_PAYPAL_SECRET_KEY length:', process.env.SANDBOX_PAYPAL_SECRET_KEY?.length);
 
         // Check if we're using test credentials (only for development)
-        if (process.env.NODE_ENV === 'development' && (process.env.PAYPAL_CLIENT_ID === 'test' || process.env.PAYPAL_CLIENT_SECRET === 'test')) {
+        if (process.env.NODE_ENV === 'development' && (process.env.SANDBOX_PAYPAL_CLIENT_ID === 'test' || process.env.SANDBOX_PAYPAL_SECRET_KEY === 'test')) {
             console.log('🧪 Using test mode - returning mock order');
 
             // Return a mock order for testing

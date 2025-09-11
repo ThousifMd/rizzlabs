@@ -59,7 +59,7 @@ export default function SimplePayPalCheckout({ selectedPackage, showNotification
 
             // Use passed form data or fallback to localStorage
             let formDataToUse = onboardingFormData;
-            
+
             if (!formDataToUse) {
                 const storedFormData = localStorage.getItem('onboardingFormData');
                 if (storedFormData) {
@@ -78,18 +78,7 @@ export default function SimplePayPalCheckout({ selectedPackage, showNotification
                 customerEmail: formDataToUse?.email || '',
                 customerName: formDataToUse?.name || '',
                 status: 'completed',
-                onboardingData: {
-                    name: formDataToUse?.name || '',
-                    email: formDataToUse?.email || '',
-                    phone: formDataToUse?.phone || '',
-                    packageSelected: selectedPackage,
-                    paymentDetails: {
-                        orderId: paymentDetails.id,
-                        paymentId: paymentDetails.id,
-                        amount: parseFloat(actualAmountPaid),
-                        currency: 'USD'
-                    }
-                }
+                onboardingData: formDataToUse // Send the complete form data
             };
 
             console.log("Sending payment data to backend:", paymentData);
@@ -109,87 +98,11 @@ export default function SimplePayPalCheckout({ selectedPackage, showNotification
             const paymentResult = await paymentResponse.json();
             console.log("Payment stored successfully:", paymentResult);
 
-            // STEP 2: Submit onboarding data to onboarding_submissions table
-            try {
-                console.log('🔍 SimplePayPalCheckout - Using form data:', formDataToUse);
-
-                if (formDataToUse) {
-
-                    // Get stored photos from global variable
-                    const photos = (window as any).onboardingPhotos || [];
-                    const screenshots = (window as any).onboardingScreenshots || [];
-
-                    // Convert files to base64 for sending to backend
-                    const convertFilesToBase64 = async (files: File[]) => {
-                        const promises = files.map(file => {
-                            return new Promise<string>((resolve) => {
-                                const reader = new FileReader();
-                                reader.onload = () => resolve(reader.result as string);
-                                reader.readAsDataURL(file);
-                            });
-                        });
-                        return Promise.all(promises);
-                    };
-
-                    const photoDataUrls = await convertFilesToBase64(photos);
-                    const screenshotDataUrls = await convertFilesToBase64(screenshots);
-
-                    // Create onboarding submission data
-                    const onboardingData = {
-                        name: formDataToUse.name || '',
-                        gender: formDataToUse.gender || 'not_specified',
-                        age: formDataToUse.age || '',
-                        datingGoal: formDataToUse.datingGoal || '',
-                        currentMatches: formDataToUse.currentMatches || '',
-                        anchorQuestion: formDataToUse.anchorQuestion || '',
-                        bodyType: formDataToUse.bodyType || '',
-                        stylePreference: formDataToUse.stylePreference || '',
-                        ethnicity: formDataToUse.ethnicity || '',
-                        interests: JSON.stringify(formDataToUse.interests || []),
-                        currentBio: formDataToUse.currentBio || '',
-                        email: formDataToUse.email || '',
-                        confirmEmail: formDataToUse.confirmEmail || '',
-                        phone: formDataToUse.phone || '',
-                        weeklyTips: formDataToUse.weeklyTips ? formDataToUse.weeklyTips.toString() : 'false',
-                        vibe: formDataToUse.vibe || '',
-                        wantMore: formDataToUse.wantMore || '',
-                        oneLiner: formDataToUse.oneLiner || '',
-                        originalPhotos: JSON.stringify(photoDataUrls || []),
-                        screenshotPhotos: JSON.stringify(screenshotDataUrls || [])
-                    };
-
-                    console.log("Submitting onboarding data:", onboardingData);
-
-                    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
-                    const onboardingResponse = await fetch(`${API_BASE_URL}/api/onboarding/submit`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(onboardingData)
-                    });
-
-                    const onboardingResult = await onboardingResponse.json();
-
-                    if (onboardingResult.success) {
-                        console.log("Onboarding data submitted successfully:", onboardingResult);
-
-                        // Clear stored data
-                        localStorage.removeItem('onboardingFormData');
-                        if (typeof window !== 'undefined') {
-                            delete (window as any).onboardingPhotos;
-                            delete (window as any).onboardingScreenshots;
-                        }
-                    } else {
-                        console.error('Onboarding submission failed:', onboardingResult.error);
-                    }
-                } else {
-                    console.warn('❌ SimplePayPalCheckout - No onboarding form data found in localStorage');
-                    console.log('🔍 Available localStorage keys:', Object.keys(localStorage));
-                }
-            } catch (onboardingError) {
-                console.error('Error submitting onboarding data:', onboardingError);
-                // Don't fail the entire process if onboarding submission fails
+            // Clear stored data after successful payment
+            localStorage.removeItem('onboardingFormData');
+            if (typeof window !== 'undefined') {
+                delete (window as any).onboardingPhotos;
+                delete (window as any).onboardingScreenshots;
             }
 
             handleNotification("success", "Payment successful! Your data has been saved to the database.");

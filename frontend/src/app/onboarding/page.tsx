@@ -182,7 +182,14 @@ function OnboardingContent() {
       if (storedFormData) {
         try {
           const parsedData = JSON.parse(storedFormData);
-          setFormData(parsedData);
+          // Ensure all required arrays are initialized
+          const safeData = {
+            ...parsedData,
+            interests: parsedData.interests || [],
+            photos: parsedData.photos || [],
+            screenshots: parsedData.screenshots || []
+          };
+          setFormData(safeData);
         } catch (error) {
           console.error('Error parsing stored form data:', error);
         }
@@ -198,7 +205,7 @@ function OnboardingContent() {
   const totalSteps = 5;
   const progress = (currentStep / totalSteps) * 100;
 
-  const isStep1Valid = formData.name.trim() !== "" &&
+  const isStep1Valid = (formData.name || "").trim() !== "" &&
     formData.age !== "" &&
     formData.datingGoal !== "" &&
     formData.currentMatches !== "";
@@ -212,22 +219,24 @@ function OnboardingContent() {
 
   // Email validation function
   const isValidEmail = (email: string) => {
+    if (!email) return false;
     return email.includes('@') && email.includes('.');
   };
 
   // Phone validation function - exactly 10 digits
   const isValidPhone = (phone: string) => {
+    if (!phone) return false;
     const digitsOnly = phone.replace(/\D/g, ''); // Remove all non-digits
     return digitsOnly.length === 10;
   };
 
   // Validation functions that update error states
   const validateEmail = (email: string) => {
-    if (email.trim() === "") {
+    if ((email || "").trim() === "") {
       setEmailError("Email is required");
       return false;
     }
-    if (!isValidEmail(email)) {
+    if (!isValidEmail(email || "")) {
       setEmailError("Please enter a valid email address");
       return false;
     }
@@ -236,7 +245,7 @@ function OnboardingContent() {
   };
 
   const validateConfirmEmail = (confirmEmail: string) => {
-    if (confirmEmail.trim() === "") {
+    if ((confirmEmail || "").trim() === "") {
       setConfirmEmailError("Please confirm your email address");
       return false;
     }
@@ -249,11 +258,11 @@ function OnboardingContent() {
   };
 
   const validatePhone = (phone: string) => {
-    if (phone.trim() === "") {
+    if ((phone || "").trim() === "") {
       setPhoneError("");
       return true; // Phone is optional
     }
-    if (!isValidPhone(phone)) {
+    if (!isValidPhone(phone || "")) {
       setPhoneError("Please enter a valid 10-digit phone number");
       return false;
     }
@@ -261,11 +270,11 @@ function OnboardingContent() {
     return true;
   };
 
-  const isStep5Valid = formData.email.trim() !== "" &&
-    isValidEmail(formData.email) &&
-    formData.confirmEmail.trim() !== "" &&
+  const isStep5Valid = (formData.email || "").trim() !== "" &&
+    isValidEmail(formData.email || "") &&
+    (formData.confirmEmail || "").trim() !== "" &&
     formData.confirmEmail === formData.email &&
-    (formData.phone.trim() === "" || isValidPhone(formData.phone)) &&
+    ((formData.phone || "").trim() === "" || isValidPhone(formData.phone || "")) &&
     formData.vibe !== "" &&
     formData.wantMore !== "";
 

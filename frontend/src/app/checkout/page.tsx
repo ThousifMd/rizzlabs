@@ -381,93 +381,10 @@ function CheckoutContent() {
     // Hide success popup after 3 seconds
     setTimeout(() => setShowSuccessPopup(false), 3000);
 
-    // Do the async work in the background
-    try {
-      // Get stored form data from localStorage
-      const storedFormData = localStorage.getItem('onboardingFormData');
-      console.log('🔍 Stored form data:', storedFormData);
-
-      if (!storedFormData) {
-        console.log('❌ No form data found - redirecting to concierge');
-        router.push('/concierge');
-        return;
-      }
-
-      const formData = JSON.parse(storedFormData);
-      console.log('📋 Parsed form data:', formData);
-
-      // Create JSON data to send to server
-      const dataToSend: any = {
-        name: formData.name,
-        gender: formData.gender || 'not_specified',
-        age: formData.age,
-        datingGoal: formData.datingGoal,
-        currentMatches: formData.currentMatches,
-        bodyType: formData.bodyType,
-        stylePreference: formData.stylePreference,
-        ethnicity: formData.ethnicity,
-        interests: JSON.stringify(formData.interests),
-        currentBio: formData.currentBio,
-        email: formData.email,
-        phone: formData.phone,
-        weeklyTips: formData.weeklyTips.toString()
-      };
-
-      // Get stored photos from global variable (to avoid storage quota issues)
-      const photos = (window as any).onboardingPhotos || [];
-      const screenshots = (window as any).onboardingScreenshots || [];
-
-      // Convert files to base64 for sending to backend
-      const convertFilesToBase64 = async (files: File[]) => {
-        const promises = files.map(file => {
-          return new Promise<string>((resolve) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result as string);
-            reader.readAsDataURL(file);
-          });
-        });
-        return Promise.all(promises);
-      };
-
-      const photoDataUrls = await convertFilesToBase64(photos);
-      const screenshotDataUrls = await convertFilesToBase64(screenshots);
-
-      dataToSend.originalPhotos = JSON.stringify(photoDataUrls);
-      dataToSend.screenshotPhotos = JSON.stringify(screenshotDataUrls);
-
-      // Submit to backend
-      console.log('📤 Sending data to backend:', dataToSend);
-      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
-      console.log('🌐 API URL:', API_BASE_URL);
-
-      const response = await fetch(`${API_BASE_URL}/api/onboarding/submit`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataToSend)
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        // Clear stored data
-        localStorage.removeItem('onboardingFormData');
-        if (typeof window !== 'undefined') {
-          delete (window as any).onboardingPhotos;
-          delete (window as any).onboardingScreenshots;
-        }
-
-        // Redirect to concierge page
-        router.push('/concierge');
-      } else {
-        console.log('Form submission failed:', result.error);
-        router.push('/concierge');
-      }
-    } catch (error) {
-      console.log('Error submitting form after payment:', error);
+    // Redirect to concierge page after a short delay
+    setTimeout(() => {
       router.push('/concierge');
-    }
+    }, 2000);
   };
 
   if (!selectedPackage) {

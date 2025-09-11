@@ -5,8 +5,8 @@ const PAYPAL_API_BASE = 'https://api-m.sandbox.paypal.com';
 
 // Get PayPal access token
 async function getAccessToken() {
-    const clientId = process.env.PAYPAL_CLIENT_ID;
-    const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+    const clientId = process.env.SANDBOX_PAYPAL_CLIENT_ID;
+    const clientSecret = process.env.SANDBOX_PAYPAL_SECRET_KEY;
 
     if (!clientId || !clientSecret) {
         throw new Error('PayPal credentials not found in environment variables');
