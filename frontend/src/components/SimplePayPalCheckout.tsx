@@ -102,9 +102,11 @@ export default function SimplePayPalCheckout({ selectedPackage, showNotification
             try {
                 // Get stored form data from localStorage
                 const storedFormData = localStorage.getItem('onboardingFormData');
+                console.log('🔍 SimplePayPalCheckout - Stored form data:', storedFormData);
 
                 if (storedFormData) {
                     const onboardingFormData = JSON.parse(storedFormData);
+                    console.log('📋 SimplePayPalCheckout - Parsed form data:', onboardingFormData);
 
                     // Get stored photos from global variable
                     const photos = (window as any).onboardingPhotos || [];
@@ -175,7 +177,8 @@ export default function SimplePayPalCheckout({ selectedPackage, showNotification
                         console.error('Onboarding submission failed:', onboardingResult.error);
                     }
                 } else {
-                    console.warn('No onboarding form data found in localStorage');
+                    console.warn('❌ SimplePayPalCheckout - No onboarding form data found in localStorage');
+                    console.log('🔍 Available localStorage keys:', Object.keys(localStorage));
                 }
             } catch (onboardingError) {
                 console.error('Error submitting onboarding data:', onboardingError);

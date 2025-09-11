@@ -366,14 +366,16 @@ function CheckoutContent() {
     try {
       // Get stored form data from localStorage
       const storedFormData = localStorage.getItem('onboardingFormData');
+      console.log('🔍 Stored form data:', storedFormData);
 
       if (!storedFormData) {
-        console.log('No form data found - redirecting to concierge');
+        console.log('❌ No form data found - redirecting to concierge');
         router.push('/concierge');
         return;
       }
 
       const formData = JSON.parse(storedFormData);
+      console.log('📋 Parsed form data:', formData);
 
       // Create JSON data to send to server
       const dataToSend: any = {
@@ -415,7 +417,10 @@ function CheckoutContent() {
       dataToSend.screenshotPhotos = JSON.stringify(screenshotDataUrls);
 
       // Submit to backend
+      console.log('📤 Sending data to backend:', dataToSend);
       const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+      console.log('🌐 API URL:', API_BASE_URL);
+
       const response = await fetch(`${API_BASE_URL}/api/onboarding/submit`, {
         method: 'POST',
         headers: {
