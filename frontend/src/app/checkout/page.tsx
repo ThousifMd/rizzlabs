@@ -114,9 +114,10 @@ interface PaymentFormProps {
   selectedPackage: Package;
   onPaymentSuccess: () => void;
   showNotification: (type: 'success' | 'error' | 'info', message: string) => void;
+  onboardingFormData?: any;
 }
 
-function PaymentForm({ selectedPackage, onPaymentSuccess, showNotification }: PaymentFormProps) {
+function PaymentForm({ selectedPackage, onPaymentSuccess, showNotification, onboardingFormData }: PaymentFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [cardNumber, setCardNumber] = useState("");
@@ -690,6 +691,7 @@ function CheckoutContent() {
                   selectedPackage={selectedPackage}
                   onPaymentSuccess={handlePaymentSuccess}
                   showNotification={showNotification}
+                  onboardingFormData={onboardingFormData}
                 />
               </CardContent>
             </Card>
@@ -740,6 +742,7 @@ function CheckoutContent() {
               selectedPackage={selectedPackage}
               onPaymentSuccess={handlePaymentSuccess}
               showNotification={showNotification}
+              onboardingFormData={onboardingFormData}
             />
           </div>
         </div>
