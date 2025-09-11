@@ -35,17 +35,10 @@ export async function POST(req: NextRequest) {
         // Debug environment variables
         console.log('🔧 Environment check:');
         console.log('  NODE_ENV:', process.env.NODE_ENV);
-        console.log('  Is Production:', process.env.NODE_ENV === 'production');
-
-        if (process.env.NODE_ENV === 'production') {
-            console.log('  PAYPAL_CLIENT_ID exists:', !!process.env.PAYPAL_CLIENT_ID);
-            console.log('  PAYPAL_SECRET_KEY exists:', !!process.env.PAYPAL_SECRET_KEY);
-            console.log('  NEXT_PUBLIC_PAYPAL_CLIENT_ID exists:', !!process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID);
-        } else {
-            console.log('  SANDBOX_PAYPAL_CLIENT_ID exists:', !!process.env.SANDBOX_PAYPAL_CLIENT_ID);
-            console.log('  SANDBOX_PAYPAL_SECRET_KEY exists:', !!process.env.SANDBOX_PAYPAL_SECRET_KEY);
-            console.log('  NEXT_PUBLIC_PAYPAL_CLIENT_ID exists:', !!process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID);
-        }
+        console.log('  Using SANDBOX credentials for testing');
+        console.log('  SANDBOX_PAYPAL_CLIENT_ID exists:', !!process.env.SANDBOX_PAYPAL_CLIENT_ID);
+        console.log('  SANDBOX_PAYPAL_SECRET_KEY exists:', !!process.env.SANDBOX_PAYPAL_SECRET_KEY);
+        console.log('  NEXT_PUBLIC_PAYPAL_CLIENT_ID exists:', !!process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID);
 
         // Check if we're using test credentials (only for development)
         if (process.env.NODE_ENV === 'development' && (process.env.SANDBOX_PAYPAL_CLIENT_ID === 'test' || process.env.SANDBOX_PAYPAL_SECRET_KEY === 'test')) {
