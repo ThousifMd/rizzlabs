@@ -57,7 +57,17 @@ export default function SimplePayPalCheckout({ selectedPackage, showNotification
             // Hardcoded to $1.00 for testing
             const actualAmountPaid = "1.00";
 
-            // STEP 1: Store payment data
+            // Use passed form data or fallback to localStorage
+            let formDataToUse = onboardingFormData;
+            
+            if (!formDataToUse) {
+                const storedFormData = localStorage.getItem('onboardingFormData');
+                if (storedFormData) {
+                    formDataToUse = JSON.parse(storedFormData);
+                }
+            }
+
+            // STEP 1: Store payment data with complete form data
             const paymentData = {
                 orderId: paymentDetails.id,
                 paymentId: paymentDetails.id,
@@ -65,13 +75,13 @@ export default function SimplePayPalCheckout({ selectedPackage, showNotification
                 currency: 'USD',
                 packageId: selectedPackage?.id,
                 packageName: selectedPackage?.name || 'Payment',
-                customerEmail: localStorage.getItem('onboardingEmail') || '',
-                customerName: localStorage.getItem('onboardingName') || '',
+                customerEmail: formDataToUse?.email || '',
+                customerName: formDataToUse?.name || '',
                 status: 'completed',
                 onboardingData: {
-                    name: localStorage.getItem('onboardingName') || '',
-                    email: localStorage.getItem('onboardingEmail') || '',
-                    phone: localStorage.getItem('onboardingPhone') || '',
+                    name: formDataToUse?.name || '',
+                    email: formDataToUse?.email || '',
+                    phone: formDataToUse?.phone || '',
                     packageSelected: selectedPackage,
                     paymentDetails: {
                         orderId: paymentDetails.id,
@@ -101,20 +111,7 @@ export default function SimplePayPalCheckout({ selectedPackage, showNotification
 
             // STEP 2: Submit onboarding data to onboarding_submissions table
             try {
-                // Use passed form data or fallback to localStorage
-                let formDataToUse = onboardingFormData;
-                
-                if (!formDataToUse) {
-                    const storedFormData = localStorage.getItem('onboardingFormData');
-                    console.log('🔍 SimplePayPalCheckout - Stored form data:', storedFormData);
-                    
-                    if (storedFormData) {
-                        formDataToUse = JSON.parse(storedFormData);
-                        console.log('📋 SimplePayPalCheckout - Parsed form data:', formDataToUse);
-                    }
-                } else {
-                    console.log('✅ SimplePayPalCheckout - Using passed form data:', formDataToUse);
-                }
+                console.log('🔍 SimplePayPalCheckout - Using form data:', formDataToUse);
 
                 if (formDataToUse) {
 
