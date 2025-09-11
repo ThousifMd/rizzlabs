@@ -1,13 +1,15 @@
 // PayPal API configuration
-// Use live PayPal API for live credentials
-const PAYPAL_API_BASE = 'https://api-m.paypal.com';
+// Switch between sandbox and live based on environment
+const PAYPAL_API_BASE = process.env.NODE_ENV === 'production'
+    ? 'https://api-m.paypal.com'           // LIVE (real money)
+    : 'https://api-m.sandbox.paypal.com';  // SANDBOX (fake money)
 
 export { PAYPAL_API_BASE };
 
 // Get PayPal access token
 export async function getAccessToken(): Promise<string> {
-    const clientId = process.env.PAYPAL_CLIENT_ID;
-    const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+    const clientId = process.env.SANDBOX_PAYPAL_CLIENT_ID;
+    const clientSecret = process.env.SANDBOX_PAYPAL_SECRET_KEY;
 
     if (!clientId || !clientSecret) {
         throw new Error('PayPal credentials not found in environment variables');

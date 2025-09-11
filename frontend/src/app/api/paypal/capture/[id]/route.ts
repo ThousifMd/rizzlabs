@@ -12,7 +12,7 @@ export async function POST(
         console.log('🔍 Capturing PayPal order:', id);
 
         // Check if we're using test credentials (only for development)
-        if (process.env.NODE_ENV === 'development' && (process.env.PAYPAL_CLIENT_ID === 'test' || process.env.PAYPAL_CLIENT_SECRET === 'test')) {
+        if (process.env.NODE_ENV === 'development' && (process.env.SANDBOX_PAYPAL_CLIENT_ID === 'test' || process.env.SANDBOX_PAYPAL_SECRET_KEY === 'test')) {
             console.log('🧪 Using test mode - returning mock capture');
 
             // Return a mock capture for testing

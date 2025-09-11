@@ -60,22 +60,28 @@ router.post('/store', async (req, res) => {
         const expectedDelivery = new Date();
         expectedDelivery.setHours(expectedDelivery.getHours() + deliveryHours);
 
+        // Use the actual form data instead of hardcoded values
         onboardingSubmission = await OnboardingSubmission.create({
           name: onboardingData.name || customerName || 'Unknown',
-          gender: 'other',
-          age: '25',
-          datingGoal: 'relationship',
-          currentMatches: '0-2',
-          bodyType: 'average',
-          stylePreference: 'casual',
-          ethnicity: 'other',
-          interests: [],
-          currentBio: '',
+          gender: onboardingData.gender || 'not_specified',
+          age: onboardingData.age || '25',
+          datingGoal: onboardingData.datingGoal || 'relationship',
+          currentMatches: onboardingData.currentMatches || '0-2',
+          anchorQuestion: onboardingData.anchorQuestion || 'What makes you unique?',
+          bodyType: onboardingData.bodyType || 'average',
+          stylePreference: onboardingData.stylePreference || 'casual',
+          ethnicity: onboardingData.ethnicity || 'other',
+          interests: onboardingData.interests || [],
+          currentBio: onboardingData.currentBio || '',
           email: onboardingData.email || customerEmail || 'unknown@example.com',
+          confirmEmail: onboardingData.confirmEmail || '',
           phone: onboardingData.phone || '',
-          weeklyTips: false,
-          originalPhotos: [],
-          screenshotPhotos: [],
+          weeklyTips: onboardingData.weeklyTips === 'true' || false,
+          vibe: onboardingData.vibe || '',
+          wantMore: onboardingData.wantMore || '',
+          oneLiner: onboardingData.oneLiner || '',
+          originalPhotos: onboardingData.originalPhotos || [],
+          screenshotPhotos: onboardingData.screenshotPhotos || [],
           expectedDelivery: expectedDelivery
         });
 

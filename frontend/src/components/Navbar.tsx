@@ -60,15 +60,17 @@ export default function Navbar({ ctaHref, className }: NavbarProps) {
           </nav>
 
           {/* CTA Button */}
-          <Link
-            href={ctaHref}
+          <button
             className="hidden md:inline-flex items-center px-5 py-2 bg-transparent backdrop-blur-sm border border-[#FFD700]/40 rounded-lg font-medium hover:border-[#FFD700]/60 hover:bg-transparent transition-all duration-300"
-            onClick={() => trackCTAClick("Join the Top 5%", "Navbar Desktop")}
+            onClick={() => {
+              trackCTAClick("Join the Top 5%", "Navbar Desktop");
+              document.getElementById('pricing-section')?.scrollIntoView({ behavior: 'smooth' });
+            }}
           >
             <span className="bg-gradient-to-r from-[#FFD700] via-[#FFA500] to-[#FFD700] bg-clip-text text-transparent">
               Join the Top 5%
             </span>
-          </Link>
+          </button>
         </div>
       </div>
     </header>

@@ -114,9 +114,10 @@ interface PaymentFormProps {
   selectedPackage: Package;
   onPaymentSuccess: () => void;
   showNotification: (type: 'success' | 'error' | 'info', message: string) => void;
+  onboardingFormData?: any;
 }
 
-function PaymentForm({ selectedPackage, onPaymentSuccess, showNotification }: PaymentFormProps) {
+function PaymentForm({ selectedPackage, onPaymentSuccess, showNotification, onboardingFormData }: PaymentFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [cardNumber, setCardNumber] = useState("");
@@ -213,6 +214,7 @@ function PaymentForm({ selectedPackage, onPaymentSuccess, showNotification }: Pa
         selectedPackage={selectedPackage}
         showNotification={showNotification}
         onPaymentSuccess={onPaymentSuccess}
+        onboardingFormData={onboardingFormData}
       />
 
       {error && (
@@ -302,11 +304,28 @@ function CheckoutContent() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [countdown, setCountdown] = useState(24 * 60 * 60); // 24 hours in seconds
+  const [onboardingFormData, setOnboardingFormData] = useState<any>(null);
 
   const showNotification = (type: 'success' | 'error' | 'info', message: string) => {
     setNotification({ type, message });
     setTimeout(() => setNotification(null), 4000); // Auto-hide after 4 seconds
   };
+
+  // Load onboarding form data from localStorage
+  useEffect(() => {
+    const storedFormData = localStorage.getItem('onboardingFormData');
+    if (storedFormData) {
+      try {
+        const parsedData = JSON.parse(storedFormData);
+        setOnboardingFormData(parsedData);
+        console.log('✅ CheckoutContent - Loaded form data:', parsedData);
+      } catch (error) {
+        console.error('❌ CheckoutContent - Error parsing form data:', error);
+      }
+    } else {
+      console.warn('❌ CheckoutContent - No form data found in localStorage');
+    }
+  }, []);
 
   // Countdown timer effect
   useEffect(() => {
@@ -362,88 +381,10 @@ function CheckoutContent() {
     // Hide success popup after 3 seconds
     setTimeout(() => setShowSuccessPopup(false), 3000);
 
-    // Do the async work in the background
-    try {
-      // Get stored form data from localStorage
-      const storedFormData = localStorage.getItem('onboardingFormData');
-
-      if (!storedFormData) {
-        console.log('No form data found - redirecting to concierge');
-        router.push('/concierge');
-        return;
-      }
-
-      const formData = JSON.parse(storedFormData);
-
-      // Create JSON data to send to server
-      const dataToSend: any = {
-        name: formData.name,
-        gender: formData.gender || 'not_specified',
-        age: formData.age,
-        datingGoal: formData.datingGoal,
-        currentMatches: formData.currentMatches,
-        bodyType: formData.bodyType,
-        stylePreference: formData.stylePreference,
-        ethnicity: formData.ethnicity,
-        interests: JSON.stringify(formData.interests),
-        currentBio: formData.currentBio,
-        email: formData.email,
-        phone: formData.phone,
-        weeklyTips: formData.weeklyTips.toString()
-      };
-
-      // Get stored photos from global variable (to avoid storage quota issues)
-      const photos = (window as any).onboardingPhotos || [];
-      const screenshots = (window as any).onboardingScreenshots || [];
-
-      // Convert files to base64 for sending to backend
-      const convertFilesToBase64 = async (files: File[]) => {
-        const promises = files.map(file => {
-          return new Promise<string>((resolve) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result as string);
-            reader.readAsDataURL(file);
-          });
-        });
-        return Promise.all(promises);
-      };
-
-      const photoDataUrls = await convertFilesToBase64(photos);
-      const screenshotDataUrls = await convertFilesToBase64(screenshots);
-
-      dataToSend.originalPhotos = JSON.stringify(photoDataUrls);
-      dataToSend.screenshotPhotos = JSON.stringify(screenshotDataUrls);
-
-      // Submit to backend
-      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
-      const response = await fetch(`${API_BASE_URL}/api/onboarding/submit`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataToSend)
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        // Clear stored data
-        localStorage.removeItem('onboardingFormData');
-        if (typeof window !== 'undefined') {
-          delete (window as any).onboardingPhotos;
-          delete (window as any).onboardingScreenshots;
-        }
-
-        // Redirect to concierge page
-        router.push('/concierge');
-      } else {
-        console.log('Form submission failed:', result.error);
-        router.push('/concierge');
-      }
-    } catch (error) {
-      console.log('Error submitting form after payment:', error);
+    // Redirect to concierge page after a short delay
+    setTimeout(() => {
       router.push('/concierge');
-    }
+    }, 2000);
   };
 
   if (!selectedPackage) {
@@ -667,6 +608,7 @@ function CheckoutContent() {
                   selectedPackage={selectedPackage}
                   onPaymentSuccess={handlePaymentSuccess}
                   showNotification={showNotification}
+                  onboardingFormData={onboardingFormData}
                 />
               </CardContent>
             </Card>
@@ -717,6 +659,7 @@ function CheckoutContent() {
               selectedPackage={selectedPackage}
               onPaymentSuccess={handlePaymentSuccess}
               showNotification={showNotification}
+              onboardingFormData={onboardingFormData}
             />
           </div>
         </div>
