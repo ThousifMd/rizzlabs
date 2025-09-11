@@ -3,6 +3,14 @@ import { getAccessToken, PAYPAL_API_BASE } from "@/lib/paypal";
 
 export const runtime = "nodejs";
 
+export async function GET(req: NextRequest) {
+    return NextResponse.json({
+        message: "This endpoint only accepts POST requests",
+        method: "GET not allowed",
+        correctMethod: "POST"
+    }, { status: 405 });
+}
+
 export async function POST(req: NextRequest) {
     try {
         const { amount = "1.00", description = "Test Payment", packageId, packageName } = await req.json();
@@ -12,10 +20,17 @@ export async function POST(req: NextRequest) {
         // Debug environment variables
         console.log('🔧 Environment check:');
         console.log('  NODE_ENV:', process.env.NODE_ENV);
-        console.log('  SANDBOX_PAYPAL_CLIENT_ID exists:', !!process.env.SANDBOX_PAYPAL_CLIENT_ID);
-        console.log('  SANDBOX_PAYPAL_SECRET_KEY exists:', !!process.env.SANDBOX_PAYPAL_SECRET_KEY);
-        console.log('  SANDBOX_PAYPAL_CLIENT_ID length:', process.env.SANDBOX_PAYPAL_CLIENT_ID?.length);
-        console.log('  SANDBOX_PAYPAL_SECRET_KEY length:', process.env.SANDBOX_PAYPAL_SECRET_KEY?.length);
+        console.log('  Is Production:', process.env.NODE_ENV === 'production');
+
+        if (process.env.NODE_ENV === 'production') {
+            console.log('  PAYPAL_CLIENT_ID exists:', !!process.env.PAYPAL_CLIENT_ID);
+            console.log('  PAYPAL_SECRET_KEY exists:', !!process.env.PAYPAL_SECRET_KEY);
+            console.log('  NEXT_PUBLIC_PAYPAL_CLIENT_ID exists:', !!process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID);
+        } else {
+            console.log('  SANDBOX_PAYPAL_CLIENT_ID exists:', !!process.env.SANDBOX_PAYPAL_CLIENT_ID);
+            console.log('  SANDBOX_PAYPAL_SECRET_KEY exists:', !!process.env.SANDBOX_PAYPAL_SECRET_KEY);
+            console.log('  NEXT_PUBLIC_PAYPAL_CLIENT_ID exists:', !!process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID);
+        }
 
         // Check if we're using test credentials (only for development)
         if (process.env.NODE_ENV === 'development' && (process.env.SANDBOX_PAYPAL_CLIENT_ID === 'test' || process.env.SANDBOX_PAYPAL_SECRET_KEY === 'test')) {
@@ -47,8 +62,19 @@ export async function POST(req: NextRequest) {
         }
 
         console.log('🚀 Attempting to get PayPal access token...');
-        const accessToken = await getAccessToken();
-        console.log('🔑 Access token received:', accessToken ? 'Yes' : 'No');
+        let accessToken;
+        try {
+            accessToken = await getAccessToken();
+            console.log('🔑 Access token received:', accessToken ? 'Yes' : 'No');
+            console.log('🔑 Access token length:', accessToken?.length);
+        } catch (tokenError) {
+            console.error('❌ Failed to get PayPal access token:', tokenError);
+            return NextResponse.json({
+                success: false,
+                error: tokenError instanceof Error ? tokenError.message : 'Failed to get access token',
+                message: "PayPal authentication failed"
+            }, { status: 500 });
+        }
 
         // Create order data
         const orderData = {
@@ -74,6 +100,14 @@ export async function POST(req: NextRequest) {
 
         console.log('📡 Creating order with data:', JSON.stringify(orderData, null, 2));
 
+        console.log('📡 Making request to PayPal API...');
+        console.log('  URL:', `${PAYPAL_API_BASE}/v2/checkout/orders`);
+        console.log('  Headers:', {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken?.substring(0, 20)}...`,
+            "PayPal-Request-Id": `create_order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        });
+
         const orderRes = await fetch(`${PAYPAL_API_BASE}/v2/checkout/orders`, {
             method: "POST",
             headers: {
@@ -84,14 +118,21 @@ export async function POST(req: NextRequest) {
             body: JSON.stringify(orderData),
         });
 
+        console.log('📊 PayPal API Response:');
+        console.log('  Status:', orderRes.status);
+        console.log('  Status Text:', orderRes.statusText);
+        console.log('  Headers:', Object.fromEntries(orderRes.headers.entries()));
+
         const order = await orderRes.json();
+        console.log('📄 PayPal API Response Body:', order);
 
         if (!orderRes.ok) {
             console.error('❌ PayPal order creation failed:', order);
             return NextResponse.json({
                 success: false,
                 error: order,
-                message: "Failed to create PayPal order"
+                message: `PayPal order creation failed: ${orderRes.status} ${orderRes.statusText}`,
+                paypalError: order
             }, { status: orderRes.status });
         }
 
