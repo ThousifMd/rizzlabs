@@ -49,15 +49,8 @@ export default function SimplePayPalCheckout({ selectedPackage, showNotification
 
     // Debug: Check if PayPal client ID is available
     useEffect(() => {
-        console.log('🔍 PayPal Frontend Debug:');
-        console.log('  NODE_ENV:', process.env.NODE_ENV);
-        console.log('  PayPal Client ID exists:', !!process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID);
-        console.log('  PayPal Client ID length:', process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID?.length);
-
-        if (!process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID) {
-            console.error('❌ NEXT_PUBLIC_PAYPAL_CLIENT_ID is missing!');
-            handleNotification("error", "PayPal configuration error. Please contact support.");
-        }
+        console.log('PayPal Client ID:', process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID);
+        console.log('PayPal Client ID exists:', !!process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID);
     }, []);
     const handleNotification = (type: 'success' | 'error' | 'info', message: string) => {
         if (showNotification) {
@@ -156,10 +149,10 @@ export default function SimplePayPalCheckout({ selectedPackage, showNotification
                 <div className="space-y-3">
                     <style dangerouslySetInnerHTML={{ __html: paypalStyles }} />
                     <div className="paypal-button-container">
-                        {process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ? (
+                        {(process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "Aa3Qhzd--_8MNtB9U8LctWUzDXw3eO7XPw2cyHUzwa9e_sYlD1pXnQK_K3iXNIXD2i64F8AUfPiWL-AT") ? (
                             <PayPalScriptProvider
                                 options={{
-                                    clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
+                                    clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "Aa3Qhzd--_8MNtB9U8LctWUzDXw3eO7XPw2cyHUzwa9e_sYlD1pXnQK_K3iXNIXD2i64F8AUfPiWL-AT",
                                     currency: "USD",
                                     intent: "capture"
                                 }}
@@ -269,7 +262,7 @@ export default function SimplePayPalCheckout({ selectedPackage, showNotification
                                     PayPal configuration error. Please check environment variables.
                                 </p>
                                 <p className="text-red-300 text-xs mt-1">
-                                    Client ID: {process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ? 'Present' : 'Missing'}
+                                    Client ID: Missing - Using fallback
                                 </p>
                             </div>
                         )}
