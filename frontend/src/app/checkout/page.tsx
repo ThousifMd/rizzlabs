@@ -213,6 +213,7 @@ function PaymentForm({ selectedPackage, onPaymentSuccess, showNotification }: Pa
         selectedPackage={selectedPackage}
         showNotification={showNotification}
         onPaymentSuccess={onPaymentSuccess}
+        onboardingFormData={onboardingFormData}
       />
 
       {error && (
@@ -302,11 +303,28 @@ function CheckoutContent() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [countdown, setCountdown] = useState(24 * 60 * 60); // 24 hours in seconds
+  const [onboardingFormData, setOnboardingFormData] = useState<any>(null);
 
   const showNotification = (type: 'success' | 'error' | 'info', message: string) => {
     setNotification({ type, message });
     setTimeout(() => setNotification(null), 4000); // Auto-hide after 4 seconds
   };
+
+  // Load onboarding form data from localStorage
+  useEffect(() => {
+    const storedFormData = localStorage.getItem('onboardingFormData');
+    if (storedFormData) {
+      try {
+        const parsedData = JSON.parse(storedFormData);
+        setOnboardingFormData(parsedData);
+        console.log('✅ CheckoutContent - Loaded form data:', parsedData);
+      } catch (error) {
+        console.error('❌ CheckoutContent - Error parsing form data:', error);
+      }
+    } else {
+      console.warn('❌ CheckoutContent - No form data found in localStorage');
+    }
+  }, []);
 
   // Countdown timer effect
   useEffect(() => {

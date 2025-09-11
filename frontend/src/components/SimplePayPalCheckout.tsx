@@ -40,9 +40,10 @@ interface SimplePayPalCheckoutProps {
     };
     showNotification?: (type: 'success' | 'error' | 'info', message: string) => void;
     onPaymentSuccess?: () => void;
+    onboardingFormData?: any;
 }
 
-export default function SimplePayPalCheckout({ selectedPackage, showNotification, onPaymentSuccess }: SimplePayPalCheckoutProps) {
+export default function SimplePayPalCheckout({ selectedPackage, showNotification, onPaymentSuccess, onboardingFormData }: SimplePayPalCheckoutProps) {
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({});
     const handleNotification = (type: 'success' | 'error' | 'info', message: string) => {
@@ -100,13 +101,22 @@ export default function SimplePayPalCheckout({ selectedPackage, showNotification
 
             // STEP 2: Submit onboarding data to onboarding_submissions table
             try {
-                // Get stored form data from localStorage
-                const storedFormData = localStorage.getItem('onboardingFormData');
-                console.log('🔍 SimplePayPalCheckout - Stored form data:', storedFormData);
+                // Use passed form data or fallback to localStorage
+                let formDataToUse = onboardingFormData;
+                
+                if (!formDataToUse) {
+                    const storedFormData = localStorage.getItem('onboardingFormData');
+                    console.log('🔍 SimplePayPalCheckout - Stored form data:', storedFormData);
+                    
+                    if (storedFormData) {
+                        formDataToUse = JSON.parse(storedFormData);
+                        console.log('📋 SimplePayPalCheckout - Parsed form data:', formDataToUse);
+                    }
+                } else {
+                    console.log('✅ SimplePayPalCheckout - Using passed form data:', formDataToUse);
+                }
 
-                if (storedFormData) {
-                    const onboardingFormData = JSON.parse(storedFormData);
-                    console.log('📋 SimplePayPalCheckout - Parsed form data:', onboardingFormData);
+                if (formDataToUse) {
 
                     // Get stored photos from global variable
                     const photos = (window as any).onboardingPhotos || [];
@@ -129,24 +139,24 @@ export default function SimplePayPalCheckout({ selectedPackage, showNotification
 
                     // Create onboarding submission data
                     const onboardingData = {
-                        name: onboardingFormData.name || '',
-                        gender: onboardingFormData.gender || 'not_specified',
-                        age: onboardingFormData.age || '',
-                        datingGoal: onboardingFormData.datingGoal || '',
-                        currentMatches: onboardingFormData.currentMatches || '',
-                        anchorQuestion: onboardingFormData.anchorQuestion || '',
-                        bodyType: onboardingFormData.bodyType || '',
-                        stylePreference: onboardingFormData.stylePreference || '',
-                        ethnicity: onboardingFormData.ethnicity || '',
-                        interests: JSON.stringify(onboardingFormData.interests || []),
-                        currentBio: onboardingFormData.currentBio || '',
-                        email: onboardingFormData.email || '',
-                        confirmEmail: onboardingFormData.confirmEmail || '',
-                        phone: onboardingFormData.phone || '',
-                        weeklyTips: onboardingFormData.weeklyTips ? onboardingFormData.weeklyTips.toString() : 'false',
-                        vibe: onboardingFormData.vibe || '',
-                        wantMore: onboardingFormData.wantMore || '',
-                        oneLiner: onboardingFormData.oneLiner || '',
+                        name: formDataToUse.name || '',
+                        gender: formDataToUse.gender || 'not_specified',
+                        age: formDataToUse.age || '',
+                        datingGoal: formDataToUse.datingGoal || '',
+                        currentMatches: formDataToUse.currentMatches || '',
+                        anchorQuestion: formDataToUse.anchorQuestion || '',
+                        bodyType: formDataToUse.bodyType || '',
+                        stylePreference: formDataToUse.stylePreference || '',
+                        ethnicity: formDataToUse.ethnicity || '',
+                        interests: JSON.stringify(formDataToUse.interests || []),
+                        currentBio: formDataToUse.currentBio || '',
+                        email: formDataToUse.email || '',
+                        confirmEmail: formDataToUse.confirmEmail || '',
+                        phone: formDataToUse.phone || '',
+                        weeklyTips: formDataToUse.weeklyTips ? formDataToUse.weeklyTips.toString() : 'false',
+                        vibe: formDataToUse.vibe || '',
+                        wantMore: formDataToUse.wantMore || '',
+                        oneLiner: formDataToUse.oneLiner || '',
                         originalPhotos: JSON.stringify(photoDataUrls || []),
                         screenshotPhotos: JSON.stringify(screenshotDataUrls || [])
                     };
